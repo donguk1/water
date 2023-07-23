@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- JAVA와 연결할 Mapper 파일 설정 -->
+<mapper namespace="kopo.poly.persistance.mapper.IUserMapper">
+
+    <!-- 회원 가입하기(회원정보 등록하기) -->
+    <insert id="insertUser" parameterType="UserDTO">
+        INSERT INTO USER
+        (
+         NICK,
+         ID,
+         PW,
+         BIRTH,
+         EMAIL,
+         ULOC,
+         PN,
+         GENDER
+         )
+
+        VALUES
+        (
+         #{nick},
+         #{id},
+         #{pw},
+         #{birth},
+         #{email},
+         #{uloc},
+         #{pn},
+         #{gender}
+        )
+    </insert>
+
+    <!--  로그인  -->
+    <select id="getLogin" parameterType="UserDTO" resultType="UserDTO">
+        SELECT ID, NICK, EMAIL
+        FROM USER
+        WHERE ID = #{id}
+          AND   PW = #{pw}
+    </select>
+
+    <!-- 아이디 중복체크하기 (DB 조회하기) -->
+    <select id="getUserIdExists" parameterType="UserDTO" resultType="UserDTO">
+        SELECT CASE WHEN COUNT(1) = 0 THEN 'N'
+                    ELSE 'Y' END AS EXISTS_YN
+        FROM USER
+        WHERE ID = #{d};
+    </select>
+
+    <!-- 이메일 중복체크하기 (DB 조회하기) -->
+    <select id="getEmailExists" parameterType="UserDTO" resultType="UserDTO">
+        SELECT CASE WHEN COUNT(1) = 0 THEN 'N'
+                    ELSE 'Y' END AS EXISTS_YN
+        FROM USER
+        WHERE EMAIL = #{email};
+    </select>
+
+    <!--  회원정보 표시(패스워드 미표시)  -->
+    <select id="selectUser" parameterType="UserDTO" resultType="UserDTO">
+        SELECT
+            NICK,
+            ID,
+            BIRTH,
+            EMAIL,
+            ULOC,
+            PN,
+            GENDER
+        FROM USER
+        WHERE ID = #{id}
+    </select>
+
+    <!--  회원정보 수정(업데이트)  -->
+    <update id="updateUser" parameterType="UserDTO">
+        UPDATE USER
+        SET
+            EMAIL = #{email},
+            PN = #{pn},
+            ULOC = #{uloc}
+        WHERE ID = #{id}
+    </update>
+
+    <!--  비밀번호 재설정 로직(맞는지 확인 필요)  -->
+    <update id="updatePw" parameterType="UserDTO">
+        UPDATE USER
+        SET PW = #{pw}
+        WHERE ID = #{id}
+    </update>
+
+
+
+
+</mapper>

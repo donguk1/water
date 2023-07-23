@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- JAVA와 연결할 Mapper 파일 설정 -->
+<mapper namespace="kopo.poly.persistance.mapper.IMemoMapper">
+
+    <!--  메모 리스트  -->
+    <select id="getMemoList" resultType="MemoDTO">
+        SELECT NUM,
+               TITLE,
+               NICK,
+               T0_CHAR(DATE, 'YYYY/MM/DD') AS DATE,
+               MLOC
+        FROM MEMO
+        ORDER BY NUM DESC
+    </select>
+
+    <!--  메모 검색 리스트(수정필요)  -->
+    <select id="selectMemoList" resultType="MemoDTO">
+        SELECT NUM,
+               TITLE,
+               NICK,
+               T0_CHAR(DATE, 'YYYY/MM/DD') AS DATE,
+               MLOC
+        FROM MEMO
+        WHERE LIKE %#{}%
+        ORDER BY NUM DESC
+    </select>
+
+
+    <!--  메모 등록  -->
+    <insert id="insertMemoInfo" parameterType="MemoDTO">
+        INSERT INTO MEMO
+        (
+         NUM,
+         NICK,
+         TITLE,
+         MAP,
+         CONTENTS,
+         MLOC,
+         DATE
+        )
+        VALUES
+        (
+         (SELECT NVL(MAX(A.NUM), 0) + 1 FROM MEMO A), --NUM
+         #{nick},
+         #{title},
+         #{map},
+         #{contents},
+         #{mloc},
+         SYSDATE()
+        )
+    </insert>
+
+
+    <!--  메모 상세보기  -->
+    <select id="getMemoInfo" resultType="MemoDTO">
+        SELECT
+            NUM,
+            NICK,
+            TITLE,
+            T0_CHAR(DATE, 'YYYY/MM/DD') AS DATE,
+            MLOC,
+            CONTENTS,
+            MAP
+        FROM MEMO
+        WHERE NUM = #{num}
+    </select>
+
+    <!--  메모 수정  -->
+    <update id="updateMemoInfo" parameterType="MemoDTO">
+        UPDATE MEMO
+        SET TITLE     = #{title},
+            MAP       = #{mao},
+            CONTENTS  = #{contents},
+            NICK      = #{nick},      -- 필요한건가? 본인글 본인이 수정하는걸텐데
+            DATE      = SYSDATE(),
+            MLOC      = #{mloc}
+        WHERE NUM = #{num}
+    </update>
+
+    <!--  메모 삭제  -->
+    <delete id="deleteMemoInfo" parameterType="MemoDTO">
+        DELETE FROM MEMO
+        WHERE NUM = #{num}
+    </delete>
+
+
+
+</mapper>
