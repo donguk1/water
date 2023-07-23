@@ -22,7 +22,7 @@
                T0_CHAR(DATE, 'YYYY/MM/DD') AS DATE,
                MLOC
         FROM MEMO
-        WHERE LIKE %#{}%
+        WHERE COLUMN_NAME LIKE '%${value}%'
         ORDER BY NUM DESC
     </select>
 
@@ -70,7 +70,7 @@
     <update id="updateMemoInfo" parameterType="MemoDTO">
         UPDATE MEMO
         SET TITLE     = #{title},
-            MAP       = #{mao},
+            MAP       = #{map},
             CONTENTS  = #{contents},
             NICK      = #{nick},      -- 필요한건가? 본인글 본인이 수정하는걸텐데
             DATE      = SYSDATE(),
