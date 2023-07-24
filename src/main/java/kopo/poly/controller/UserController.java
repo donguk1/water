@@ -248,6 +248,16 @@ public class UserController {
         return rDTO;
     }
 
+    /*  마이페이지로 이동 = "/mypage"  */
+    @GetMapping(value = "/mypage")
+    public String mypage() {
+
+        log.info(this.getClass().getName() + ".controller 마이페이지로 이동");
+
+        return "/mypage";
+    }
+
+
     /*  로그인 화면으로 이동 ="/login"  */
     @GetMapping(value = "/login")
     public String login() {
