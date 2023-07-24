@@ -8,7 +8,7 @@
         SELECT NUM,
                TITLE,
                NICK,
-               T0_CHAR(DATE, 'YYYY/MM/DD') AS DATE,
+               TO_CHAR(DT, 'YYYY-MM-DD') AS DT,
                MLOC
         FROM MEMO
         ORDER BY NUM DESC
@@ -19,7 +19,7 @@
         SELECT NUM,
                TITLE,
                NICK,
-               T0_CHAR(DATE, 'YYYY/MM/DD') AS DATE,
+               TO_CHAR(DT, 'YYYY-MM-DD') AS DT,
                MLOC
         FROM MEMO
         WHERE COLUMN_NAME LIKE '%${value}%'
@@ -37,7 +37,7 @@
          MAP,
          CONTENTS,
          MLOC,
-         DATE
+         DT
         )
         VALUES
         (
@@ -58,7 +58,7 @@
             NUM,
             NICK,
             TITLE,
-            T0_CHAR(DATE, 'YYYY/MM/DD') AS DATE,
+            T0_CHAR(DT, 'YYYY/MM/DD') AS DT,
             MLOC,
             CONTENTS,
             MAP
@@ -73,7 +73,7 @@
             MAP       = #{map},
             CONTENTS  = #{contents},
             NICK      = #{nick},      -- 필요한건가? 본인글 본인이 수정하는걸텐데
-            DATE      = SYSDATE(),
+            DT      = SYSDATE(),
             MLOC      = #{mloc}
         WHERE NUM = #{num}
     </update>
