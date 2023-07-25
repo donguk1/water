@@ -72,6 +72,7 @@
     <update id="updateUser" parameterType="UserDTO">
         UPDATE USER
         SET
+            PW = #{pw},
             EMAIL = #{email},
             PN = #{pn},
             ULOC = #{uloc}

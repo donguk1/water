@@ -254,7 +254,9 @@ public class UserController {
 
         log.info(this.getClass().getName() + ".controller 마이페이지로 이동");
 
+//        log.info(".controller 마이페이지 이동 완료");
         return "/mypage";
+
     }
 
 
@@ -268,6 +270,75 @@ public class UserController {
     }
 
     /*  아이디 찾기(현재 페이지 존재하지 않음)  */
+
+
+    /*  mypage 수정(회원정보 수정)(추후 수정 필요)  */
+    @GetMapping(value = "/mypage/updateUser")
+    public String updateUser(HttpSession session, ModelMap modelMap, HttpServletRequest request) throws Exception {
+
+        log.info(this.getClass().getName() + ".controller 회원정보 수정 실행");
+
+        String msg = "";
+        String url = "";
+
+        try {
+
+            /*  데이터 선언 및 입력  */
+            String id = CmmUtil.nvl((String) session.getAttribute("id"));
+            String nick = CmmUtil.nvl(request.getParameter("nick"));
+            String pw = CmmUtil.nvl(request.getParameter("pw"));
+            String email = CmmUtil.nvl(request.getParameter("email"));
+            String pn = CmmUtil.nvl(request.getParameter("pn"));
+            String uloc = CmmUtil.nvl(request.getParameter("uloc"));
+            String birth = CmmUtil.nvl(request.getParameter("birth"));
+            String gender = CmmUtil.nvl(request.getParameter("gender"));
+
+            /*  데이터 확인  */
+            log.info("id : " + id);
+            log.info("nick : " + nick);
+            log.info("pw : " + pw);
+            log.info("email : " + email);
+            log.info("pn : " + pn);
+            log.info("uloc : " + uloc);
+            log.info("birth : " + birth);
+            log.info("gender : " + gender);
+
+            /*  데이터 저장  */
+            UserDTO pDTO = new UserDTO();
+            pDTO.setPw(pw);
+            pDTO.setEmail(email);
+            pDTO.setPn(pn);
+            pDTO.setUloc(uloc);
+
+            /*  개인정보 수정  */
+            userService.updateUser(pDTO);
+
+            msg = "수정되었습니다.";
+            url = "/mypage";
+
+        } catch (Exception e) {
+
+            msg = "수정 실패하였습니다.";
+            log.info(e.toString());
+            e.printStackTrace();  // Exception 발생 이유와 위치는 어디에서 발생했는지 전체적인 단계 출력
+
+        } finally {
+
+            modelMap.addAttribute("msg", msg);
+            modelMap.addAttribute("url", url);
+            log.info(this.getClass().getName() + ".controller 회원정보 수정 종료");
+
+        }
+
+        return "/mypage";
+
+
+
+    }
+
+
+    /*  pw 재설정  */
+
 
 
 

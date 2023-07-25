@@ -107,20 +107,23 @@ public class UserService implements IUserService {
 
         UserDTO rDTO = userMapper.selectUser(pDTO);
 
-
-
-
-
         log.info(this.getClass().getName() + ".회원정보 표시 종료");
 
-        return null;
+        return rDTO;
     }
 
 
     /*  회원정보 수정  */
     @Override
     public UserDTO updateUser(UserDTO pDTO) throws Exception {
-        return null;
+
+        log.info(this.getClass().getName() + ".회원정보 수정 시작");
+
+        UserDTO rDTO = userMapper.updateUser(pDTO);
+
+        log.info(this.getClass().getName() + ".회원정보 수정 종료");
+
+        return rDTO;
     }
 
 
