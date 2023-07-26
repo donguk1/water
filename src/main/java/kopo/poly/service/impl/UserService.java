@@ -130,6 +130,13 @@ public class UserService implements IUserService {
     /*  pw 재설정  */
     @Override
     public UserDTO updatePw(UserDTO pDTO) throws Exception {
-        return null;
+
+        log.info(this.getClass().getName() + ".패스워드 재설정 시작");
+
+        UserDTO rDTO = userMapper.updatePw(pDTO);
+
+        log.info(this.getClass().getName() + ".패스워드 재설정 종료");
+
+        return rDTO;
     }
 }
