@@ -7,6 +7,23 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Hahmlet:wght@400;500&family=Noto+Sans+KR:wght@100;300;400&display=swap" rel="stylesheet">
+    <style type="text/css">
+        .dropdown-menu {
+            right: 0;
+        }
+
+        .dropdown-menu a {
+            display: block;
+        }
+
+        .dropdown-menu a:hover {background-color: #ddd;}
+
+        .dropdown:hover .dropdown-menu {display: block;}
+
+    </style>
+
+    <script type="text/javascript" src="/js/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
 </head>
 <body>
   
@@ -37,9 +54,13 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/memo/list"><img src="/img/memoIcon.png" width="50px"></a> <!-- 메모 메뉴 -->
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><img src="/img/userIcon.png" width="50px"></a> <!-- 로그인/회원가입, 마이페이지 통합메뉴 -->
-                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="/login" role="button" aria-haspopup="true" aria-expanded="false"><img src="/img/userIcon.png" width="50px"></a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="/mypage">마이페이지</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="/main">로그아웃</a>
+                        </div>
                 </ul>
             </div>
         </div>
