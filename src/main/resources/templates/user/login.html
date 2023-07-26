@@ -11,7 +11,22 @@
     <script type="text/javascript" src="/js/jquery-3.6.0.min.js"></script>
     <script type="text/javascript" src="/js/bootstrap.min.js"></script>
     <script type="text/javascript">
+        function checkInputData() {
+            let f = document.getElementById("f"); // form 태그
 
+            if (f.id.value === "") {
+                alert("아이디를 입력하세요.");
+                f.id.focus();
+                return false;
+            }
+
+            if (f.pw.value === "") {
+                alert("비밀번호를 입력하세요.");
+                f.pw.focus();
+                return false;
+            }
+
+        }
     </script>
 </head>
 <body>
@@ -60,13 +75,13 @@
         <h1 style="font-family: 'Do Hyeon', sans-serif;">로그인</h1>
     </div>
     <br>
-    <form class="mx-auto" style="width:80%;">
+    <form action="/user/loginProc" method="post" onsubmit="checkInputData()" id="f" class="mx-auto" style="width:80%;">
         <div class="form-group">
-            <input type="text" class="form-control" name="user_id" placeholder="아이디">
+            <input type="text" class="form-control" name="id" placeholder="아이디">
         </div>
         <br>
         <div class="form-group">
-            <input type="password" class="form-control" name="password" placeholder="비밀번호">
+            <input type="password" class="form-control" name="pw" placeholder="비밀번호">
         </div>
         <br>
         <div class="form-check" style="float: right">
