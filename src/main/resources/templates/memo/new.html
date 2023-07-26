@@ -19,12 +19,12 @@
         $(document).ready(function () {
             // 버튼 클릭했을때, 발생되는 이벤트 생성함(onclick 이벤트와 동일함)
             $("#btnList").on("click", function () {
-                location.href = "/memo/list"; // 공지사항 리스트 이동
+                location.href = "/memo/list"; // 메모 리스트 이동
             })
         })
 
 
-        // 공지사항 저장하기
+        // 메모 저장하기
         function doSubmit() {
 
             let f = document.getElementById("f"); // form 태그
@@ -114,11 +114,12 @@
     </div>
     </div>
     <div class="ms-auto" style="padding: 0 20px;">
-        <button type="butSend" class="btn btn-outline-dark">등록</button>
-        <button type="butList" class="btn btn-outline-dark">목록</button>
+        <button type="btnSend" class="btn btn-outline-dark">등록</button>
+        <button type="btnList" class="btn btn-outline-dark">목록</button>
     </div>
     <br>
     </div>
+</form>
     
 <!-- 푸터 영역 -->
     
