@@ -32,7 +32,7 @@ public class UserController {
     private final IUserService userService;
 
 
-    /*  회원가입 화면으로 이동 = "/signup"  */
+    /*  회원가입 화면으로 이동 = "/user/signup"  */
     @GetMapping(value = "/user/signup")
     public String signup() {
 
@@ -42,7 +42,7 @@ public class UserController {
     }
 
     /*  회원가입 실행  */
-    @PostMapping(value = "/user/insertUser")
+    @PostMapping(value = "/insertUser")
     public String insertUser(HttpServletRequest request, ModelMap modelMap) throws Exception {
 
         log.info(this.getClass().getName() + ".controller 회원가입 실행");
@@ -250,11 +250,20 @@ public class UserController {
 
     /*  마이페이지로 이동 = "/user/mypage"  */
     @GetMapping(value = "/user/mypage")
-    public String mypage() {
+    public String mypage(HttpSession session, HttpServletRequest request) {
 
         log.info(this.getClass().getName() + ".controller 마이페이지로 이동");
 
-//        log.info(".controller 마이페이지 이동 완료");
+        /*  데이터 선언 및 입력  */
+        String id = CmmUtil.nvl((String) session.getAttribute("id"));
+        String nick = CmmUtil.nvl((String) session.getAttribute("nick"));
+        String email = CmmUtil.nvl((String) session.getAttribute("email"));
+        String pn = CmmUtil.nvl((String) session.getAttribute("pn"));
+        String uloc = CmmUtil.nvl((String) session.getAttribute("uloc"));
+        String birth = CmmUtil.nvl((String) session.getAttribute("birth"));
+        String gender = CmmUtil.nvl((String) session.getAttribute("gender"));
+
+
         return "/user/mypage";
 
     }
@@ -286,7 +295,6 @@ public class UserController {
             /*  데이터 선언 및 입력  */
             String id = CmmUtil.nvl((String) session.getAttribute("id"));
             String nick = CmmUtil.nvl(request.getParameter("nick"));
-            String pw = CmmUtil.nvl(request.getParameter("pw"));
             String email = CmmUtil.nvl(request.getParameter("email"));
             String pn = CmmUtil.nvl(request.getParameter("pn"));
             String uloc = CmmUtil.nvl(request.getParameter("uloc"));
@@ -296,7 +304,6 @@ public class UserController {
             /*  데이터 확인  */
             log.info("id : " + id);
             log.info("nick : " + nick);
-            log.info("pw : " + pw);
             log.info("email : " + email);
             log.info("pn : " + pn);
             log.info("uloc : " + uloc);
@@ -305,7 +312,8 @@ public class UserController {
 
             /*  데이터 저장  */
             UserDTO pDTO = new UserDTO();
-            pDTO.setPw(pw);
+            pDTO.setId(id);
+            pDTO.setNick(nick);
             pDTO.setEmail(email);
             pDTO.setPn(pn);
             pDTO.setUloc(uloc);

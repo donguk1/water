@@ -13,6 +13,27 @@
     <script type="text/javascript">
 
     </script>
+
+    <script th:inline="javascript">
+
+        $(document).ready(function () {
+            // 버튼 클릭했을때, 발생되는 이벤트 생성함(onclick 이벤트와 동일함)
+            $("#btnList").on("click", function () {
+                location.href = "/memo/list"; // 공지사항 리스트 이동
+            })
+        })
+
+
+        // 공지사항 저장하기
+        function doSubmit() {
+
+            let f = document.getElementById("f"); // form 태그
+
+
+        }
+    </script>
+
+
     <style type="text/css">
         .dropdown-menu {
             right: 0;
@@ -73,7 +94,7 @@
     <br><br>
     
 <!-- 내용 부분 -->
-    
+<form action="/memo/memoInsert" method="post" onsubmit="doSubmit()" name="f" id="f">
     <div class="card mb-3 mx-auto" style=" width: 95%; font-family: 'Noto Sans KR', sans-serif;">
     <div class="card-body">
     <div class="card mb-3">
@@ -87,14 +108,14 @@
         </svg>
         <div class="form-group">
          <br>
-          <textarea class="form-control" id="exampleTextarea" rows="14" placeholder="내용을 입력하세요."></textarea>
+          <textarea class="form-control" id="exampleTextarea" rows="14" placeholder="내용을 입력하세요." name="contents"></textarea>
           <br>
         </div>
     </div>
     </div>
     <div class="ms-auto" style="padding: 0 20px;">
-        <button type="button" class="btn btn-outline-dark">등록</button>
-        <button type="button" class="btn btn-outline-dark">목록</button>
+        <button type="butSend" class="btn btn-outline-dark">등록</button>
+        <button type="butList" class="btn btn-outline-dark">목록</button>
     </div>
     <br>
     </div>

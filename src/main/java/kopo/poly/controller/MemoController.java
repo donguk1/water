@@ -97,27 +97,31 @@ public class MemoController {
     }
 
     /*  메모 등록  */
-    @GetMapping(value = "/memo/memoInsert")
+    @PostMapping(value = "/memo/memoInsert")
     public String memoInsert(HttpServletRequest request, ModelMap modelMap, HttpSession session) {
 
         log.info(this.getClass().getName() + ".controller 메모 등록 실행");
 
         String msg = "";            // 메시지(알림용)
         String url = "/memo/new";   // 이동할 경로
+        log.info("1");
 
         try {
-
+            log.info("2");
             /*  선언 및 입력  */
             String nick = CmmUtil.nvl((String) session.getAttribute("SS_NICK")); // 로그인된 NICK 가져오기
             String title = CmmUtil.nvl(request.getParameter("title"));           // 제목
             String map = CmmUtil.nvl(request.getParameter("map"));               // 이미지 지도
             String contents = CmmUtil.nvl(request.getParameter("contents"));     // 글 내용
+            String mloc = CmmUtil.nvl(request.getParameter("mloc"));
+
 
             /*  데이터 확인  */
             log.info("nick : " + nick);
             log.info("title : " + title);
             log.info("map : " + map);
             log.info("contents : " + contents);
+            log.info("mloc : " + mloc);
 
             /*  데이터 저장  */
             MemoDTO pDTO = new MemoDTO();
@@ -125,6 +129,7 @@ public class MemoController {
             pDTO.setTitle(title);
             pDTO.setMap(map);
             pDTO.setContents(contents);
+            pDTO.setMloc(mloc);
 
             /*  메모 등록용 비즈니스 로직 호출(쿼리문)  */
             memoService.insertMemoInfo(pDTO);
@@ -154,7 +159,7 @@ public class MemoController {
     }
 
     /*  메모 상세보기 = "/memo/info"  */
-    @GetMapping(value = "memo/info")
+    @GetMapping(value = "/memo/info")
     public String info(HttpServletRequest request, ModelMap modelMap) throws Exception {
 
         log.info(this.getClass().getName() + ".controller 메모 상세보기 실행");
@@ -229,7 +234,7 @@ public class MemoController {
             log.info("title : " + title);
             log.info("map : " + map);
             log.info("contents : " + contents);
-            log.info("num : " + nick);
+            log.info("num : " + num);
 
             /*  데이터 저장  */
             MemoDTO pDTO = new MemoDTO();
