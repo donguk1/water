@@ -7,26 +7,26 @@
     <insert id="insertUser" parameterType="UserDTO">
         INSERT INTO USER
         (
-         NICK,
          ID,
+         NICK,
          PW,
-         BIRTH,
          EMAIL,
-         ULOC,
          PN,
+         ULOC,
+         BIRTH,
          GENDER
          )
 
         VALUES
         (
-         #{nick},
-         #{id},
-         #{pw},
-         #{birth},
-         #{email},
-         #{uloc},
-         #{pn},
-         #{gender}
+            #{id},
+            #{nick},
+            #{pw},
+            #{email},
+            #{pn},
+            #{uloc},
+            #{birth},
+            #{gender}
         )
     </insert>
 
