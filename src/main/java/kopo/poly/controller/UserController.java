@@ -33,16 +33,16 @@ public class UserController {
 
 
     /*  회원가입 화면으로 이동 = "/signup"  */
-    @GetMapping(value = "/signup")
+    @GetMapping(value = "/user/signup")
     public String signup() {
 
         log.info(this.getClass().getName() + ".controller 회원가입 화면 실행");
 
-        return "/signup";
+        return "/user/signup";
     }
 
     /*  회원가입 실행  */
-    @GetMapping(value = "insertUser")
+    @PostMapping(value = "/user/insertUser")
     public String insertUser(HttpServletRequest request, ModelMap modelMap) throws Exception {
 
         log.info(this.getClass().getName() + ".controller 회원가입 실행");
@@ -105,7 +105,7 @@ public class UserController {
 
             if (res == 1) {
                 msg = "회원가입되었습니다.";
-                url = "/login";
+                url = "/user/login";
                 // 추후 회원가입 입력화면에서 ajax 를 활용해서 아이디 중복, 이메일 중복 체크 할 것.
             } else if (res == 2) {
                 msg = "이미 가입된 아이디입니다.";
@@ -129,11 +129,11 @@ public class UserController {
             log.info(this.getClass().getName() + ".controller 회원가입 종료");
         }
 
-        return "/login";
+        return "/user/login";
     }
 
     /*  로그인 처리 및 결과창 이동  */
-    @PostMapping(value = "/loginProc")
+    @PostMapping(value = "/user/loginProc")
     public String loginProc(HttpServletRequest request, ModelMap modelMap, HttpSession session) {
 
         log.info(this.getClass().getName() + ".controller 로그인 처리 결과 실행");
@@ -176,7 +176,7 @@ public class UserController {
             } else { // 로그인 실패시
 
                 msg = "로그인이 실패했습니다. \n";
-                url = "/login";
+                url = "/user/login";
 
             }
 
@@ -199,7 +199,7 @@ public class UserController {
 
     /*  회원가입 전 아이디 중복체크(Ajax 사용)  */
     @ResponseBody
-    @PostMapping(value = "getUserIdExists")
+    @PostMapping(value = "/user/getUserIdExists")
     public UserDTO getUserIdExists(HttpServletRequest request) throws Exception {
 
         log.info(this.getClass().getName() + ".controller 아이디 중복체크 실행");
@@ -248,32 +248,32 @@ public class UserController {
         return rDTO;
     }
 
-    /*  마이페이지로 이동 = "/mypage"  */
-    @GetMapping(value = "/mypage")
+    /*  마이페이지로 이동 = "/user/mypage"  */
+    @GetMapping(value = "/user/mypage")
     public String mypage() {
 
         log.info(this.getClass().getName() + ".controller 마이페이지로 이동");
 
 //        log.info(".controller 마이페이지 이동 완료");
-        return "/mypage";
+        return "/user/mypage";
 
     }
 
 
     /*  로그인 화면으로 이동 ="/login"  */
-    @GetMapping(value = "/login")
+    @GetMapping(value = "/user/login")
     public String login() {
 
         log.info(this.getClass().getName() + ".controller 로그인 화면으로 이동");
 
-        return "/login";
+        return "/user/login";
     }
 
     /*  아이디 찾기(현재 페이지 존재하지 않음)  */
 
 
     /*  mypage 수정(회원정보 수정)(추후 수정 필요)  */
-    @GetMapping(value = "/mypage/updateUser")
+    @PostMapping(value = "/user/mypage/updateUser")
     public String updateUser(HttpSession session, ModelMap modelMap, HttpServletRequest request) throws Exception {
 
         log.info(this.getClass().getName() + ".controller 회원정보 수정 실행");
@@ -314,7 +314,7 @@ public class UserController {
             userService.updateUser(pDTO);
 
             msg = "수정되었습니다.";
-            url = "/mypage";
+            url = "/user/mypage";
 
         } catch (Exception e) {
 
@@ -330,7 +330,7 @@ public class UserController {
 
         }
 
-        return "/mypage";
+        return "/user/mypage";
 
 
 
