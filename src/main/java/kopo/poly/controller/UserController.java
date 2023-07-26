@@ -42,7 +42,7 @@ public class UserController {
     }
 
     /*  회원가입 실행  */
-    @GetMapping(value = "insertUser")
+    @PostMapping(value = "insertUser")
     public String insertUser(HttpServletRequest request, ModelMap modelMap) throws Exception {
 
         log.info(this.getClass().getName() + ".controller 회원가입 실행");
@@ -85,6 +85,8 @@ public class UserController {
             log.info("birth : " + birth);
             log.info("gender : " + gender);
 
+            log.info("데이터 입력 완료");
+
             /*  데이터 저장  */
             pDTO = new UserDTO();
             pDTO.setId(id);
@@ -97,6 +99,8 @@ public class UserController {
             pDTO.setUloc(uloc);
             pDTO.setBirth(birth);
             pDTO.setGender(gender);
+
+            log.info("데이터 저장");
 
             /*  회원가입  */
             res = userService.insertUser(pDTO);
