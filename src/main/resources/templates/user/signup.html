@@ -7,6 +7,71 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Hahmlet:wght@400;500&family=Noto+Sans+KR:wght@100;300;400&display=swap" rel="stylesheet">
+
+    <script type="text/javascript" src="/js/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+            let f = document.getElementById("f");
+
+            // 회원가입
+            $("#btnSend").on("click", function () { // 버튼 클릭했을때, 발생되는 이벤트 생성함(onclick 이벤트와 동일함)
+                doSubmit(f);
+            })
+        })
+
+        function doSubmit(f) {
+            if (f.id.value === "") {
+                alert("아이디를 입력하세요.");
+                f.id.focus();
+                return;
+            }
+
+/*            if (userIdCheck !== "N") {
+                alert("아이디 중복 체크 및 중복되지 않은 아이디로 가입 바랍니다.");
+                f.id.focus();
+                return;
+            }*/
+
+            if (f.nick.value === "") {
+                alert("닉네임을 입력하세요.");
+                f.nick.focus();
+                return;
+            }
+
+            if (f.pw.value === "") {
+                alert("비밀번호를 입력하세요.");
+                f.pw.focus();
+                return;
+            }
+
+            if (f.pw2.value === "") {
+                alert("비밀번호확인을 입력하세요.");
+                f.pw2.focus();
+                return;
+            }
+
+            if (f.pw.value !== f.pw2.value) {
+                alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+                f.pw.focus();
+                return;
+            }
+
+            if (f.email.value === "") {
+                alert("이메일을 입력하세요.");
+                f.email.focus();
+                return;
+            }
+
+            if (f.pn.value === "") {
+                alert("전화번호를 입력하세요.");
+                f.pn.focus();
+                return;
+            }
+
+        }
+    </script>
 </head>
 <body>
   
@@ -51,38 +116,38 @@
 
     <div class="card mb-3 mx-auto" style=" width: 95%; font-family: 'Noto Sans KR', sans-serif;">
         <div class="card-body mx-auto" style="width: 80%">
-         <form style="font-family: 'Do Hyeon', sans-serif; font-size: 20px;">
+         <form name="signup" method="post" action="/insertUser" onsubmit="doSubmit(this)" id="f" style="font-family: 'Do Hyeon', sans-serif; font-size: 20px;">
           <fieldset>
             <legend style="font-size: 34px;">회원가입</legend>
             <label for="exampleInputId" class="form-label mt-4">아이디</label>
             <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="ID" aria-label="Recipient's id" aria-describedby="button-id">
+                <input type="text" name="id" class="form-control" placeholder="ID" aria-label="Recipient's id" aria-describedby="button-id">
                 <button class="btn btn-primary" type="button" id="button-id">확인</button>
             </div>
             <label for="exampleInputNickname" class="form-label mt-4">닉네임</label>
             <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="Nickname" aria-label="Recipient's nickname" aria-describedby="button-name">
+                <input type="text" name="nick" class="form-control" placeholder="Nickname" aria-label="Recipient's nickname" aria-describedby="button-name">
                 <button class="btn btn-primary" type="button" id="button-name">확인</button>
             </div>            
             <div class="form-group">
               <label for="exampleInputPassword1" class="form-label mt-4">비밀번호</label>
-              <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+              <input type="password" name="pw" class="form-control" id="exampleInputPassword1" placeholder="Password">
             </div>           
             <div class="form-group">
               <label for="exampleInputPassword2" class="form-label mt-4">비밀번호 확인</label>
-              <input type="password" class="form-control" id="exampleInputPassword2" placeholder="Password">
+              <input type="password" name="pw2" class="form-control" id="exampleInputPassword2" placeholder="Password">
             </div>
             <div class="form-group">
               <label for="exampleInputEmail1" class="form-label mt-4">Email</label>
-              <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="email">  
+              <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="email">
             </div>
             <div class="form-group">
               <label for="exampleInputPn" class="form-label mt-4">전화번호</label>
-              <input type="tel" class="form-control" id="exampleInputPn">
+              <input type="tel" name="pn" class="form-control" id="exampleInputPn">
             </div>
             <div class="form-group" >
               <label for="exampleSelect1" class="form-label mt-4">거주지역</label>
-              <select class="form-select" id="exampleSelect1" style="font-family: 'Noto Sans KR', sans-serif;">
+              <select class="form-select" id="exampleSelect1" name="uloc" style="font-family: 'Noto Sans KR', sans-serif;">
                 <option>서울</option>
                 <option>경기</option>
                 <option>강원</option>
@@ -95,25 +160,18 @@
             </div>
             <div class="form-group">
               <label for="exampleInputDate" class="form-label mt-4">생년월일</label>
-              <input type="date" class="form-control" id="exampleInputDate">
+              <input type="date" name="birth" class="form-control" id="exampleInputDate">
             </div>
             <fieldset class="form-group">
               <legend class="mt-4">성별</legend>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked="">
-                <label class="form-check-label" for="optionsRadios1">
-                  남자
-                </label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
-                <label class="form-check-label" for="optionsRadios2">
-                  여자
-                </label>
+                <input class="form-check-input" type="radio" name="gender" id="optionsRadios1" value="m" checked />남자
+                  <br>
+                <input class="form-check-input" type="radio" name="gender" id="optionsRadios2" value="f" />여자
               </div>
             </fieldset>
             <br>
-            <button type="submit" class="btn btn-primary" style="float: right;">가입</button>
+            <button type="submit" id="btnSend" class="btn btn-primary" style="float: right;">가입</button>
           </fieldset>
           <br><br>
         </form>
