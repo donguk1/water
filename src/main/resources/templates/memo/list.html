@@ -100,13 +100,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="table-light" th:each="dto:${rList}">
-                        <div th:attr="onclick='doDetail(\'' + ${dto.num} + '\')'">
-                        <th scope="row" th:attr="onclick='doDetail(\'' + ${dto.num} + '\')'">[[${dto.title}]]</th>
+                    <tr class="table-light" th:each="dto:${rList}" th:attr="onclick='doDetail(\'' + ${dto.num} + '\')'">
+                        <th scope="row">[[${dto.title}]]</th>
                         <td>[[${dto.nick}]]</td>
                         <td>[[${dto.dt}]]</td>
                         <td>[[${dto.mloc}]]</td>
-                        </div>
                     </tr>
                 </tbody>
             </table>
