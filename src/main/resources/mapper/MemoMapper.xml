@@ -45,7 +45,7 @@
          #{map},
          #{contents},
          #{mloc},
-         NOW()
+         SYSDATE()
         )
     </insert>
 
@@ -56,7 +56,7 @@
             NUM,
             NICK,
             TITLE,
-            T0_CHAR(DT, 'YYYY/MM/DD') AS DT,
+            TO_CHAR(DT, 'YYYY-MM-DD') AS DT,
             MLOC,
             CONTENTS,
             MAP
