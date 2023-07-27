@@ -270,7 +270,7 @@ public class MemoController {
     }
 
     /*  메모 글 삭제 실행 로직  */
-    @GetMapping(value = "/memo/memDelete")
+    @GetMapping(value = "/memo/memoDelete")
     public String memoDelete(ModelMap modelMap, HttpServletRequest request) {
 
         log.info(this.getClass().getName() + ".controller 메모 삭제 실행");
