@@ -266,11 +266,11 @@ public class MemoController {
             log.info(this.getClass().getName() + ".controller 메모 수정 종료");
         }
 
-        return "/memo/list";
+        return "/redirect";
     }
 
     /*  메모 글 삭제 실행 로직  */
-    @GetMapping(value = "/memo/memDelete")
+    @GetMapping(value = "/memo/memoDelete")
     public String memoDelete(ModelMap modelMap, HttpServletRequest request) {
 
         log.info(this.getClass().getName() + ".controller 메모 삭제 실행");
@@ -310,7 +310,7 @@ public class MemoController {
 
         }
 
-        return "/memo/list";
+        return "/redirect";
     }
 
 
