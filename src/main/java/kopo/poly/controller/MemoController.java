@@ -153,7 +153,7 @@ public class MemoController {
 
         }
 
-        return "/redirect";  //redirect 가져올시 변경. 현재는 메모 리스트로 이동
+        return "/redirect";
     }
 
     /*  메모 상세보기 = "/memo/info"  */
