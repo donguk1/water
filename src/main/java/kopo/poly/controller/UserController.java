@@ -129,7 +129,7 @@ public class UserController {
             log.info(this.getClass().getName() + ".controller 회원가입 종료");
         }
 
-        return "/user/login";
+        return "/redirect";
     }
 
     /*  로그인 처리 및 결과창 이동  */
@@ -194,7 +194,7 @@ public class UserController {
             log.info(this.getClass().getName() + ".controller 로그인 처리 결과 종료");
         }
 
-        return "/main";
+        return "/redirect";
     }
 
     /*  회원가입 전 아이디 중복체크(Ajax 사용)  */
