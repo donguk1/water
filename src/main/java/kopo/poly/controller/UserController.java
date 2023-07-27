@@ -42,7 +42,7 @@ public class UserController {
     }
 
     /*  회원가입 실행  */
-    @PostMapping(value = "/insertUser")
+    @PostMapping(value = "/user/insertUser")
     public String insertUser(HttpServletRequest request, ModelMap modelMap) throws Exception {
 
         log.info(this.getClass().getName() + ".controller 회원가입 실행");
