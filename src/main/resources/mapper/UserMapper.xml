@@ -57,12 +57,11 @@
     <!--  회원정보 표시(패스워드 미표시)  -->
     <select id="selectUser" parameterType="UserDTO" resultType="UserDTO">
         SELECT
-            NICK,
             ID,
-            BIRTH,
+            NICK,
             EMAIL,
             ULOC,
-            PN,
+            BIRTH,
             GENDER
         FROM USER
         WHERE ID = #{id}
@@ -72,7 +71,7 @@
     <update id="updateUser" parameterType="UserDTO">
         UPDATE USER
         SET
-            PW = #{pw},
+            NICK = #{nick},
             EMAIL = #{email},
             PN = #{pn},
             ULOC = #{uloc}
