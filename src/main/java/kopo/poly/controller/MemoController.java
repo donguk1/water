@@ -104,10 +104,8 @@ public class MemoController {
 
         String msg = "";            // 메시지(알림용)
         String url = "/memo/new";   // 이동할 경로
-        log.info("1");
 
         try {
-            log.info("2");
             /*  선언 및 입력  */
             String nick = CmmUtil.nvl((String) session.getAttribute("SS_NICK")); // 로그인된 NICK 가져오기
             String title = CmmUtil.nvl(request.getParameter("title"));           // 제목
@@ -155,7 +153,7 @@ public class MemoController {
 
         }
 
-        return "/memo/list";  //redirect 가져올시 변경. 현재는 메모 리스트로 이동
+        return "/redirect";  //redirect 가져올시 변경. 현재는 메모 리스트로 이동
     }
 
     /*  메모 상세보기 = "/memo/info"  */
