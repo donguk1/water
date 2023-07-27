@@ -106,7 +106,7 @@
             </div>
             <div class="form-group">
               <label for="exampleInputPn" class="form-label mt-4">전화번호</label>
-              <input type="tel" class="form-control" id="exampleInputPn">
+              <input type="tel" class="form-control" id="exampleInputPn" th:value="${rDTO.pn}">
             </div>
             <div class="form-group" >
               <label for="exampleSelect1" class="form-label mt-4">거주지역</label>
@@ -122,17 +122,23 @@
               </select>
             </div>
             <div class="form-group">
-              <label for="outputDate" class="form-label mt-4">생년월일</label>
-            <ul class="list-group list-group-flushs mx-auto" style="width: 100%">
-                <li id="outputDate" class="list-group-item" style="height: 40px; font-family: 'Noto Sans KR', sans-serif; font-size: 15px;">생년월일 데이터 가져올곳</li>
-            </ul>
+                <label for="exampleInputBirth" class="form-label mt-4">생년월일</label>
+                <input type="text" class="form-control" id="exampleInputBirth" th:value="${rDTO.birth}">
+<!--            <ul class="list-group list-group-flushs mx-auto" style="width: 100%">-->
+<!--                <li id="outputDate" class="list-group-item" style="height: 40px; font-family: 'Noto Sans KR', sans-serif; font-size: 15px;">생년월일 데이터 가져올곳</li>-->
+<!--            </ul>-->
             </div>
-            <fieldset class="form-group">
-              <legend class="mt-4">성별</legend>
-            <ul class="list-group list-group-flushs mx-auto" style="width: 100%">
-                <li class="list-group-item" style="height: 40px; font-family: 'Noto Sans KR', sans-serif; font-size: 15px;">성별 데이터 가져올곳</li>
-            </ul>
-            </fieldset>
+              <div class="form-group">
+                    <label for="exampleInputGender" class="form-label mt-4">성별</label>
+                    <input type="text" class="form-control" id="exampleInputGender" th:value="${rDTO.gender}">
+<!--                    <input type="text" class="form-control" id="exampleInputGender" th:text="${rDTO.gender == 'm' ? '남자' : '여자'}">-->
+              </div>
+<!--            <fieldset class="form-group">-->
+<!--              <legend class="mt-4">성별</legend>-->
+<!--&lt;!&ndash;            <ul class="list-group list-group-flushs mx-auto" style="width: 100%">&ndash;&gt;-->
+<!--&lt;!&ndash;                <li class="list-group-item" style="height: 40px; font-family: 'Noto Sans KR', sans-serif; font-size: 15px;">성별 데이터 가져올곳</li>&ndash;&gt;-->
+<!--&lt;!&ndash;            </ul>&ndash;&gt;-->
+<!--            </fieldset>-->
             <br>
             <button type="submit" class="btn btn-primary" style="float: right;">수정</button>
           </fieldset>

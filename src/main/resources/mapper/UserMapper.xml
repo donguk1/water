@@ -60,6 +60,7 @@
             ID,
             NICK,
             EMAIL,
+            PN,
             ULOC,
             BIRTH,
             GENDER
