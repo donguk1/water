@@ -22,8 +22,8 @@
         })
 
         //상세보기 이동
-        function doDetail(seq) {
-            location.href = "/memo/info?nSeq=" + seq;
+        function doDetail(num) {
+            location.href = "/memo/info?num=" + num;
         }
 
     </script>
@@ -100,11 +100,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="table-light">
-                        <th scope="row">타이틀 데이터 가져올곳</th>
-                        <td>작성자 데이터 가져올곳</td>
-                        <td>작성일자 데이터 가져올곳</td>
-                        <td>지역 데이터</td>
+                    <tr class="table-light" th:each="dto:${rList}">
+                        <div th:attr="onclick='doDetail(\'' + ${dto.num} + '\')'">
+                        <th scope="row" th:attr="onclick='doDetail(\'' + ${dto.num} + '\')'">[[${dto.title}]]</th>
+                        <td>[[${dto.nick}]]</td>
+                        <td>[[${dto.dt}]]</td>
+                        <td>[[${dto.mloc}]]</td>
+                        </div>
                     </tr>
                 </tbody>
             </table>
