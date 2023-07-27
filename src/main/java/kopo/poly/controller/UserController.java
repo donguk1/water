@@ -92,8 +92,8 @@ public class UserController {
             // pw는 절대로 복호화되지 않도록 해시 알고리즘으로 암호화
             pDTO.setPw(EncryptUtil.encHashSHA256(pw));
             // 개인 정보인 email, pn AES128-CBC 로 암호화
-            pDTO.setEmail(EncryptUtil.encAES128CBC(email));
-            pDTO.setPn(EncryptUtil.encAES128CBC(pn));
+            pDTO.setEmail(email);
+            pDTO.setPn(pn);        // 07/27 email, pn 해시코드 풀고 db에 저장으로 수정
             pDTO.setUloc(uloc);
             pDTO.setBirth(birth);
             pDTO.setGender(gender);
