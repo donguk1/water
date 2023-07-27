@@ -294,7 +294,7 @@ public class UserController {
 
         log.info(this.getClass().getName() + ".controller 마이페이지 이동 종료");
 
-        return "myPage";
+        return "/user/mypage";
 
     }
 
