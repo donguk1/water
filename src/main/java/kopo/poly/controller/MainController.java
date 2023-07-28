@@ -28,6 +28,15 @@ public class MainController {
         return "/map";
     }
 
+    /*  로그인 전용 메인 화면 이동용 = "/watem"  */
+    @GetMapping(value = "/watem")
+    public String watem() throws Exception {
+
+        log.info(this.getClass().getName() + ".controller 로그인 전용 메인 화면으로 이동");
+
+        return "/watem";
+    }
+
 
 
 
