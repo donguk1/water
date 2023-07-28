@@ -24,7 +24,7 @@ public interface IUserService {
     UserDTO selectUser(UserDTO pDTO) throws Exception;
 
     // 회원정보 수정
-    UserDTO updateUser(UserDTO pDTO) throws Exception;
+    void updateUser(UserDTO pDTO) throws Exception;
 
     // pw 재설정
     UserDTO updatePw(UserDTO pDTO) throws Exception;

@@ -27,6 +27,67 @@
         .dropdown:hover .dropdown-menu {display: block;}
 
     </style>
+
+    <script type="text/javascript">
+
+        // HTML로딩이 완료되고, 실행됨
+        $(document).ready(function () {
+            // 버튼 클릭했을때, 발생되는 이벤트 생성함(onclick 이벤트와 동일함)
+            $("#btnSend").on("click", function () {
+                doSubmit(); // mypage 수정하기 실행
+            })
+
+        })
+
+        // //글자 길이 바이트 단위로 체크하기(바이트값 전달)
+        // function calBytes(str) {
+        //     let tcount = 0;
+        //     let tmpStr = String(str);
+        //     let strCnt = tmpStr.length;
+        //     let onechar;
+        //     for (let i = 0; i < strCnt; i++) {
+        //         onechar = tmpStr.charAt(i);
+        //         if (escape(onechar).length > 4) {
+        //             tcount += 2;
+        //         } else {
+        //             tcount += 1;
+        //         }
+        //     }
+        //     return tcount;
+        // }
+
+        function doSubmit() {
+
+            let f = document.getElementById("f"); // form 태그
+
+            if (f.nick.value === "") {
+                alert("닉네임을 입력하시기 바랍니다.");
+                f.nick.focus();
+                return;
+            }
+
+            if (f.email.value === "") {
+                alert("이메일을 입력하시기 바랍니다.");
+                f.email.focus();
+                return;
+            }
+
+            if (f.pn.value === "") {
+                alert("전화번호를 입력하시기 바랍니다.");
+                f.pn.focus();
+                return;
+            }
+
+            if (f.uloc.value === "") {
+                alert("거주지역을 입력하시기 바랍니다.");
+                f.uloc.focus();
+                return;
+            }
+
+        }
+
+    </script>
+
 </head>
 <body>
   
@@ -73,7 +134,7 @@
     <br><br>
     
 <!-- 내용 부분 -->
-
+<form action="/user/updateUser" method="post" name="f" id="f">
     <div class="card mb-3 mx-auto" style=" width: 95%; font-family: 'Noto Sans KR', sans-serif;">
         <div class="card-body mx-auto" style="width: 80%">
          <form style="font-family: 'Do Hyeon', sans-serif; font-size: 20px;">
@@ -83,12 +144,12 @@
             <div class="input-group mb-3">
                 <!--<input type="text" class="form-control" placeholder="ID" aria-label="Recipient's id" aria-describedby="button-id">-->
             <ul class="list-group list-group-flushs mx-auto" style="width: 100%">
-                <li id="outputId" class="list-group-item" style="height: 40px; font-family: 'Noto Sans KR', sans-serif; font-size: 15px;">[[${rDTO.id}]]</li>
+                <li id="outputId" class="list-group-item" style="height: 40px; font-family: 'Noto Sans KR', sans-serif; font-size: 15px;" name="id">[[${rDTO.id}]]</li>
             </ul>
             </div>
             <label for="outputNick" class="form-label mt-4">닉네임</label>
             <div class="input-group mb-3">
-                <input type="text" id="outputNick" class="form-control" th:value="${rDTO.nick}" aria-label="Recipient's nickname" aria-describedby="button-name">
+                <input type="text" id="outputNick" class="form-control" name="nick" th:value="${rDTO.nick}" aria-label="Recipient's nickname" aria-describedby="button-name">
                 <button class="btn btn-primary" type="button" id="button-name">확인</button>
             </div>            
 <!--
@@ -101,16 +162,16 @@
             </div>           
 -->
             <div class="form-group">
-              <label for="exampleInputEmail1" class="form-label mt-4">Email</label>
-              <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" th:value="${rDTO.email}">
+              <label for="exampleInputEmail1" class="form-label mt-4">이메일</label>
+              <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" th:value="${rDTO.email}" name="email">
             </div>
             <div class="form-group">
               <label for="exampleInputPn" class="form-label mt-4">전화번호</label>
-              <input type="tel" class="form-control" id="exampleInputPn" th:value="${rDTO.pn}">
+              <input type="tel" class="form-control" id="exampleInputPn" th:value="${rDTO.pn}" name="pn">
             </div>
             <div class="form-group" >
               <label for="exampleSelect1" class="form-label mt-4">거주지역</label>
-              <select class="form-select" id="exampleSelect1" style="font-family: 'Noto Sans KR', sans-serif;">
+              <select class="form-select" id="exampleSelect1" style="font-family: 'Noto Sans KR', sans-serif;" name="uloc">
                 <option>서울</option>
                 <option>경기</option>
                 <option>강원</option>
@@ -123,14 +184,14 @@
             </div>
             <div class="form-group">
                 <label for="exampleInputBirth" class="form-label mt-4">생년월일</label>
-                <input type="text" class="form-control" id="exampleInputBirth" th:value="${rDTO.birth}">
+                <input type="text" class="form-control" id="exampleInputBirth" th:value="${rDTO.birth}" readonly>
 <!--            <ul class="list-group list-group-flushs mx-auto" style="width: 100%">-->
 <!--                <li id="outputDate" class="list-group-item" style="height: 40px; font-family: 'Noto Sans KR', sans-serif; font-size: 15px;">생년월일 데이터 가져올곳</li>-->
 <!--            </ul>-->
             </div>
               <div class="form-group">
                     <label for="exampleInputGender" class="form-label mt-4">성별</label>
-                    <input type="text" class="form-control" id="exampleInputGender" th:value="${rDTO.gender}">
+                    <input type="text" class="form-control" id="exampleInputGender" th:value="${rDTO.gender}" readonly>
 <!--                    <input type="text" class="form-control" id="exampleInputGender" th:text="${rDTO.gender == 'm' ? '남자' : '여자'}">-->
               </div>
 <!--            <fieldset class="form-group">-->
@@ -140,12 +201,13 @@
 <!--&lt;!&ndash;            </ul>&ndash;&gt;-->
 <!--            </fieldset>-->
             <br>
-            <button type="submit" class="btn btn-primary" style="float: right;">수정</button>
+            <button id="btnSend" type="submit" class="btn btn-primary" style="float: right;">수정</button>
           </fieldset>
           <br><br>
         </form>
         </div>
     </div>
+</form>
     
 <!-- 푸터 영역 -->
     
