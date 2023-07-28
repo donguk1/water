@@ -280,7 +280,7 @@ public class MemoController {
         log.info("메모 번호 " + num + "번 입니다.");
 
         String msg = "";
-        String url = "/memo/info";
+        String url = "/memo/list";
 
         try {
 
