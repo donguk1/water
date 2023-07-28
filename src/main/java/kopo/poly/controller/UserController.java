@@ -185,7 +185,7 @@ public class UserController {
                 session.setAttribute("SS_NICK", CmmUtil.nvl(rDTO.getNick()));
 
                 msg = "로그인이 성공했습니다. \n" + rDTO.getNick() + "님 환영합니다.";
-                url = "/main";
+                url = "/watem";
 
             } else { // 로그인 실패시
 
