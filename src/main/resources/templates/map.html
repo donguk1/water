@@ -17,6 +17,17 @@
         .dropdown-menu a:hover {background-color: #ddd;}
 
         .dropdown:hover .dropdown-menu {display: block;}
+
+        /* 드롭다운 메뉴가 나타날 때 네비게이션 바가 밀리는 현상을 방지 */
+        .navbar-nav {
+            position: relative;
+        }
+
+        .navbar-nav .dropdown-menu {
+            position: absolute;
+            right: 0;
+            z-index: 1000;
+        }
     </style>
 
     <script type="text/javascript" src="/js/jquery-3.6.0.min.js"></script>
