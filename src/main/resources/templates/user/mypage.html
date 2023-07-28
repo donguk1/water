@@ -13,6 +13,20 @@
     <script type="text/javascript">
 
     </script>
+    <style type="text/css">
+        .dropdown-menu {
+            right: 0;
+        }
+
+        .dropdown-menu a {
+            display: block;
+        }
+
+        .dropdown-menu a:hover {background-color: #ddd;}
+
+        .dropdown:hover .dropdown-menu {display: block;}
+
+    </style>
 </head>
 <body>
   
@@ -43,8 +57,13 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/memo/list"><img src="/img/memoIcon.png" width="50px"></a> <!-- 메모 메뉴 -->
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><img src="/img/userIcon.png" width="50px"></a> <!-- 로그인/회원가입, 마이페이지 통합메뉴 -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="/user/login" role="button" aria-haspopup="true" aria-expanded="false"><img src="/img/userIcon.png" width="50px"></a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="/user/mypage">마이페이지</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="/main">로그아웃</a>
+                        </div>
                     </li>
                 </ul>
             </div>
@@ -60,16 +79,16 @@
          <form style="font-family: 'Do Hyeon', sans-serif; font-size: 20px;">
           <fieldset>
             <legend style="font-size: 34px;">마이페이지</legend>
-            <label for="exampleInputId" class="form-label mt-4">아이디</label>
+            <label for="outputId" class="form-label mt-4">아이디</label>
             <div class="input-group mb-3">
                 <!--<input type="text" class="form-control" placeholder="ID" aria-label="Recipient's id" aria-describedby="button-id">-->
             <ul class="list-group list-group-flushs mx-auto" style="width: 100%">
-                <li class="list-group-item" style="height: 40px; font-family: 'Noto Sans KR', sans-serif; font-size: 15px;">아이디 데이터 가져올곳</li>
+                <li id="outputId" class="list-group-item" style="height: 40px; font-family: 'Noto Sans KR', sans-serif; font-size: 15px;">[[${rDTO.id}]]</li>
             </ul>
             </div>
-            <label for="exampleInputNickname" class="form-label mt-4">닉네임</label>
+            <label for="outputNick" class="form-label mt-4">닉네임</label>
             <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="Nickname" aria-label="Recipient's nickname" aria-describedby="button-name">
+                <input type="text" id="outputNick" class="form-control" th:value="${rDTO.nick}" aria-label="Recipient's nickname" aria-describedby="button-name">
                 <button class="btn btn-primary" type="button" id="button-name">확인</button>
             </div>            
 <!--
@@ -83,11 +102,11 @@
 -->
             <div class="form-group">
               <label for="exampleInputEmail1" class="form-label mt-4">Email</label>
-              <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="email">  
+              <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" th:value="${rDTO.email}">
             </div>
             <div class="form-group">
               <label for="exampleInputPn" class="form-label mt-4">전화번호</label>
-              <input type="tel" class="form-control" id="exampleInputPn">
+              <input type="tel" class="form-control" id="exampleInputPn" th:value="${rDTO.pn}">
             </div>
             <div class="form-group" >
               <label for="exampleSelect1" class="form-label mt-4">거주지역</label>
@@ -103,17 +122,23 @@
               </select>
             </div>
             <div class="form-group">
-              <label for="exampleInputDate" class="form-label mt-4">생년월일</label>
-            <ul class="list-group list-group-flushs mx-auto" style="width: 100%">
-                <li class="list-group-item" style="height: 40px; font-family: 'Noto Sans KR', sans-serif; font-size: 15px;">생년월일 데이터 가져올곳</li>
-            </ul>
+                <label for="exampleInputBirth" class="form-label mt-4">생년월일</label>
+                <input type="text" class="form-control" id="exampleInputBirth" th:value="${rDTO.birth}">
+<!--            <ul class="list-group list-group-flushs mx-auto" style="width: 100%">-->
+<!--                <li id="outputDate" class="list-group-item" style="height: 40px; font-family: 'Noto Sans KR', sans-serif; font-size: 15px;">생년월일 데이터 가져올곳</li>-->
+<!--            </ul>-->
             </div>
-            <fieldset class="form-group">
-              <legend class="mt-4">성별</legend>
-            <ul class="list-group list-group-flushs mx-auto" style="width: 100%">
-                <li class="list-group-item" style="height: 40px; font-family: 'Noto Sans KR', sans-serif; font-size: 15px;">성별 데이터 가져올곳</li>
-            </ul>
-            </fieldset>
+              <div class="form-group">
+                    <label for="exampleInputGender" class="form-label mt-4">성별</label>
+                    <input type="text" class="form-control" id="exampleInputGender" th:value="${rDTO.gender}">
+<!--                    <input type="text" class="form-control" id="exampleInputGender" th:text="${rDTO.gender == 'm' ? '남자' : '여자'}">-->
+              </div>
+<!--            <fieldset class="form-group">-->
+<!--              <legend class="mt-4">성별</legend>-->
+<!--&lt;!&ndash;            <ul class="list-group list-group-flushs mx-auto" style="width: 100%">&ndash;&gt;-->
+<!--&lt;!&ndash;                <li class="list-group-item" style="height: 40px; font-family: 'Noto Sans KR', sans-serif; font-size: 15px;">성별 데이터 가져올곳</li>&ndash;&gt;-->
+<!--&lt;!&ndash;            </ul>&ndash;&gt;-->
+<!--            </fieldset>-->
             <br>
             <button type="submit" class="btn btn-primary" style="float: right;">수정</button>
           </fieldset>

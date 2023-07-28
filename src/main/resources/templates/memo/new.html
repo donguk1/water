@@ -13,6 +13,41 @@
     <script type="text/javascript">
 
     </script>
+
+    <script th:inline="javascript">
+
+        $(document).ready(function () {
+            // 버튼 클릭했을때, 발생되는 이벤트 생성함(onclick 이벤트와 동일함)
+            $("#btnList").on("click", function () {
+                location.href = "/memo/list"; // 메모 리스트 이동
+            })
+        })
+
+
+        // 메모 저장하기
+        function doSubmit() {
+
+            let f = document.getElementById("f"); // form 태그
+
+
+        }
+    </script>
+
+
+    <style type="text/css">
+        .dropdown-menu {
+            right: 0;
+        }
+
+        .dropdown-menu a {
+            display: block;
+        }
+
+        .dropdown-menu a:hover {background-color: #ddd;}
+
+        .dropdown:hover .dropdown-menu {display: block;}
+
+    </style>
 </head>
 <body>
   
@@ -43,8 +78,13 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/memo/list"><img src="/img/memoIcon.png" width="50px"></a> <!-- 메모 메뉴 -->
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><img src="/img/userIcon.png" width="50px"></a> <!-- 로그인/회원가입, 마이페이지 통합메뉴 -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="/user/login" role="button" aria-haspopup="true" aria-expanded="false"><img src="/img/userIcon.png" width="50px"></a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="/user/mypage">마이페이지</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="/main">로그아웃</a>
+                        </div>
                     </li>
                 </ul>
             </div>
@@ -54,11 +94,11 @@
     <br><br>
     
 <!-- 내용 부분 -->
-    
+<form action="/memo/memoInsert" method="post" onsubmit="doSubmit()" name="f" id="f">
     <div class="card mb-3 mx-auto" style=" width: 95%; font-family: 'Noto Sans KR', sans-serif;">
     <div class="card-body">
     <div class="card mb-3">
-        <h3 class="card-header" style="font-family: 'Do Hyeon', sans-serif;"><input class="form-control me-sm-2" type="text" placeholder="title"></h3>
+        <h3 class="card-header" style="font-family: 'Do Hyeon', sans-serif;"><input class="form-control me-sm-2" type="text" placeholder="title" name="title"></h3>
         <div class="card-body">
             <h6 class="card-subtitle text-muted" style="font-family: 'Do Hyeon', sans-serif; text-align: right">작성자 가져올 곳</h6>
         </div>
@@ -68,17 +108,18 @@
         </svg>
         <div class="form-group">
          <br>
-          <textarea class="form-control" id="exampleTextarea" rows="14" placeholder="내용을 입력하세요."></textarea>
+          <textarea class="form-control" id="exampleTextarea" rows="14" placeholder="내용을 입력하세요." name="contents"></textarea>
           <br>
         </div>
     </div>
     </div>
     <div class="ms-auto" style="padding: 0 20px;">
-        <button type="button" class="btn btn-outline-dark">등록</button>
-        <button type="button" class="btn btn-outline-dark">목록</button>
+        <button type="btnSend" class="btn btn-outline-dark">등록</button>
+        <button type="btnList" class="btn btn-outline-dark">목록</button>
     </div>
     <br>
     </div>
+</form>
     
 <!-- 푸터 영역 -->
     

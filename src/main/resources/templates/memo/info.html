@@ -10,9 +10,77 @@
 
     <script type="text/javascript" src="/js/jquery-3.6.0.min.js"></script>
     <script type="text/javascript" src="/js/bootstrap.min.js"></script>
-    <script type="text/javascript">
+    <script th:inline="javascript">
+        // Controller에서 받은 세션에 저장된 값
+        const SS_NICK = [[${session.SS_NICK}]];
 
+        // 메모 작성자 닉네임
+        const nick = [[${rDTO.nick}]];
+
+        // 현재 글번호, 자바에서 받을 변수들은 자바스크립트 변수로 저장하면 편함
+        const num = [[${rDTO.num}]];
+
+        // HTML로딩이 완료되고, 실행됨
+        $(document).ready(function () {
+            // 버튼 클릭했을때, 발생되는 이벤트 생성함(onclick 이벤트와 동일함)
+            $("#btnEdit").on("click", function () {
+                doEdit(); // 메모 수정하기 실행
+            })
+
+            // 버튼 클릭했을때, 발생되는 이벤트 생성함(onclick 이벤트와 동일함)
+            $("#btnDelete").on("click", function () {
+                doDelete(); // 메모 삭제하기 실행
+            })
+
+            // 버튼 클릭했을때, 발생되는 이벤트 생성함(onclick 이벤트와 동일함)
+            $("#btnList").on("click", function () {
+                location.href = "/memo/list"; // 메모 리스트 이동
+            })
+        })
+
+        //수정하기
+        function doEdit() {
+            if (SS_NICK === nick) {
+                location.href = "/memo/up?num=" + num;
+
+            } else if (SS_NICK === "") {
+                alert("로그인 하시길 바랍니다.");
+
+            } else {
+                alert("본인이 작성한 메모만 수정 가능합니다.");
+
+            }
+        }
+
+        //삭제하기
+        function doDelete() {
+            if (SS_NICK === nick) {
+                if (confirm("작성한 메모를 삭제하시겠습니까?")) {
+                    location.href = "/memo/memoDelete?num=" + num;
+                }
+
+            } else if (SS_NICK === "") {
+                alert("로그인 하시길 바랍니다.");
+
+            } else {
+                alert("본인이 작성한 메모만 삭제 가능합니다.");
+            }
+        }
     </script>
+    <style type="text/css">
+        .dropdown-menu {
+            right: 0;
+        }
+
+        .dropdown-menu a {
+            display: block;
+        }
+
+        .dropdown-menu a:hover {background-color: #ddd;}
+
+        .dropdown:hover .dropdown-menu {display: block;}
+
+    </style>
 </head>
 <body>
   
@@ -43,8 +111,13 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/memo/list"><img src="/img/memoIcon.png" width="50px"></a> <!-- 메모 메뉴 -->
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><img src="/img/userIcon.png" width="50px"></a> <!-- 로그인/회원가입, 마이페이지 통합메뉴 -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="/user/login" role="button" aria-haspopup="true" aria-expanded="false"><img src="/img/userIcon.png" width="50px"></a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="/user/mypage">마이페이지</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="/main">로그아웃</a>
+                        </div>
                     </li>
                 </ul>
             </div>
@@ -58,27 +131,27 @@
     <div class="card mb-3 mx-auto" style=" width: 95%; font-family: 'Noto Sans KR', sans-serif;">
     <div class="card-body">
     <div class="card mb-3">
-        <h3 class="card-header" style="font-family: 'Do Hyeon', sans-serif;">제목 데이터 가져올 곳</h3>
+        <h3 class="card-header" style="font-family: 'Do Hyeon', sans-serif;">[[${rDTO.title}]]</h3>
         <div class="card-body">
-            <h5 class="card-title" style="font-family: 'Do Hyeon', sans-serif; text-align: right">지역 데이터 가져올 곳</h5>
-            <h6 class="card-subtitle text-muted" style="font-family: 'Do Hyeon', sans-serif; text-align: right">작성자 가져올 곳</h6>
+            <h5 class="card-title" style="font-family: 'Do Hyeon', sans-serif; text-align: right">[[${rDTO.mloc}]]</h5>
+            <h6 class="card-subtitle text-muted" style="font-family: 'Do Hyeon', sans-serif; text-align: right">[[${rDTO.nick}]]</h6>
         </div>
         <svg xmlns="http://www.w3.org/2000/svg" class="d-block user-select-none" width="100%" height="600" aria-label="Placeholder: Image cap" focusable="false" role="img" preserveAspectRatio="xMidYMid slice" viewBox="0 0 318 180" style="font-size:1.125rem;text-anchor:middle">
             <rect width="100%" height="100%" fill="#868e96"></rect>
-            <text x="50%" y="50%" fill="#dee2e6" dy=".3em">지도 표시 영역</text>
+            <text x="50%" y="50%" fill="#dee2e6" dy=".3em">[[${rDTO.map}]]</text>
         </svg>
         <div class="card-body" style="height: 400px;">
-            내용 데이터 가져올 곳
+            [[${rDTO.contents}]]
         </div>
         <div class="card-footer text-muted">
-            작성일자 데이터 가져올 곳
+            [[${rDTO.dt}]]
         </div>
     </div>
     </div>
     <div class="ms-auto" style="padding: 0 20px;">
-        <button type="button" class="btn btn-outline-dark">수정</button>
-        <button type="button" class="btn btn-outline-dark">삭제</button>
-        <button type="button" class="btn btn-outline-dark">목록</button>
+        <button id="btnEdit" type="button" class="btn btn-outline-dark">수정</button>
+        <button id="btnDelete" type="button" class="btn btn-outline-dark">삭제</button>
+        <button id="btnList" type="button" class="btn btn-outline-dark">목록</button>
     </div>
     <br>
     </div>

@@ -31,7 +31,6 @@
     <insert id="insertMemoInfo" parameterType="MemoDTO">
         INSERT INTO MEMO
         (
-         NUM,
          NICK,
          TITLE,
          MAP,
@@ -41,7 +40,6 @@
         )
         VALUES
         (
-         (SELECT NVL(MAX(A.NUM), 0) + 1 FROM MEMO A), --NUM
          #{nick},
          #{title},
          #{map},
@@ -58,7 +56,7 @@
             NUM,
             NICK,
             TITLE,
-            T0_CHAR(DT, 'YYYY/MM/DD') AS DT,
+            TO_CHAR(DT, 'YYYY-MM-DD') AS DT,
             MLOC,
             CONTENTS,
             MAP

@@ -32,7 +32,7 @@ public class UserController {
     private final IUserService userService;
 
 
-    /*  회원가입 화면으로 이동 = "/signup"  */
+    /*  회원가입 화면으로 이동 = "/user/signup"  */
     @GetMapping(value = "/user/signup")
     public String signup() {
 
@@ -92,8 +92,8 @@ public class UserController {
             // pw는 절대로 복호화되지 않도록 해시 알고리즘으로 암호화
             pDTO.setPw(EncryptUtil.encHashSHA256(pw));
             // 개인 정보인 email, pn AES128-CBC 로 암호화
-            pDTO.setEmail(EncryptUtil.encAES128CBC(email));
-            pDTO.setPn(EncryptUtil.encAES128CBC(pn));
+            pDTO.setEmail(email);
+            pDTO.setPn(pn);        // 07/27 email, pn 해시코드 풀고 db에 저장으로 수정
             pDTO.setUloc(uloc);
             pDTO.setBirth(birth);
             pDTO.setGender(gender);
@@ -106,16 +106,21 @@ public class UserController {
             if (res == 1) {
                 msg = "회원가입되었습니다.";
                 url = "/user/login";
-                // 추후 회원가입 입력화면에서 ajax 를 활용해서 아이디 중복, 이메일 중복 체크 할 것.
+
             } else if (res == 2) {
                 msg = "이미 가입된 아이디입니다.";
+                url = "/user/login";
+
             } else {
                 msg = "오류로 인해 회원가입이 실패하였습니다.";
+                url = "/user/signup";
+
             }
 
         } catch (Exception e) {
 
             msg = "회원가입에 실패하였습니다.";
+            url = "/user/signup";
 
             /*  실패 사유 확인용 로그  */
             log.info(e.toString());
@@ -128,6 +133,15 @@ public class UserController {
 
             log.info(this.getClass().getName() + ".controller 회원가입 종료");
         }
+
+        return "/redirect";
+    }
+
+    /*  로그인 화면으로 이동 ="/login"  */
+    @GetMapping(value = "/user/login")
+    public String login() {
+
+        log.info(this.getClass().getName() + ".controller 로그인 화면으로 이동");
 
         return "/user/login";
     }
@@ -183,6 +197,8 @@ public class UserController {
         } catch (Exception e) { // 로그인이 실패시 사용될 메시지
 
             msg = "시스템 문제로 로그인이 실패했습니다.";
+            url = "/user/login";
+
             log.info(e.toString());
             e.printStackTrace();    // Exception 발생 이유와 위치는 어디에서 발생했는지 전체적인 단계 출력
 
@@ -194,7 +210,7 @@ public class UserController {
             log.info(this.getClass().getName() + ".controller 로그인 처리 결과 종료");
         }
 
-        return "/main";
+        return "/redirect";
     }
 
     /*  회원가입 전 아이디 중복체크(Ajax 사용)  */
@@ -248,28 +264,42 @@ public class UserController {
         return rDTO;
     }
 
+    /*  아이디 찾기(현재 페이지 존재하지 않음)  */
+
+    /*  패스워드 찾기(현재 페이지 존재하지 않음)  */
+
+
+
     /*  마이페이지로 이동 = "/user/mypage"  */
     @GetMapping(value = "/user/mypage")
-    public String mypage() {
+    public String mypage(ModelMap modelMap, HttpSession session, HttpServletRequest request) throws Exception {
 
-        log.info(this.getClass().getName() + ".controller 마이페이지로 이동");
+        log.info(this.getClass().getName() + ".controller 마이페이지로 이동 실행");
 
-//        log.info(".controller 마이페이지 이동 완료");
+        /*  id = P.K  */
+        String id = CmmUtil.nvl((String) session.getAttribute("SS_ID"));
+
+        /*  값 전달은 반드시 pDTO 객체 이용 처리  */
+        UserDTO pDTO = new UserDTO();
+        pDTO.setId(id);
+
+        /*  데이터 확인  */
+        log.info("id : " + id);
+
+        /*  마이페이지 가져오기  */
+        UserDTO rDTO = Optional.ofNullable(userService.selectUser(pDTO)).orElseGet(UserDTO::new);
+
+        /*  조회된 마이페이지 결과값 넣어주기  */
+        modelMap.addAttribute("rDTO", rDTO);
+
+        log.info(this.getClass().getName() + ".controller 마이페이지 이동 종료");
+
         return "/user/mypage";
 
     }
 
 
-    /*  로그인 화면으로 이동 ="/login"  */
-    @GetMapping(value = "/user/login")
-    public String login() {
 
-        log.info(this.getClass().getName() + ".controller 로그인 화면으로 이동");
-
-        return "/user/login";
-    }
-
-    /*  아이디 찾기(현재 페이지 존재하지 않음)  */
 
 
     /*  mypage 수정(회원정보 수정)(추후 수정 필요)  */
@@ -279,33 +309,27 @@ public class UserController {
         log.info(this.getClass().getName() + ".controller 회원정보 수정 실행");
 
         String msg = "";
-        String url = "";
 
         try {
 
             /*  데이터 선언 및 입력  */
-            String id = CmmUtil.nvl((String) session.getAttribute("id"));
             String nick = CmmUtil.nvl(request.getParameter("nick"));
-            String pw = CmmUtil.nvl(request.getParameter("pw"));
             String email = CmmUtil.nvl(request.getParameter("email"));
             String pn = CmmUtil.nvl(request.getParameter("pn"));
             String uloc = CmmUtil.nvl(request.getParameter("uloc"));
             String birth = CmmUtil.nvl(request.getParameter("birth"));
-            String gender = CmmUtil.nvl(request.getParameter("gender"));
 
             /*  데이터 확인  */
-            log.info("id : " + id);
             log.info("nick : " + nick);
-            log.info("pw : " + pw);
             log.info("email : " + email);
             log.info("pn : " + pn);
             log.info("uloc : " + uloc);
             log.info("birth : " + birth);
-            log.info("gender : " + gender);
+
 
             /*  데이터 저장  */
             UserDTO pDTO = new UserDTO();
-            pDTO.setPw(pw);
+            pDTO.setNick(nick);
             pDTO.setEmail(email);
             pDTO.setPn(pn);
             pDTO.setUloc(uloc);
@@ -314,7 +338,6 @@ public class UserController {
             userService.updateUser(pDTO);
 
             msg = "수정되었습니다.";
-            url = "/user/mypage";
 
         } catch (Exception e) {
 
@@ -325,14 +348,12 @@ public class UserController {
         } finally {
 
             modelMap.addAttribute("msg", msg);
-            modelMap.addAttribute("url", url);
+
             log.info(this.getClass().getName() + ".controller 회원정보 수정 종료");
 
         }
 
-        return "/user/mypage";
-
-
+        return "myPage";
 
     }
 
