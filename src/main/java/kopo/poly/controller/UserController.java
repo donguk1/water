@@ -344,8 +344,6 @@ public class UserController {
 
         } catch (Exception e) {
 
-            log.info("캐치");
-
             msg = "수정 실패하였습니다.";
             url = "/user/mypage";
 

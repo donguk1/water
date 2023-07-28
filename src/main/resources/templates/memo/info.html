@@ -133,6 +133,8 @@
     <div class="card mb-3">
         <h3 class="card-header" style="font-family: 'Do Hyeon', sans-serif;">[[${rDTO.title}]]</h3>
         <div class="card-body">
+            <input type="hidden" name="num" th:value="${rDTO.num}">
+            <h6 class="card-subtitle text-muted" style="font-family: 'Do Hyeon', sans-serif; text-align: left" name="num">[[${rDTO.num}]]</h6>
             <h5 class="card-title" style="font-family: 'Do Hyeon', sans-serif; text-align: right">[[${rDTO.mloc}]]</h5>
             <h6 class="card-subtitle text-muted" style="font-family: 'Do Hyeon', sans-serif; text-align: right">[[${rDTO.nick}]]</h6>
         </div>

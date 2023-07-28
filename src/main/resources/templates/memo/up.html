@@ -27,11 +27,72 @@
         .dropdown:hover .dropdown-menu {display: block;}
 
     </style>
+
+    <script type="text/javascript">
+
+        // HTML로딩이 완료되고, 실행됨
+        $(document).ready(function () {
+            // 버튼 클릭했을때, 발생되는 이벤트 생성함(onclick 이벤트와 동일함)
+            $("#btnSend").on("click", function () {
+                doSubmit(); // 공지사항 수정하기 실행
+            })
+
+            // 버튼 클릭했을때, 발생되는 이벤트 생성함(onclick 이벤트와 동일함)
+            $("#btnList").on("click", function () {
+                location.href = "/memo/list"; // 메모 리스트 이동
+            })
+        })
+
+        //글자 길이 바이트 단위로 체크하기(바이트값 전달)
+        function calBytes(str) {
+            let tcount = 0;
+            let tmpStr = String(str);
+            let strCnt = tmpStr.length;
+            let onechar;
+            for (let i = 0; i < strCnt; i++) {
+                onechar = tmpStr.charAt(i);
+                if (escape(onechar).length > 4) {
+                    tcount += 2;
+                } else {
+                    tcount += 1;
+                }
+            }
+            return tcount;
+        }
+
+        function doSubmit() {
+
+            let f = document.getElementById("f"); // form 태그
+
+            if (f.title.value === "") {
+                alert("제목을 입력하시기 바랍니다.");
+                f.title.focus();
+                return;
+            }
+            if (calBytes(f.title.value) > 200) {
+                alert("최대 200Bytes까지 입력 가능합니다.");
+                f.title.focus();
+                return;
+            }
+            if (f.contents.value === "") {
+                alert("내용을 입력하시기 바랍니다.");
+                f.contents.focus();
+                return;
+            }
+            if (calBytes(f.contents.value) > 4000) {
+                alert("최대 4000Bytes까지 입력 가능합니다.");
+                f.contents.focus();
+                return;
+            }
+
+        }
+    </script>
+
 </head>
 <body>
   
 <!-- 상단바 부분 -->
-  
+
    <!-- navbar-expand-lg는 화면이 큰 랩탑 사이즈 이상에서 네비게이션 바 요소를 확장하도록 지정하며, bg-light는 네비게이션 바의 배경색을 밝은 색상으로 설정 -->
     <nav class="navbar navbar-expand-lg bg-light" data-bs-theme="light" style="padding: 12px 12px; font-family: 'Do Hyeon', sans-serif;">
         <div class="container-fluid">
@@ -73,31 +134,36 @@
     <br><br>
     
 <!-- 내용 부분 -->
-    
+<form action="/memo/memoUpdate" method="post" name="f" id="f">
     <div class="card mb-3 mx-auto" style=" width: 95%; font-family: 'Noto Sans KR', sans-serif;">
     <div class="card-body">
     <div class="card mb-3">
-        <h3 class="card-header" style="font-family: 'Do Hyeon', sans-serif;"><input class="form-control me-sm-2" type="text" placeholder="기존 제목 불러와야함"></h3>
+        <h3 class="card-header" style="font-family: 'Do Hyeon', sans-serif;">
+            <input class="form-control me-sm-2" type="text" name="title" th:value="${rDTO.title}">
+        </h3>
         <div class="card-body">
-            <h6 class="card-subtitle text-muted" style="font-family: 'Do Hyeon', sans-serif; text-align: right">작성자 가져올 곳</h6>
+            <input type="hidden" name="num" th:value="${rDTO.num}">
+            <h6 class="card-subtitle text-muted" style="font-family: 'Do Hyeon', sans-serif; text-align: left" name="num">[[${rDTO.num}]]</h6>
+            <h6 class="card-subtitle text-muted" style="font-family: 'Do Hyeon', sans-serif; text-align: right" name="nick">[[${rDTO.nick}]]</h6>
         </div>
         <svg xmlns="http://www.w3.org/2000/svg" class="d-block user-select-none" width="100%" height="600" aria-label="Placeholder: Image cap" focusable="false" role="img" preserveAspectRatio="xMidYMid slice" viewBox="0 0 318 180" style="font-size:1.125rem;text-anchor:middle">
             <rect width="100%" height="100%" fill="#868e96"></rect>
-            <text x="50%" y="50%" fill="#dee2e6" dy=".3em">지도 표시 영역</text>
+            <text x="50%" y="50%" fill="#dee2e6" dy=".3em" name="map">지도 표시 영역[[${rDTO.map}]]</text>
         </svg>
         <div class="form-group">
          <br>
-          <textarea class="form-control" id="exampleTextarea" rows="14" placeholder="내용을 입력하세요."></textarea>
+          <textarea class="form-control" id="exampleTextarea" rows="14" name="contents">[[${rDTO.contents}]]</textarea>
           <br>
         </div>
     </div>
     </div>
     <div class="ms-auto" style="padding: 0 20px;">
-        <button type="button" class="btn btn-outline-dark">수정</button>
-        <button type="button" class="btn btn-outline-dark">목록</button>
+        <button id="btnEdit" type="button" class="btn btn-outline-dark">수정</button>
+        <button id="btnList" type="button" class="btn btn-outline-dark">목록</button>
     </div>
     <br>
     </div>
+</form>
     
 <!-- 푸터 영역 -->
     
