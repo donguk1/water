@@ -7,19 +7,16 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Hahmlet:wght@400;500&family=Nanum+Gothic+Coding&family=Noto+Sans+KR:wght@100;300;400&display=swap" rel="stylesheet">
-    <style type="text/css">
+    <style th:inline="css">
         .dropdown-menu {
             right: 0;
         }
-
         .dropdown-menu a {
             display: block;
         }
-
         .dropdown-menu a:hover {background-color: #ddd;}
 
         .dropdown:hover .dropdown-menu {display: block;}
-
     </style>
 
     <script type="text/javascript" src="/js/jquery-3.6.0.min.js"></script>
@@ -45,7 +42,7 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/memo/list" style="margin: 5px"><img src="/img/memoIcon.png" width="50px"></a> <!-- 메모 메뉴 -->
                 </li>
-                <li id="loginVer" class="nav-item dropdown"> <!-- 드롭다운 유저 메뉴 -->
+                <li class="nav-item dropdown"> <!-- 드롭다운 유저 메뉴 -->
                     <div class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin: 5px"><img src="/img/userIcon.png" width="50px"></div>
                     <div class="dropdown-menu">
                         <a class="dropdown-item" href="/user/mypage">마이페이지</a> <!-- 드롭다운 서브메뉴 : 마이페이지 메뉴 -->
@@ -96,8 +93,6 @@
             </figcaption>
         </figure>
     </footer>
-
-
 
 </body>
 </html>
