@@ -7,6 +7,7 @@ import kopo.poly.util.CmmUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -114,16 +115,14 @@ public class UserService implements IUserService {
 
 
     /*  회원정보 수정  */
+    @Transactional
     @Override
-    public UserDTO updateUser(UserDTO pDTO) throws Exception {
+    public void updateUser(UserDTO pDTO) throws Exception {
 
         log.info(this.getClass().getName() + ".회원정보 수정 시작");
 
-        UserDTO rDTO = userMapper.updateUser(pDTO);
+        userMapper.updateUser(pDTO);
 
-        log.info(this.getClass().getName() + ".회원정보 수정 종료");
-
-        return rDTO;
     }
 
 

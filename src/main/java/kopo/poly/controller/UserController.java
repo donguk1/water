@@ -272,7 +272,7 @@ public class UserController {
 
     /*  마이페이지로 이동 = "/user/mypage"  */
     @GetMapping(value = "/user/mypage")
-    public String mypage(ModelMap modelMap, HttpSession session, HttpServletRequest request) throws Exception {
+    public String mypage(ModelMap modelMap, HttpSession session) throws Exception {
 
         log.info(this.getClass().getName() + ".controller 마이페이지로 이동 실행");
 
@@ -303,32 +303,34 @@ public class UserController {
 
 
     /*  mypage 수정(회원정보 수정)(추후 수정 필요)  */
-    @PostMapping(value = "/user/mypage/updateUser")
+    @PostMapping(value = "/user/updateUser")
     public String updateUser(HttpSession session, ModelMap modelMap, HttpServletRequest request) throws Exception {
 
         log.info(this.getClass().getName() + ".controller 회원정보 수정 실행");
 
         String msg = "";
+        String url = "";
 
         try {
 
             /*  데이터 선언 및 입력  */
+            String id = CmmUtil.nvl((String) session.getAttribute("SS_ID"));
             String nick = CmmUtil.nvl(request.getParameter("nick"));
             String email = CmmUtil.nvl(request.getParameter("email"));
             String pn = CmmUtil.nvl(request.getParameter("pn"));
             String uloc = CmmUtil.nvl(request.getParameter("uloc"));
-            String birth = CmmUtil.nvl(request.getParameter("birth"));
 
             /*  데이터 확인  */
+            log.info("id : " + id);
             log.info("nick : " + nick);
             log.info("email : " + email);
             log.info("pn : " + pn);
             log.info("uloc : " + uloc);
-            log.info("birth : " + birth);
 
 
             /*  데이터 저장  */
             UserDTO pDTO = new UserDTO();
+            pDTO.setId(id);
             pDTO.setNick(nick);
             pDTO.setEmail(email);
             pDTO.setPn(pn);
@@ -338,22 +340,28 @@ public class UserController {
             userService.updateUser(pDTO);
 
             msg = "수정되었습니다.";
+            url = "/user/mypage";
 
         } catch (Exception e) {
 
+            log.info("캐치");
+
             msg = "수정 실패하였습니다.";
+            url = "/user/mypage";
+
             log.info(e.toString());
             e.printStackTrace();  // Exception 발생 이유와 위치는 어디에서 발생했는지 전체적인 단계 출력
 
         } finally {
 
             modelMap.addAttribute("msg", msg);
+            modelMap.addAttribute("url", url);
 
             log.info(this.getClass().getName() + ".controller 회원정보 수정 종료");
 
         }
 
-        return "myPage";
+        return "/redirect";
 
     }
 
