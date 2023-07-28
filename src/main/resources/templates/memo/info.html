@@ -89,6 +89,18 @@
                 alert("본인이 작성한 메모만 삭제 가능합니다.");
             }
         }
+
+        /* back to top 클릭시 주소창에 #top 추가 안되게 함*/
+        document.addEventListener("DOMContentLoaded", function () {
+            var topLink = document.querySelector('a[href="#top"]');
+            topLink.addEventListener("click", function (event) {
+                event.preventDefault();
+                window.scrollTo({
+                    top: 0,
+                    behavior: "smooth"
+                });
+            });
+        });
     </script>
 </head>
 <body>
