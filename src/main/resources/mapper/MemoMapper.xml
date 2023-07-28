@@ -70,7 +70,6 @@
         SET TITLE     = #{title},
             MAP       = #{map},
             CONTENTS  = #{contents},
-            NICK      = #{nick},      -- 필요한건가? 본인글 본인이 수정하는걸텐데
             DT      = SYSDATE(),
             MLOC      = #{mloc}
         WHERE NUM = #{num}
