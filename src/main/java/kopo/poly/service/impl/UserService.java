@@ -83,17 +83,17 @@ public class UserService implements IUserService {
     }
 
 
-    /*  회원가입 전 email 중복확인  */
+    /*  회원가입 전 nick 중복확인  */
     @Override
-    public UserDTO getEmailExists(UserDTO pDTO) throws Exception {
+    public UserDTO getUserNickExists(UserDTO pDTO) throws Exception {
 
-        log.info(this.getClass().getName() + ".email 중복검사 시작");
+        log.info(this.getClass().getName() + ".nick 중복검사 시작");
 
-        // getEmailExists email 중복 검사
+        // getNickExists = nick 중복 검사
         // 쿼리문에서 count() 사용하기에 반드시 조회결과 존재
-        UserDTO rDTO = userMapper.getEmailExists(pDTO);
+        UserDTO rDTO = userMapper.getUserNickExists(pDTO);
 
-        log.info(this.getClass().getName() + ".email 중복검사 종료");
+        log.info(this.getClass().getName() + ".nick 중복검사 종료");
 
         return rDTO;
     }

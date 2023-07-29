@@ -6,20 +6,8 @@
     <link rel="stylesheet" type="text/css" href="/css/bootstrap.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Hahmlet:wght@400;500&family=Noto+Sans+KR:wght@100;300;400&display=swap" rel="stylesheet">
-
-    <script type="text/javascript" src="/js/jquery-3.6.0.min.js"></script>
-    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
-    <script type="text/javascript">
-
-
-    </script>
-    <style type="text/css">
-
     <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Hahmlet:wght@400;500&family=Nanum+Gothic+Coding&family=Noto+Sans+KR:wght@100;300;400&display=swap" rel="stylesheet">
     <style th:inline="css">
-
         .dropdown-menu {
             right: 0;
         }
@@ -29,13 +17,34 @@
         .dropdown-menu a:hover {background-color: #ddd;}
 
         .dropdown:hover .dropdown-menu {display: block;}
+
+        /* 드롭다운 메뉴가 나타날 때 네비게이션 바가 밀리는 현상을 방지 */
+        .navbar-nav {
+            position: relative;
+        }
+
+        .navbar-nav .dropdown-menu {
+            position: absolute;
+            right: 0;
+            z-index: 1000;
+        }
     </style>
 
     <script type="text/javascript" src="/js/jquery-3.6.0.min.js"></script>
     <script type="text/javascript" src="/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/js/bootstrap.bundle.js"></script>
     <script th:inline="javascript">
-
+        /* back to top 클릭시 주소창에 #top 추가 안되게 함*/
+        document.addEventListener("DOMContentLoaded", function () {
+            var topLink = document.querySelector('a[href="#top"]');
+            topLink.addEventListener("click", function (event) {
+                event.preventDefault();
+                window.scrollTo({
+                    top: 0,
+                    behavior: "smooth"
+                });
+            });
+        });
     </script>
 </head>
 <body>
@@ -68,7 +77,7 @@
     
     <br><br>
     
-<!-- 내용 부분 -->
+    <!-- 내용 부분 -->
     <div class="card mb-3 mx-auto" style="padding: 12px 20px; width: 95%; font-family: 'Noto Sans KR', sans-serif;">
         <div class="card-body">
             <div class="list-group list-group-flushs mx-auto" style="width: 98%">

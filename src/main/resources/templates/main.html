@@ -12,7 +12,17 @@
     <script type="text/javascript" src="/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/js/bootstrap.bundle.js"></script>
     <script th:inline="javascript">
-
+        /* back to top 클릭시 주소창에 #top 추가 안되게 함*/
+        document.addEventListener("DOMContentLoaded", function () {
+            var topLink = document.querySelector('a[href="#top"]');
+            topLink.addEventListener("click", function (event) {
+                event.preventDefault();
+                window.scrollTo({
+                    top: 0,
+                    behavior: "smooth"
+                });
+            });
+        });
     </script>
 </head>
 <body>
