@@ -129,9 +129,10 @@ public class KakaoService {
             userInfo.put("nickname", nickname);
             userInfo.put("email", email);
 
-        } catch (IOException e) {
+        } catch (Exception e) {
 
-            /*  TODO Auto-generated catck block  */
+
+            /*  TODO Auto-generated catch block  */
             e.printStackTrace();
 
         }
@@ -158,9 +159,20 @@ public class KakaoService {
             int responseCode = conn.getResponseCode();
             log.info("responseCode : " + responseCode);
 
+            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
+            String result = "";
+            String line = "";
 
+            while ((line = br.readLine()) != null) {
+                result += line;
+            }
 
+            log.info("response body : " + result);
+
+        } catch (IOException e) {
+            /* TODO Auto-generated catch block  */
+            e.printStackTrace();
         }
 
 

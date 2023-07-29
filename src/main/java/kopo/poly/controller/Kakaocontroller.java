@@ -19,12 +19,7 @@ import java.util.HashMap;
 @Controller
 public class Kakaocontroller {
 
-    /**
-     * 카카오 callback
-     * [GET] /oauth/kakao/callback
-     */
-
-//    kauth.kakao.com/oauth/authorize?client_id={a9cf415eff39557471ef2d61bda1b541}&redirect_uri={http://localhost:11000/oauth/kakao}&response_type=code
+//    private static final Logger logger = LoggerFactory.getLogger(Kakaocontroller.class);
 
     private final KakaoService kakaoService;
 
@@ -46,6 +41,7 @@ public class Kakaocontroller {
         /*  유저 정보 가져오기  */
         HashMap<String, Object> userInfo = kakaoService.getUserInfo(access_Token);
         log.info("userInfo : " + userInfo);
+        System.out.println(userInfo);
 
 
         if(userInfo.get("email") != null) {
@@ -53,9 +49,19 @@ public class Kakaocontroller {
             session.setAttribute("access_Token", access_Token);
         }
 
-        return "/index";
+        return "/myApp/index";
 
     }
+
+    @RequestMapping(value = "/logout")
+    public String logout(HttpSession session) {
+
+        kakaoService.kakaoLogout((String) session.getAttribute("access_Token"));
+        session.removeAttribute("access_Tokne");
+        session.removeAttribute("userId");
+        return "/myApp/index";
+    }
+
 
 //    @RequestMapping(value = "/")
 //    public String index() {
