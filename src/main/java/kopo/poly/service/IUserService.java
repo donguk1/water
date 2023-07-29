@@ -13,8 +13,8 @@ public interface IUserService {
     // 회원가입 전 id 중복확인
     UserDTO getUserIdExists(UserDTO pDTO) throws Exception;
 
-    // 회원가입 전 email 중복확인
-    UserDTO getEmailExists(UserDTO pDTO) throws Exception;
+    // 회원가입 전 nick 중복확인
+    UserDTO getUserNickExists(UserDTO pDTO) throws Exception;
 
 
 

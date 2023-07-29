@@ -238,28 +238,27 @@ public class UserController {
         return rDTO;
     }
 
-    /*  회원가입 전 이메일 중복체크(Ajax 사용)  */
+    /*  회원가입 전 닉네임 중복체크(Ajax 사용)  */
     @ResponseBody
-    @PostMapping(value = "/user/getEmailExists")
-    public UserDTO getEmailExists(HttpServletRequest request) throws Exception {
+    @PostMapping(value = "/user/getUserNickExists")
+    public UserDTO getUserNickExists(HttpServletRequest request) throws Exception {
 
-        log.info(this.getClass().getName() + ".controller 이메일 중복체크 실행");
+        log.info(this.getClass().getName() + ".controller 닉네임 중복체크 실행");
 
         /*  데이터 선언 및 입력  */
-        String email = CmmUtil.nvl(request.getParameter("email"));
+        String nick = CmmUtil.nvl(request.getParameter("nick"));
 
         /*  데이터 확인  */
-        log.info("email : " + email);
+        log.info("nick : " + nick);
 
         /*  데이터 저장  */
         UserDTO pDTO = new UserDTO();
-        // 개인 정보인 email AES128-CBC 로 암호화
-        pDTO.setEmail(EncryptUtil.encAES128CBC(email));
+        pDTO.setNick(nick);
 
-        /*  중복이메일 확인  */
-        UserDTO rDTO = Optional.ofNullable(userService.getEmailExists(pDTO)).orElseGet(UserDTO::new);
+        /*  중복닉네임 확인  */
+        UserDTO rDTO = Optional.ofNullable(userService.getUserNickExists(pDTO)).orElseGet(UserDTO::new);
 
-        log.info(this.getClass().getName() + ".controller 이메일 중복체크 종료");
+        log.info(this.getClass().getName() + ".controller 닉네임 중복체크 종료");
 
         return rDTO;
     }
