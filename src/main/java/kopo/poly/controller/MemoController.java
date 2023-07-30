@@ -107,6 +107,7 @@ public class MemoController {
 
         try {
             /*  선언 및 입력  */
+            String id = CmmUtil.nvl((String) session.getAttribute("SS_ID")); // 로그인된 ID 가져오기
             String nick = CmmUtil.nvl((String) session.getAttribute("SS_NICK")); // 로그인된 NICK 가져오기
             String title = CmmUtil.nvl(request.getParameter("title"));           // 제목
             String map = CmmUtil.nvl(request.getParameter("map"));               // 이미지 지도
@@ -115,6 +116,7 @@ public class MemoController {
 
 
             /*  데이터 확인  */
+            log.info("id : " + id);
             log.info("nick : " + nick);
             log.info("title : " + title);
             log.info("map : " + map);
@@ -123,6 +125,7 @@ public class MemoController {
 
             /*  데이터 저장  */
             MemoDTO pDTO = new MemoDTO();
+            pDTO.setId(id);
             pDTO.setNick(nick);
             pDTO.setTitle(title);
             pDTO.setMap(map);
@@ -221,6 +224,7 @@ public class MemoController {
         try {
 
             /*  선언 및 입력  */
+            String id = CmmUtil.nvl((String) session.getAttribute("SS_ID")); // 로그인된 ID 가져오기
             String nick = CmmUtil.nvl((String) session.getAttribute("SS_NICK")); // 로그인된 NICK 가져오기
             String title = CmmUtil.nvl(request.getParameter("title"));           // 제목
             String map = CmmUtil.nvl(request.getParameter("map"));               // 이미지 지도
@@ -228,6 +232,7 @@ public class MemoController {
             String num = CmmUtil.nvl(request.getParameter("num"));               // 글 번호
 
             /*  데이터 확인  */
+            log.info("id : " + id);
             log.info("nick : " + nick);
             log.info("title : " + title);
             log.info("map : " + map);
@@ -236,6 +241,7 @@ public class MemoController {
 
             /*  데이터 저장  */
             MemoDTO pDTO = new MemoDTO();
+            pDTO.setId(id);
             pDTO.setNick(nick);
             pDTO.setTitle(title);
             pDTO.setMap(map);

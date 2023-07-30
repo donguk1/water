@@ -31,20 +31,22 @@
     <insert id="insertMemoInfo" parameterType="MemoDTO">
         INSERT INTO MEMO
         (
-         NICK,
+         ID,
          TITLE,
+         MLOC,
+         NICK,
          MAP,
          CONTENTS,
-         MLOC,
          DT
         )
         VALUES
         (
-         #{nick},
+         #{id},
          #{title},
+         #{mloc},
+         #{nick},
          #{map},
          #{contents},
-         #{mloc},
          SYSDATE()
         )
     </insert>
@@ -54,12 +56,13 @@
     <select id="getMemoInfo" resultType="MemoDTO">
         SELECT
             NUM,
-            NICK,
+            ID,
             TITLE,
-            TO_CHAR(DT, 'YYYY-MM-DD') AS DT,
             MLOC,
+            NICK,
+            MAP,
             CONTENTS,
-            MAP
+            TO_CHAR(DT, 'YYYY-MM-DD') AS DT
         FROM MEMO
         WHERE NUM = #{num}
     </select>
@@ -68,9 +71,9 @@
     <update id="updateMemoInfo" parameterType="MemoDTO">
         UPDATE MEMO
         SET TITLE     = #{title},
+            MLOC      = #{mloc},
             MAP       = #{map},
-            CONTENTS  = #{contents},
-            MLOC      = #{mloc}
+            CONTENTS  = #{contents}
         WHERE NUM = #{num}
     </update>
 

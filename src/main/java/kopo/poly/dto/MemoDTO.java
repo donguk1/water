@@ -8,8 +8,10 @@ import lombok.Setter;
 @Setter
 public class MemoDTO {
 
+
     private String num;         // 게시번호
-    private String nick;        // 작성자(사용자명)
+    private String id;          // 작성자 (아이디)
+    private String nick;        // 작성자 (닉네임)
     private String title;       // 글 제목
     private String dt;        // 작성일
     private String mloc;        // 지도상 장소
