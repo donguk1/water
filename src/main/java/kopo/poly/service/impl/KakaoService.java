@@ -120,14 +120,23 @@ public class KakaoService {
             JsonParser parser = new JsonParser();
             JsonElement element = parser.parse(result);
 
+            log.info("1");
+
             JsonObject properties = element.getAsJsonObject().get("properties").getAsJsonObject();
-            JsonObject kakao_account = element.getAsJsonObject().get("kakao_account").getAsJsonObject();
+//            JsonObject kakao_account = element.getAsJsonObject().get("kakao_account").getAsJsonObject();
+
+            log.info("2");
 
             String nickname = properties.getAsJsonObject().get("nickname").getAsString();
-            String email = kakao_account.getAsJsonObject().get("email").getAsString();
+//            String email = kakao_account.getAsJsonObject().get("email").getAsString();
+
+            log.info("3");
 
             userInfo.put("nickname", nickname);
-            userInfo.put("email", email);
+//            userInfo.put("email", email);
+
+            log.info("nickname : " + nickname);
+//            log.info("email : " + email);
 
         } catch (Exception e) {
 

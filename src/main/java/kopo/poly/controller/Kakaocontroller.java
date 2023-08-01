@@ -29,27 +29,32 @@ public class Kakaocontroller {
     @RequestMapping(value = "/kakao/login")
     public String login(@RequestParam("code") String code, HttpSession session) {
 
-        log.info(this.getClass().getName() + ".controller 카카오 로그인 실행");
-        log.info("code : " + code);
+        try {
+            log.info(this.getClass().getName() + ".controller 카카오 로그인 실행");
+            log.info("code : " + code);
 
-        /*  accessToken 가져오기  */
-        String access_Token = kakaoService.getAccessToken(code);
-        String url = "/kakao/login?code=" + code;
-        log.info("access_Token : " + access_Token);
-        log.info("url : " + url);
+            /*  accessToken 가져오기  */
+            String access_Token = kakaoService.getAccessToken(code);
+            String url = "/kakao/login?code=" + code;
+            log.info("access_Token : " + access_Token);
+            log.info("url : " + url);
 
-        /*  유저 정보 가져오기  */
-        HashMap<String, Object> userInfo = kakaoService.getUserInfo(access_Token);
-        log.info("userInfo : " + userInfo);
-        System.out.println(userInfo);
+            /*  유저 정보 가져오기  */
+            HashMap<String, Object> userInfo = kakaoService.getUserInfo(access_Token);
+            log.info("userInfo : " + userInfo);
+//        System.out.println(userInfo);
 
 
-        if(userInfo.get("email") != null) {
-            session.setAttribute("userId", userInfo.get("email"));
-            session.setAttribute("access_Token", access_Token);
+//        if(userInfo.get("email") != null) {
+//            session.setAttribute("userId", userInfo.get("email"));
+//            session.setAttribute("access_Token", access_Token);
+//        }
+
+        } catch(Exception e) {
+            e.printStackTrace();  // Exception 발생 이유와 위치는 어디에서 발생했는지 전체적인 단계 출력
         }
 
-        return "/myApp/index";
+        return "/watem";
 
     }
 
