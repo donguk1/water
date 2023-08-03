@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -38,20 +39,32 @@ public class MemoController {
 
     /*  메모 리스트 = "/memo/list"  */
     @GetMapping(value = "/memo/list")
-    public String memoList(ModelMap modelMap) throws Exception {
-
+    public String memoList(ModelMap modelMap, @RequestParam(defaultValue = "1") int page) throws Exception {
         log.info(this.getClass().getName() + ".controller 메모 목록 실행");
 
-        // 메모 리스트 조회
+        // 페이지당 보여줄 아이템 개수 정의
+        int itemsPerPage = 10;
+
+        // 메모 리스트 전체 조회
         List<MemoDTO> rList = memoService.getMemoList();
 
-        // 메모 리스트가 없을시 실행
-        if (rList == null) {
-            rList = new ArrayList<>();
-        }
+        // 페이지네이션을 위해 전체 아이템 개수 구하기
+        int totalItems = rList.size();
+
+        // 전체 페이지 개수 계산
+        int totalPages = (int) Math.ceil((double) totalItems / itemsPerPage);
+
+        // 현재 페이지에 해당하는 아이템들만 선택하여 rList에 할당
+        int fromIndex = (page - 1) * itemsPerPage;
+        int toIndex = Math.min(fromIndex + itemsPerPage, totalItems);
+        rList = rList.subList(fromIndex, toIndex);
 
         // 조회된 리스트 결과값 넣어주기
         modelMap.addAttribute("rList", rList);
+
+        // 현재 페이지 정보를 넣어주기
+        modelMap.addAttribute("currentPage", page);
+        modelMap.addAttribute("totalPages", totalPages);
 
         log.info(this.getClass().getName() + ".controller 메모 목록 종료");
 
