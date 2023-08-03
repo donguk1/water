@@ -115,33 +115,29 @@
             </table>
         </div>
 
-            <!-- 페이지네이션 아직 구현 못해서 일단 주석처리 -->
-            <div class="mx-auto">
-                <ul class="pagination" id="pagination"></ul>
-<!--                    <li class="page-item disabled">-->
-<!--                        <a class="page-link" href="#">&laquo;</a>-->
-<!--                    </li>-->
-<!--                    <li class="page-item active">-->
-<!--                        <a class="page-link" href="#">1</a>-->
-<!--                    </li>-->
-<!--                    <li class="page-item">-->
-<!--                        <a class="page-link" href="#">2</a>-->
-<!--                    </li>-->
-<!--                    <li class="page-item">-->
-<!--                        <a class="page-link" href="#">3</a>-->
-<!--                    </li>-->
-<!--                    <li class="page-item">-->
-<!--                        <a class="page-link" href="#">4</a>-->
-<!--                    </li>-->
-<!--                    <li class="page-item">-->
-<!--                        <a class="page-link" href="#">5</a>-->
-<!--                    </li>-->
-<!--                    <li class="page-item">-->
-<!--                        <a class="page-link" href="#">&raquo;</a>-->
-<!--                    </li>-->
-                </ul>
-            </div>
-<!--        <script src="/static/js/jquery.twbsPagination.js"></script>-->
+        <!-- 페이지네이션 영역-->
+        <div class="mx-auto">
+            <ul class="pagination" id="pagination">
+                <li class="page-item">
+                    <a class="page-link" th:href="@{/memo/list?page=1}">&laquo;</a>
+                </li>
+                <!-- 이전 페이지로 이동하는 링크 -->
+                <li class="page-item" th:if="${currentPage > 1}">
+                    <a class="page-link" th:href="@{/memo/list(page=${currentPage - 1})}">&lt;</a>
+                </li>
+                <!-- 현재 페이지 주변에 페이지 번호 링크 표시 -->
+                <li class="page-item" th:each="pageNumber : ${#numbers.sequence(1, totalPages)}" th:class="${pageNumber == currentPage ? 'active' : ''}">
+                    <a class="page-link" th:href="@{/memo/list(page=${pageNumber})}" th:text="${pageNumber}"></a>
+                </li>
+                <!-- 다음 페이지로 이동하는 링크 -->
+                <li class="page-item" th:if="${currentPage < totalPages}">
+                    <a class="page-link" th:href="@{/memo/list(page=${currentPage + 1})}">&gt;</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" th:href="@{/memo/list(page=${totalPages})}">&raquo;</a>
+                </li>
+            </ul>
+        </div>
 
         <!-- 작성 버튼 영역 -->
         <div class="ms-auto" style="padding: 0 20px;">
