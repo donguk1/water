@@ -66,6 +66,8 @@ public class MemoController {
         modelMap.addAttribute("currentPage", page);
         modelMap.addAttribute("totalPages", totalPages);
 
+        log.info(this.getClass().getName() + ".페이지 번호 : " + page);
+
         log.info(this.getClass().getName() + ".controller 메모 목록 종료");
 
         return "/memo/list";
