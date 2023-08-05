@@ -17,4 +17,14 @@ public class MemoDTO {
     private String mloc;        // 지도상 장소
     private String contents;    // 글 내용
     private String map;         // 이미지 지도
+
+    private String type;        // 검색 타입(title, mloc, nick)
+
+    private String keyword;     // 검색 내용
+    private String[] typeArr;   //
+
+//    public void setType(String type) {
+//        this.type = type;
+//        this.typeArr = type.split("");
+//    }
 }

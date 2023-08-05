@@ -15,14 +15,14 @@
     </select>
 
     <!--  메모 검색 리스트(수정필요)  -->
-    <select id="selectMemoList" resultType="MemoDTO">
+    <select id="searchMemoList" resultType="MemoDTO" parameterType="MemoDTO">
         SELECT NUM,
                TITLE,
                NICK,
                TO_CHAR(DT, 'YYYY-MM-DD') AS DT,
                MLOC
         FROM MEMO
-        WHERE COLUMN_NAME LIKE '%${value}%'
+            WHERE ${type} LIKE CONCAT('%', #{keyword}, '%')
         ORDER BY NUM DESC
     </select>
 
