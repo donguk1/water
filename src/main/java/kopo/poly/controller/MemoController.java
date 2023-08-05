@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -67,7 +66,6 @@ public class MemoController {
         modelMap.addAttribute("totalPages", totalPages);
 
         log.info(this.getClass().getName() + ".페이지 번호 : " + page);
-
         log.info(this.getClass().getName() + ".controller 메모 목록 종료");
 
         return "/memo/list";
@@ -75,30 +73,56 @@ public class MemoController {
 
     /*  메모 검색 = "/memo/search" 추후 수정 필요  */
     @GetMapping(value = "/memo/search")
-    public String search(HttpServletRequest request , ModelMap modelMap) throws Exception {
+    public String search(HttpServletRequest request , ModelMap modelMap,
+                         @RequestParam(defaultValue = "1") int page,
+                         @RequestParam(value = "type") String type,
+                         @RequestParam(value = "keyword") String keyword) throws Exception {
 
         log.info(this.getClass().getName() + ".controller 메모 검색 실행");
 
-        /*  선언 및 입력  */
-        String search = CmmUtil.nvl(request.getParameter("search")); // 검색어 html 에서 가져와야함
-
         /*  데이터 확인  */
-        log.info("search : " + search);
+        log.info("search(type) : " + type);
+        log.info("search(keyword) : " + keyword);
+
+        /*  데이터 저장  */
+        MemoDTO pDTO = new MemoDTO();
+        pDTO.setType(type);
+        pDTO.setKeyword(keyword);
+
+        // 페이지당 보여줄 아이템 개수 정의
+        int itemsPerPage = 10;
 
         // 메모 리스트  검색 조회
-        List<MemoDTO> rList = memoService.searchMemoList();
+        List<MemoDTO> rList = memoService.searchMemoList(pDTO);
 
-        // 메모 리스트가 없을시 실행
-        if (rList == null) {
-            rList = new ArrayList<>();
-        }
+        // 페이지네이션을 위해 전체 아이템 개수 구하기
+        int totalItems = rList.size();
+
+        // 전체 페이지 개수 계산
+        int totalPages = (int) Math.ceil((double) totalItems / itemsPerPage);
+
+        // 현재 페이지에 해당하는 아이템들만 선택하여 rList에 할당
+        int fromIndex = (page - 1) * itemsPerPage;
+        int toIndex = Math.min(fromIndex + itemsPerPage, totalItems);
+        rList = rList.subList(fromIndex, toIndex);
+
+
+//        // 메모 리스트가 없을시 실행
+//        if (rList == null) {
+//            rList = new ArrayList<>();
+//        }
 
         // 조회된 리스트 결과값 넣어주기
         modelMap.addAttribute("rList", rList);
 
+        // 현재 페이지 정보를 넣어주기
+        modelMap.addAttribute("currentPage", page);
+        modelMap.addAttribute("totalPages", totalPages);
+
+        log.info(this.getClass().getName() + ".페이지 번호 : " + page);
         log.info(this.getClass().getName() + ".controller 메모 검색 종료");
 
-        return "/memo/list?search"+search;
+        return "/memo/list";
 
     }
 

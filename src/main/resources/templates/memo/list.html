@@ -44,31 +44,6 @@
             })
 
         })
-        // 검색 기능
-        function getSelectMemoList(){
-            $.ajax({
-                type: 'GET',
-                url : "/memo/list?search",
-                data : $("form[name=search-form]").serialize(),
-                success : function(result){
-                    //테이블 초기화
-                    $('#boardtable > tbody').empty();
-                    if(result.length>=1){
-                        result.forEach(function(item){
-                            str='<tr>'
-                            str += "<td>"+item.title+"</td>";
-                            str+="<td>"+item.nick+"</td>";
-                            str+="<td><a href = '/memo/info?num=" + item.num + "'>" + item.dt + "</a></td>";
-                            str+="<td>"
-                            // str+="<td>"+item.date+"</td>";
-                            // str+="<td>"+item.hit+"</td>";
-                            str+="</tr>"
-                            $('#boardtable').append(str);
-                        })
-                    }
-                }
-            })
-        }
 
         //상세보기 이동
         function doDetail(num) {
@@ -171,9 +146,9 @@
         </div>
 
         <!-- 검색 버튼 영역 -->
-        <form class="form-inline my-2 my-lg-0 mx-auto" action="/memo/list?search">
+        <form class="form-inline my-2 my-lg-0 mx-auto" action="/memo/search">
             <div class="input-group mb-3">
-                <select name="type">
+                <select name="type" id="type">
                     <option selected value="">검색 내용 선택</option>
                     <option value="title">제목</option>
                     <option value="nick">작성자</option>
