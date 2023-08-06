@@ -14,7 +14,8 @@
          PN,
          ULOC,
          BIRTH,
-         GENDER
+         GENDER,
+         OAUTH
          )
 
         VALUES
@@ -26,7 +27,8 @@
             #{pn},
             #{uloc},
             #{birth},
-            #{gender}
+            #{gender},
+            #{oauth}
         )
     </insert>
 
