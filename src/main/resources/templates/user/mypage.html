@@ -232,7 +232,7 @@
                         <div class="form-group">
                             <fieldset disabled="">
                                 <label class="form-label" for="disabledGender">성별</label>
-                                <div class="input-group mb-3" th:if="${rDTO.gender== null}"> <!-- 정보가 없다면 빈 박스 출력 -->
+                                <div class="input-group mb-3" th:if="${rDTO.gender != 'male' && rDTO.gender != 'female'}"> <!-- 정보가 없다면 빈 박스 출력 -->
                                     <input class="form-control" id="disabledGender" type="text" disabled="">
                                 </div>
                                 <div class="input-group mb-3" th:if="${rDTO.gender=='male'}"> <!-- male 선택시에는 남자로 출력 -->
