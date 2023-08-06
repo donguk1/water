@@ -4,8 +4,8 @@ package kopo.poly.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kopo.poly.dto.TokenDTO;
 import kopo.poly.dto.NaverDTO;
+import kopo.poly.dto.TokenDTO;
 import kopo.poly.dto.UserDTO;
 import kopo.poly.service.IUserService;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +20,10 @@ import org.springframework.ui.ModelMap;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpSession;
+import java.util.Objects;
 
 @Slf4j
 @Controller
@@ -38,7 +38,7 @@ public class NaverController {
     /* 네이버 로그인 엑세스 토큰 받기*/
     @GetMapping("/auth/naver/callback")
     public String naverCallback(String code, HttpSession session, ModelMap modelMap) throws Exception { //Data를 리턴해주는 컨트롤러 함수
-        
+
         log.info(this.getClass().getName() + ".controller 네이버 회원가입 및 로그인 실행");
 
         String msg = "";
@@ -61,7 +61,7 @@ public class NaverController {
         params.add("client_secret", "XDEHfUAMYl");
         params.add("redirect_uri", "http://localhost:11000/auth/naver/callback");
         params.add("code", code);
-        
+
         log.info("code : " + code);
 
         // HttpHeader와 HttpBody를 하나의 오브젝트에 담기
@@ -138,6 +138,13 @@ public class NaverController {
         log.info("회원가입 전 계정 중복 확인");
         String serverId = "naver_" + naverDTO.getResponse().getId();
         UserDTO userDTO = userService.getUserById(serverId);
+        
+        String gender = naverDTO.getResponse().getGender();
+        if (Objects.equals(gender, "F")) {
+            gender = "female";
+        } else if (Objects.equals(gender, "M")) {
+            gender = "male";
+        }
 
         if (userDTO == null) {
             // 서버 아이디가 DB에 없으므로 회원가입 후 로그인 처리를 수행합니다
@@ -149,7 +156,7 @@ public class NaverController {
             newUserDTO.setBirth(naverDTO.getResponse().getBirthyear() + "-" + naverDTO.getResponse().getBirthday());
             newUserDTO.setEmail(naverDTO.getResponse().getEmail());
             newUserDTO.setPn(naverDTO.getResponse().getMobile());
-            newUserDTO.setGender(naverDTO.getResponse().getGender());
+            newUserDTO.setGender(gender);
             newUserDTO.setOauth("naver");
 
             // 새로운 사용자를 DB에 저장합니다
@@ -188,4 +195,3 @@ public class NaverController {
 
 
 }
-
