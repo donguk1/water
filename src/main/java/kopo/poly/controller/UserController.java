@@ -31,12 +31,6 @@ public class UserController {
     // 서비스를 안에서 사용할 수 있게 하는 선언문
     private final IUserService userService;
 
-//    @Autowired
-//    public UserController(IUserService userService) {
-//        this.userService = userService;
-//    }
-
-
     /*  회원가입 화면으로 이동 = "/user/signup"  */
     @GetMapping(value = "/user/signup")
     public String signup() {
