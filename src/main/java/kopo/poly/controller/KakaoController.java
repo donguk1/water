@@ -4,8 +4,8 @@ package kopo.poly.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kopo.poly.dto.TokenDTO;
 import kopo.poly.dto.KakaoDTO;
-import kopo.poly.dto.KakaoUserInfoDTO;
 import kopo.poly.dto.UserDTO;
 import kopo.poly.service.IUserService;
 import lombok.RequiredArgsConstructor;
@@ -27,19 +27,14 @@ import javax.servlet.http.HttpSession;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-public class Kakaocontroller {
+public class KakaoController {
 
     private final IUserService userService;
-
-//    @Autowired
-//    public Kakaocontroller(IUserService userService) {
-//        this.userService = userService;
-//    }
 
     @Value("${cos.key}")
     private String cosKey;
 
-    /* 카카오 로그인 엑세스 토큰 받기*/
+    /* 카카오 로그인 엑세스 토큰 받기 */
     @GetMapping("/auth/kakao/callback")
     public String kakaoCallback(String code, HttpSession session, ModelMap modelMap) throws Exception { //Data를 리턴해주는 컨트롤러 함수
         
@@ -82,10 +77,10 @@ public class Kakaocontroller {
         // 객체에 담아볼 것이다. Gson, Json Simple, ObjectMapper 라이브러리가 있다.
         ObjectMapper objectMapper = new ObjectMapper();
 
-        KakaoDTO kakaoDTO = null;
+        TokenDTO tokenDTO = null;
 
         try {
-            kakaoDTO = objectMapper.readValue(response.getBody(),KakaoDTO.class);
+            tokenDTO = objectMapper.readValue(response.getBody(), TokenDTO.class);
         } catch (JsonMappingException e) {
             log.info(e.toString());
             e.printStackTrace();
@@ -94,14 +89,14 @@ public class Kakaocontroller {
             e.printStackTrace();
         }
 
-        log.info("카카오 엑세스 토큰 : " + kakaoDTO.getAccess_token());
+        log.info("카카오 엑세스 토큰 : " + tokenDTO.getAccess_token());
 
         // http 요청을 편하게 할 수 있다. Retrofit2, OkHttp, RestTemplate 라이브러리가 있다.
         RestTemplate rt2 = new RestTemplate();
 
         // HttpHeader 오브젝트 생성
         HttpHeaders headers2 = new HttpHeaders();
-        headers2.add("Authorization", "Bearer " + kakaoDTO.getAccess_token());
+        headers2.add("Authorization", "Bearer " + tokenDTO.getAccess_token());
         headers2.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
         // HttpHeader와 HttpBody를 하나의 오브젝트에 담기
@@ -116,9 +111,9 @@ public class Kakaocontroller {
         );
 
         ObjectMapper objectMapper2 = new ObjectMapper();
-        KakaoUserInfoDTO kakaoUserInfoDTO = null;
+        KakaoDTO kakaoDTO = null;
         try {
-            kakaoUserInfoDTO = objectMapper2.readValue(response2.getBody(),KakaoUserInfoDTO.class);
+            kakaoDTO = objectMapper2.readValue(response2.getBody(), KakaoDTO.class);
         } catch (JsonMappingException e) {
             log.info(e.toString());
             e.printStackTrace();
@@ -127,19 +122,18 @@ public class Kakaocontroller {
             e.printStackTrace();
         }
 
-        log.info(".카카오 아이디(번호) : " + kakaoUserInfoDTO.getId());
-        log.info(".카카오 이메일 : " + kakaoUserInfoDTO.getKakao_account().getEmail());
-        log.info(".카카오 생일 : " + kakaoUserInfoDTO.getKakao_account().getBirthday());
-        log.info(".카카오 성별 : " + kakaoUserInfoDTO.getKakao_account().getGender());
-        log.info(".카카오 닉네임 : " + kakaoUserInfoDTO.getProperties().getNickname());
+        log.info(".카카오 아이디(번호) : " + kakaoDTO.getId());
+        log.info(".카카오 이메일 : " + kakaoDTO.getKakao_account().getEmail());
+        log.info(".카카오 생일 : " + kakaoDTO.getKakao_account().getBirthday());
+        log.info(".카카오 성별 : " + kakaoDTO.getKakao_account().getGender());
+        log.info(".카카오 닉네임 : " + kakaoDTO.getProperties().getNickname());
 
-        log.info(".서버 아이디(예정) : " + kakaoUserInfoDTO.getKakao_account().getEmail() + "_" + kakaoUserInfoDTO.getId());
-        log.info(".서버 이메일(예정) : " + kakaoUserInfoDTO.getKakao_account().getEmail());
-        log.info(".서버 패스워드(예정) : " + cosKey);
+        log.info(".서버 아이디 : " + "kakao_" + kakaoDTO.getId());
+        log.info(".서버 패스워드 : " + cosKey);
 
         // 서버 아이디가 DB에 있는지 확인합니다
         log.info("회원가입 전 계정 중복 확인");
-        String serverId = kakaoUserInfoDTO.getKakao_account().getEmail() + "_" + kakaoUserInfoDTO.getId();
+        String serverId = "kakao_" + kakaoDTO.getId();
         UserDTO userDTO = userService.getUserById(serverId);
 
         if (userDTO == null) {
@@ -147,14 +141,14 @@ public class Kakaocontroller {
             log.info("계정 없으므로 회원 가입 실행");
             UserDTO newUserDTO = new UserDTO();
             newUserDTO.setId(serverId);
-            newUserDTO.setNick(kakaoUserInfoDTO.getProperties().getNickname());
-            newUserDTO.setEmail(kakaoUserInfoDTO.getKakao_account().getEmail());
+            newUserDTO.setNick(kakaoDTO.getProperties().getNickname());
+            newUserDTO.setEmail(kakaoDTO.getKakao_account().getEmail());
             newUserDTO.setPw(cosKey); // 새로운 사용자의 적절한 비밀번호로 대체해야 합니다.
             newUserDTO.setOauth("kakao");
 
             // 추가로 저장할 카카오 정보들도 DTO에 추가합니다
 //            newUserDTO.setBirth(kakaoUserInfoDTO.getKakao_account().getBirthday()); /* 년도는 못 가져옴, 그래서 일단 주석처리 */
-            newUserDTO.setGender(kakaoUserInfoDTO.getKakao_account().getGender());
+            newUserDTO.setGender(kakaoDTO.getKakao_account().getGender());
 
             // 새로운 사용자를 DB에 저장합니다
             res = userService.insertUser(newUserDTO);
@@ -163,13 +157,13 @@ public class Kakaocontroller {
                 // 회원가입 성공
                 log.info("회원가입 성공");
                 session.setAttribute("SS_ID", serverId);
-                session.setAttribute("SS_NICK", kakaoUserInfoDTO.getProperties().getNickname());
+                session.setAttribute("SS_NICK", kakaoDTO.getProperties().getNickname());
 
-                msg = "회원가입에 성공했습니다. \n로그인이 성공했습니다. \n" + kakaoUserInfoDTO.getProperties().getNickname() + "님 환영합니다.";
+                msg = "회원가입에 성공했습니다. \n로그인이 성공했습니다. \n" + kakaoDTO.getProperties().getNickname() + "님 환영합니다.";
                 url = "/main";
             } else {
                 // 회원가입 실패
-                log.info("회원가입 실해");
+                log.info("회원가입 실패");
             }
         } else {
             // 서버 아이디가 DB에 이미 존재하므로 로그인 처리를 수행합니다
