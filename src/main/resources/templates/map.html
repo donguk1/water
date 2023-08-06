@@ -34,6 +34,20 @@
     <script type="text/javascript" src="/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/js/bootstrap.bundle.js"></script>
     <script th:inline="javascript">
+        // HTML로딩이 완료되고, 실행됨
+        $(document).ready(function () {
+
+            // 버튼 클릭했을때, 발생되는 이벤트 생성함(onclick 이벤트와 동일함)
+            $("#btnReg").on("click", function () {
+                if (![[${session.SS_ID}]]) {
+                    alert("로그인이 필요한 서비스입니다.");
+                    return location.href = "/user/login";
+                }
+                location.href = "/memo/new"; // 글 작성하는 창으로 이동
+            })
+
+        })
+
         /* back to top 클릭시 주소창에 #top 추가 안되게 함*/
         document.addEventListener("DOMContentLoaded", function () {
             var topLink = document.querySelector('a[href="#top"]');
@@ -96,7 +110,8 @@
                     <p>다른 정보</p>
                     <br>
                     <p>다른 정보</p>
-                    <button id="btnSaveAndWrite">글등록</button>
+                    <button type="button" class="btn btn-outline-dark" id="btnReg">글작성</button>
+                    <!-- 메모 작성하는 페이지로 넘어가게 해놨으니 데이터 끌고서 넘어갈 수 있도록 손봐주세요 -->
 
                     <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=9f7b1b926be42fe85ba854921b7d037e"></script>
                     <script>
