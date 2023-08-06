@@ -28,6 +28,21 @@
             }
 
         }
+
+        // HTML로딩이 완료되고, 실행됨
+        $(document).ready(function () {
+
+            // 네이버 로그인
+            $("#btnNaverLogin").on("click", function () {
+                location.href = "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=twt6vN_j4GmLOQgE_RUJ&state=watem&redirect_uri=http://localhost:11000/auth/naver/callback";
+            })
+
+            // 카카오 로그인
+            $("#btnKakaoLogin").on("click", function () {
+                location.href = "https://kauth.kakao.com/oauth/authorize?client_id=dd3d60b3f3cd9de73af963a2feb15b30&redirect_uri=http://localhost:11000/auth/kakao/callback&response_type=code&scope=profile_nickname,account_email,gender,birthday";
+            })
+
+        })
     </script>
 </head>
 <body>
@@ -70,12 +85,9 @@
             <div id="other_login" class="otherButton text-center">
                 <span class="text-secondary">다른 계정으로 로그인</span>
                 <!-- 네이버 로그인 API 가져와야 함 -->
-                <button type="button" id="btnNaverLogin" class="btn"><img src="/img/naverIcon.png" style="width: 40px;height: 40px;"></button>
-                <!-- 카카오 로그인 API 가져와야 함 -->
-<!--                <a href="https://kauth.kakao.com/oauth/authorize?client_id=a9cf415eff39557471ef2d61bda1b541&redirect_uri=http://localhost:11000/kakao/login&response_type=code">-->
-                <a href="https://kauth.kakao.com/oauth/authorize?client_id=dd3d60b3f3cd9de73af963a2feb15b30&redirect_uri=http://localhost:11000/auth/kakao/callback&response_type=code&scope=profile_nickname,account_email,gender,birthday"> <!--테스트중 코드-->
-                    <button type="button" class="btn"><img src="/img/kakaoIcon.png" alt="&copy;https://www.flaticon.com/kr/free-icon/kakao-talk_3991999" style="width: 40px;height: 40px;"></button>
-                </a>
+                    <button type="button" id="btnNaverLogin" class="btn"><img src="/img/naverIcon.png" alt="네이버로그인" style="width: 40px;height: 40px;"></button>
+                <!-- 카카오 로그인 API -->
+                    <button type="button" id="btnKakaoLogin" class="btn"><img src="/img/kakaoIcon.png" alt="카카오로그인" style="width: 40px;height: 40px;"></button>
             </div>
             <br>
             <div class="row" style="text-align: center">
