@@ -166,7 +166,7 @@ public class Kakaocontroller {
                 session.setAttribute("SS_NICK", kakaoUserInfoDTO.getProperties().getNickname());
 
                 msg = "회원가입에 성공했습니다. \n로그인이 성공했습니다. \n" + kakaoUserInfoDTO.getProperties().getNickname() + "님 환영합니다.";
-                url = "/watem";
+                url = "/main";
             } else {
                 // 회원가입 실패
                 log.info("회원가입 실해");
@@ -179,7 +179,7 @@ public class Kakaocontroller {
             session.setAttribute("SS_NICK", userDTO.getNick());
 
             msg = "로그인이 성공했습니다. \n" + userDTO.getNick() + "님 환영합니다.";
-            url = "/watem";
+            url = "/main";
         }
 
         modelMap.addAttribute("msg", msg);
