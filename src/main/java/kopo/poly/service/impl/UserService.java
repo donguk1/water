@@ -98,6 +98,12 @@ public class UserService implements IUserService {
         return rDTO;
     }
 
+    // 서버 아이디로 사용자 정보를 조회하는 메서드 구현
+    @Override
+    public UserDTO getUserById(String id) throws Exception {
+        return userMapper.getUserById(id);
+    }
+
 
     /*  여기서부턴 확인 필요  */
     /*  회원정보 표시(마이페이지)  */

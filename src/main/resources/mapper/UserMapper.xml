@@ -54,6 +54,13 @@
         WHERE NICK = #{nick};
     </select>
 
+    <!-- 서버 아이디로 사용자 정보를 조회하는 쿼리 -->
+    <select id="getUserById" parameterType="UserDTO" resultType="UserDTO">
+        SELECT *
+        FROM USER
+        WHERE id = #{id}
+    </select>
+
     <!--  회원정보 표시(패스워드 미표시)  -->
     <select id="selectUser" parameterType="UserDTO" resultType="UserDTO">
         SELECT

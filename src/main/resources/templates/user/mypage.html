@@ -235,10 +235,10 @@
                                 <div class="input-group mb-3" th:if="${rDTO.gender== null}"> <!-- 정보가 없다면 빈 박스 출력 -->
                                     <input class="form-control" id="disabledGender" type="text" disabled="">
                                 </div>
-                                <div class="input-group mb-3" th:if="${rDTO.gender=='m'}"> <!-- m 선택시에는 남자로 출력 -->
+                                <div class="input-group mb-3" th:if="${rDTO.gender=='male'}"> <!-- male 선택시에는 남자로 출력 -->
                                     <input class="form-control" id="disabledGender1" type="text" value="남자" disabled="">
                                 </div>
-                                <div class="input-group mb-3" th:if="${rDTO.gender=='f'}"> <!-- f 선택시에는 여자로 출력 -->
+                                <div class="input-group mb-3" th:if="${rDTO.gender=='female'}"> <!-- f 선택시에는 여자로 출력 -->
                                     <input class="form-control" id="disabledGender2" type="text" value="여자" disabled="">
                                 </div>
                             </fieldset>
