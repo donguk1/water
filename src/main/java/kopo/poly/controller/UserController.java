@@ -276,6 +276,18 @@ public class UserController {
         /*  id = P.K  */
         String id = CmmUtil.nvl((String) session.getAttribute("SS_ID"));
 
+        if (id == "") {
+            log.info("로그인 정보 없음");
+
+            String msg = "로그인 정보가 없습니다.";
+            String url = "/user/login";
+
+            modelMap.addAttribute("msg", msg);
+            modelMap.addAttribute("url", url);
+
+            return "/redirect";
+        }
+
         /*  값 전달은 반드시 pDTO 객체 이용 처리  */
         UserDTO pDTO = new UserDTO();
         pDTO.setId(id);
