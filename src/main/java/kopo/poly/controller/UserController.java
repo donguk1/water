@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -99,6 +100,8 @@ public class UserController {
             pDTO.setBirth(birth);
             pDTO.setGender(gender);
             pDTO.setOauth(oauth);
+
+            log.info(String.valueOf(pDTO));
 
             /*  회원가입  */
             res = userService.insertUser(pDTO);
@@ -393,7 +396,74 @@ public class UserController {
 
     /*  pw 재설정  */
 
+    /*  아이디 찾기 화면 이동  */
+    @GetMapping(value = "/user/find")
+    public String findId() {
+
+        log.info(this.getClass().getName() + ".controller 아이디 찾기 화면으로 이동");
+
+        return "/user/find";
+    }
+
     /*  아이디 찾기(현재 페이지 존재하지 않음)  */
+    @PostMapping(value = "/user/findid")
+    public String findId(HttpServletRequest request, ModelMap modelMap) throws Exception {
+
+        log.info(this.getClass().getName() + ".controller 아이디 찾기 실행");
+
+        String msg = "";
+        String url = "";
+
+        // 데이터 입력
+        String email = CmmUtil.nvl(request.getParameter("email"));
+        String pn = CmmUtil.nvl(request.getParameter("pn"));
+
+        // 데이터 확인
+        log.info("email : " + email);
+        log.info("pn : " + pn);
+
+        if (Objects.equals(email, "") && Objects.equals(pn, "")) {
+            log.info("이메일과 전화번호가 일치하는 아이디 없음");
+
+            msg = "이메일과 전화번호가 일치하는 아이디가 없습니다. \n다시 확인해주세요";
+
+            modelMap.addAttribute("msg", msg);
+        } else if (Objects.equals(email, "")) {
+            log.info("이메일 없음");
+
+            msg = "일치하는 이메일이 없습니다.";
+//            url = "/user/findid";
+
+            modelMap.addAttribute("msg", msg);
+//            modelMap.addAttribute("url", url);
+
+        } else if (Objects.equals(pn, "")) {
+            log.info("전번 없음");
+
+            msg = "일치하는 번호가 없습니다.";
+
+            modelMap.addAttribute("msg", msg);
+
+        }
+
+        // 데이터 저장
+        UserDTO pDTO = new UserDTO();
+        pDTO.setEmail(email);
+        pDTO.setPn(pn);
+
+        UserDTO id = userService.findId(pDTO);
+
+        if (id == "") {
+
+        }
+
+
+
+
+
+
+        return "/redirect";
+    }
 
     /*  패스워드 찾기(현재 페이지 존재하지 않음)  */
 
