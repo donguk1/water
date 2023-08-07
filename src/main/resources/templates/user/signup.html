@@ -152,6 +152,12 @@
                 return;
             }
 
+            if (f.uloc.value === "지역선택") {
+                alert("지역을 선택해주세요.");
+                f.uloc.focus();
+                return;
+            }
+
         }
     </script>
 </head>
@@ -210,14 +216,15 @@
                         <div class="form-group" >
                           <label for="SelectUloc" class="form-label mt-4">거주지역</label>
                           <select class="form-select" id="SelectUloc" name="uloc" style="font-family: 'Noto Sans KR', sans-serif;">
-                            <option>서울</option>
-                            <option>경기</option>
-                            <option>강원</option>
-                            <option>충청</option>
-                            <option>전라</option>
-                            <option>경상</option>
-                            <option>전라</option>
-                            <option>제주</option>
+                            <option value="지역선택">지역선택</option>
+                            <option value="서울">서울</option>
+                            <option value="경기">경기</option>
+                            <option value="강원">강원</option>
+                            <option value="충청">충청</option>
+                            <option value="전라">전라</option>
+                            <option value="경상">경상</option>
+                            <option value="전라">전라</option>
+                            <option value="제주">제주</option>
                           </select>
                         </div>
                         <!-- 생년월일 입력 영역 -->

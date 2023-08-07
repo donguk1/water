@@ -214,6 +214,7 @@
                             <label for="SelectUloc" class="form-label mt-4">거주지역</label>
                             <div class="input-group mb-3">
                                 <select class="form-select" id="SelectUloc" style="font-family: 'Noto Sans KR', sans-serif;" name="uloc">
+                                    <option value="지역선택" th:selected="${rDTO.uloc == null}">지역선택</option>
                                     <option value="서울" th:selected="${rDTO.uloc == '서울'}">서울</option>
                                     <option value="경기" th:selected="${rDTO.uloc == '경기'}">경기</option>
                                     <option value="강원" th:selected="${rDTO.uloc == '강원'}">강원</option>
