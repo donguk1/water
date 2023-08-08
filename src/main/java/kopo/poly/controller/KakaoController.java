@@ -34,6 +34,15 @@ public class KakaoController {
     @Value("${cos.key}")
     private String cosKey;
 
+    @Value("${kakao.client_id}")
+    private String kakaoClientId;
+
+    @Value("${kakao.redirect_uri}")
+    private String kakaoRedirectUri;
+
+    @Value("${kakao.href}")
+    private String kakaoHref;
+
     /* 카카오 로그인 엑세스 토큰 받기 */
     @GetMapping("/auth/kakao/callback")
     public String kakaoCallback(String code, HttpSession session, ModelMap modelMap) throws Exception { //Data를 리턴해주는 컨트롤러 함수
@@ -56,8 +65,8 @@ public class KakaoController {
         // HttpBody 오브젝트 생성
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
-        params.add("client_id", "dd3d60b3f3cd9de73af963a2feb15b30");
-        params.add("redirect_url", "http://localhost:11000/auth/kakao/callback");
+        params.add("client_id", kakaoClientId);
+        params.add("redirect_uri", kakaoRedirectUri);
         params.add("code", code);
         
         log.info("code : " + code);
@@ -178,6 +187,7 @@ public class KakaoController {
 
         modelMap.addAttribute("msg", msg);
         modelMap.addAttribute("url", url);
+        modelMap.addAttribute("href", kakaoHref);
 
         log.info(this.getClass().getName() + ".controller 카카오 회원가입 및 로그인 종료");
 
