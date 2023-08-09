@@ -40,9 +40,6 @@ public class KakaoController {
     @Value("${kakao.redirect_uri}")
     private String kakaoRedirectUri;
 
-    @Value("${kakao.href}")
-    private String kakaoHref;
-
     /* 카카오 로그인 엑세스 토큰 받기 */
     @GetMapping("/auth/kakao/callback")
     public String kakaoCallback(String code, HttpSession session, ModelMap modelMap) throws Exception { //Data를 리턴해주는 컨트롤러 함수
@@ -187,7 +184,6 @@ public class KakaoController {
 
         modelMap.addAttribute("msg", msg);
         modelMap.addAttribute("url", url);
-        modelMap.addAttribute("href", kakaoHref);
 
         log.info(this.getClass().getName() + ".controller 카카오 회원가입 및 로그인 종료");
 

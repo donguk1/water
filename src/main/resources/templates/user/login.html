@@ -29,17 +29,20 @@
 
         }
 
+        var kakaoHref = [[${@environment.getProperty('kakao.href')}]];
+        var naverHref = [[${@environment.getProperty('naver.href')}]];
+
         // HTML로딩이 완료되고, 실행됨
         $(document).ready(function () {
 
             // 네이버 로그인
             $("#btnNaverLogin").on("click", function () {
-                location.href = "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=twt6vN_j4GmLOQgE_RUJ&state=watem&redirect_uri=http://localhost:11000/auth/naver/callback";
+                location.href = naverHref;
             })
 
             // 카카오 로그인
             $("#btnKakaoLogin").on("click", function () {
-                location.href = "https://kauth.kakao.com/oauth/authorize?client_id=dd3d60b3f3cd9de73af963a2feb15b30&redirect_uri=http://localhost:11000/auth/kakao/callback&response_type=code&scope=profile_nickname,account_email,gender,birthday";
+                location.href = kakaoHref;
             })
 
         })
