@@ -12,8 +12,23 @@
     <script type="text/javascript" src="/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/js/bootstrap.bundle.js"></script>
     <script th:inline="javascript">
-        function checkInputData() {
+
+        $(document).ready(function() {
+
             let f = document.getElementById("f"); // form 태그
+
+            $("#btnFindId").on("click", function () { // 버튼 클릭했을때, 발생되는 이벤트 생성함(onclick 이벤트와 동일함)
+                checkInputData(f)
+
+            })
+            $("#btnFindPw").on("click", function () { // 버튼 클릭했을때, 발생되는 이벤트 생성함(onclick 이벤트와 동일함)
+                checkInputData(f)
+
+            })
+
+        })
+        // 아이디 찾기
+        function checkInputData() {
 
             if (f.email.value === "") {
                 alert("이메일를 입력하세요.");
@@ -26,6 +41,29 @@
                 f.pn.focus();
                 return false;
             }
+            // Ajax 호출해서 회원가입하기
+            $.ajax({
+                    url: "/user/findid",
+                    type: "post", // 전송방식은 Post
+                    dataType: "JSON", // 전송 결과는 JSON으로 받기
+                    data: $("#f").serialize(), // form 태그 내 input 등 객체를 자동으로 전송할 형태로 변경하기
+                    success: function (json) { // 호출이 성공했다면..
+
+                        let msg = [[${msg}]];
+
+                        if (json.id !== "null" || json.id !== null) {
+                            alert("아이디는 " + json.id + "입니다.");
+                            // f.id.focus();
+
+                        } else {
+                            alert(msg + "아이디가 없습니다. 다시 확인해주세요");
+                        }
+
+                        location.href = "/user/find";
+                    }
+                }
+
+            )
 
         }
 
@@ -52,7 +90,7 @@
                     <h1 style="font-family: 'Do Hyeon', sans-serif;">아이디 찾기</h1>
                 </div>
                 <br>
-                <form action="/user/findid" method="post" onsubmit="checkInputData()" id="f" class="mx-auto" style="width:80%;">
+                <form action="/user/findId" method="post" onsubmit="checkInputData()" id="f" class="mx-auto" style="width:80%;">
                     <!-- 이메일 입력 영역 -->
                     <div class="form-group">
                         <input type="text" class="form-control" name="email" placeholder="이메일">

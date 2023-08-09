@@ -104,6 +104,18 @@ public class UserService implements IUserService {
         return userMapper.getUserById(id);
     }
 
+    @Override
+    public UserDTO findId(UserDTO pDTO) throws Exception {
+
+        log.info(this.getClass().getName() + ".id 찾기 시작");
+
+        UserDTO rDTO = userMapper.findId(pDTO);
+
+        log.info(this.getClass().getName() + ".id 찾기 종료");
+
+        return rDTO;
+    }
+
 
     /*  여기서부턴 확인 필요  */
     /*  회원정보 표시(마이페이지)  */

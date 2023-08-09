@@ -95,6 +95,12 @@
         WHERE ID = #{id}
     </update>
 
+    <!--  id 찾기  -->
+    <select id="findId" resultType="UserDTO" parameterType="UserDTO">
+        SELECT ID
+        FROM USER
+        WHERE EMAIL = #{email} AND PN = #{pn}
+    </select>
 
 
 

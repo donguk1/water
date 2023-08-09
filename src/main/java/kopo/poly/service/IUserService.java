@@ -19,6 +19,9 @@ public interface IUserService {
     // 서버 아이디로 사용자 정보를 조회하는 메서드
     UserDTO getUserById(String id) throws Exception;
 
+    // 아이디 찾기
+    UserDTO findId(UserDTO pDTO) throws Exception;
+
 
 
     /* 여기서부턴 확인 필요 */
