@@ -35,6 +35,15 @@ public class NaverController {
     @Value("${cos.key}")
     private String cosKey;
 
+    @Value("${naver.client_id}")
+    private String naverClientId;
+
+    @Value("${naver.client_secret}")
+    private String naverClientSecret;
+
+    @Value("${naver.redirect_uri}")
+    private String naverRedirectUri;
+
     /* 네이버 로그인 엑세스 토큰 받기*/
     @GetMapping("/auth/naver/callback")
     public String naverCallback(String code, HttpSession session, ModelMap modelMap) throws Exception { //Data를 리턴해주는 컨트롤러 함수
@@ -57,9 +66,9 @@ public class NaverController {
         // HttpBody 오브젝트 생성
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
-        params.add("client_id", "twt6vN_j4GmLOQgE_RUJ");
-        params.add("client_secret", "XDEHfUAMYl");
-        params.add("redirect_uri", "http://localhost:11000/auth/naver/callback");
+        params.add("client_id", naverClientId);
+        params.add("client_secret", naverClientSecret);
+        params.add("redirect_uri", naverRedirectUri);
         params.add("code", code);
 
         log.info("code : " + code);
