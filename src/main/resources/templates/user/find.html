@@ -2,7 +2,7 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:c="http://www.w3.org/1999/XSL/Transform">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>WATEM : 로그인</title>
+    <title>WATEM : 계정찾기</title>
     <link rel="stylesheet" type="text/css" href="/css/bootstrap.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -64,6 +64,42 @@
 
         }
 
+        /* 전화번호 입력시 하이픈 자동 입력 */
+        var autoHypenPhone = function(str){
+            str = str.replace(/[^0-9]/g, '');
+            var tmp = '';
+            if( str.length < 4){
+                return str;
+            }else if(str.length < 7){
+                tmp += str.substr(0, 3);
+                tmp += '-';
+                tmp += str.substr(3);
+                return tmp;
+            }else if(str.length < 11){
+                tmp += str.substr(0, 3);
+                tmp += '-';
+                tmp += str.substr(3, 3);
+                tmp += '-';
+                tmp += str.substr(6);
+                return tmp;
+            }else{
+                tmp += str.substr(0, 3);
+                tmp += '-';
+                tmp += str.substr(3, 4);
+                tmp += '-';
+                tmp += str.substr(7);
+                return tmp;
+            }
+
+            return str;
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            var pn = document.getElementById('pn');
+
+            pn.addEventListener('keyup', function() {
+                this.value = autoHypenPhone(this.value);
+            });
+        });
     </script>
 </head>
 <body>
@@ -82,30 +118,32 @@
     <!-- 내용 부분 -->
     <div class="card mb-3 mx-auto" style=" width: 95%; font-family: 'Noto Sans KR', sans-serif;">
         <div class="card-body">
+            <!-- 아이디 찾기 영역 -->
             <div class="card mb-3" style="width: 49%; height: 400px; float: left">
                 <div class="card-body mx-auto">
                     <h1 style="font-family: 'Do Hyeon', sans-serif;">아이디 찾기</h1>
                 </div>
                 <br>
-                <form action="/user/findId" method="post" onsubmit="check InputData()" id="f" class="mx-auto" style="width:80%;">
+                <form action="/user/findId" method="post" onsubmit="checkInputData()" id="f" class="mx-auto" style="width:80%;">
                     <!-- 이메일 입력 영역 -->
                     <div class="form-group">
-                        <input type="text" class="form-control" name="email" placeholder="이메일">
+                        <input type="email" class="form-control" name="email" placeholder="이메일">
                     </div>
                     <br>
                     <!-- 번호 입력 영역 -->
                     <div class="form-group">
-                        <input type="password" class="form-control" name="pn" placeholder="핸드폰 번호">
+                        <input type="text" class="form-control" name="pn" maxlength="13" placeholder="핸드폰 번호">
                     </div>
                     <br>
                     <br><br>
                 </form>
                 <!-- 아이디 찾기 버튼 영역 -->
-                <div class="d-grid gap-2">
+                <div class="d-grid gap-2 mx-auto" style="width: 80%">
                     <button id="btnFindId" class="btn btn-primary btn-lg" type="submit">아이디 찾기</button>
                 </div>
                 <br>
             </div>
+            <!-- 비밀번호 찾기 영역 (수정중) -->
             <div class="card mb-3" style="width: 49%; height: 400px; float: right">
                 <div class="card-body mx-auto">
                     <h1 style="font-family: 'Do Hyeon', sans-serif;">비밀번호 찾기</h1>
@@ -119,12 +157,12 @@
                     <br>
                     <!-- 이메일 입력 영역 -->
                     <div class="form-group">
-                        <input type="text" class="form-control" name="email" placeholder="이메일">
+                        <input type="email" class="form-control" name="email" placeholder="이메일">
                     </div>
                     <br>
                     <!-- 번호 입력 영역 -->
                     <div class="form-group">
-                        <input type="password" class="form-control" name="pn" placeholder="핸드폰 번호">
+                        <input type="text" class="form-control" name="pn" maxlength="13" placeholder="핸드폰 번호">
                     </div>
                     <br>
                     <br>
@@ -143,7 +181,7 @@
             <div class="mx-auto">
                 <button type="button" class="btn btn-link text-secondary" onclick="location.href='http://localhost:11000/user/signup'">회원가입</button>
             </div>
-            <!-- 로그인 -->
+            <!-- 로그인 버튼 영역 -->
             <div class="mx-auto">
                 <button type="button" class="btn btn-link text-secondary" onclick="location.href='http://localhost:11000/user/login'">로그인</button>
             </div>
