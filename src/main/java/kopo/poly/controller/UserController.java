@@ -405,12 +405,9 @@ public class UserController {
     /*  아이디 찾기(현재 페이지 존재하지 않음)  */
     @ResponseBody
     @PostMapping(value = "/user/findid")
-    public UserDTO findId(HttpServletRequest request, ModelMap modelMap) throws Exception {
+    public UserDTO findId(HttpServletRequest request) throws Exception {
 
         log.info(this.getClass().getName() + ".controller 아이디 찾기 실행");
-
-        String msg = "";
-        String url = "";
 
         // 데이터 입력
         String email = CmmUtil.nvl(request.getParameter("email"));
@@ -420,54 +417,28 @@ public class UserController {
         log.info("email : " + email);
         log.info("pn : " + pn);
 
-//        if (Objects.equals(email, "") && Objects.equals(pn, "")) {
-//            log.info("이메일과 전화번호가 존재하지 않음.");
-//
-//            msg = "이메일과 전화번호가 존재하지 않습니다.. \n다시 확인해주세요";
-//
-//            modelMap.addAttribute("msg", msg);
-//        } else if (Objects.equals(email, "")) {
-//            log.info("이메일 없음");
-//
-//            msg = "이메일이 존재하지 않습니다.";
-////            url = "/user/findid";
-//
-//            modelMap.addAttribute("msg", msg);
-////            modelMap.addAttribute("url", url);
-//
-//        } else if (Objects.equals(pn, "")) {
-//            log.info("전번 없음");
-//
-//            msg = "번호가 존재하지 않습니다.";
-//
-//            modelMap.addAttribute("msg", msg);
-//
-//        }
-
         // 데이터 저장
         UserDTO pDTO = new UserDTO();
         pDTO.setEmail(email);
         pDTO.setPn(pn);
 
         UserDTO rDTO = Optional.ofNullable(userService.findId(pDTO)).orElseGet(UserDTO::new);
-//        UserDTO rDTO = userService.findId(pDTO);
 
         log.info(rDTO.getId());
-
-        if (rDTO.getId() == "null" || rDTO.getId() == null) {
-            log.info("일치하는 아이디 없음");
-            msg = "일치하는 아이디가 없습니다.";
-
-            modelMap.addAttribute("msg", msg);
-        } else {
-            log.info("일치하는 아이디 : " + rDTO.getId());
-        }
 
         log.info(this.getClass().getName() + ".controller 아이디 찾기 종료");
 
         return rDTO;
     }
 
+    /*  패스워드 재설정 창으로 이동  */
+    @GetMapping(value = "/user/updatepw")
+    public String updatepw() {
+
+        log.info(this.getClass().getName() + ".controller 비번 재설정 화면으로 이동");
+
+        return "/user/updatepw";
+    }
     /*  패스워드 찾기(현재 페이지 존재하지 않음)  */
 
 

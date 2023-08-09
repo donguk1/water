@@ -25,14 +25,44 @@
 
             // 아이디 중복체크
             $("#btnId").on("click", function () { // 버튼 클릭했을때, 발생되는 이벤트 생성함(onclick 이벤트와 동일함)
+                const element = document.getElementById('id');
+                element.classList.remove('is-invalid')
+                element.classList.remove('is-valid')
+
                 userIdExists(f)
 
+                setTimeout(function () {
+                    if (userIdCheck === "Y") {
+                        element.classList.add('is-invalid')
+
+                    } else if (userIdCheck === "N") {
+                        element.classList.add('is-valid')
+
+                    }
+                }, 100)
             })
 
             // 닉네임 중복체크
             $("#btnNick").on("click", function () { // 버튼 클릭했을때, 발생되는 이벤트 생성함(onclick 이벤트와 동일함)
+                const element = document.getElementById('nick');
+                element.classList.remove('is-invalid')
+                element.classList.remove('is-valid')
+
                 userNickExists(f)
 
+                setTimeout(function () {
+                if (userNickCheck === "Y") {
+                        document.getElementById('nick').className += ' is-invalid'
+                        if (document.getElementsByClassName('is-valid')) {
+                            frameElement.classList.remove('is-valid')
+                        }
+                    } else if (userNickCheck === "N"){
+                        document.getElementById('nick').className += ' is-valid'
+                        if (document.getElementsByClassName('is-invalid')) {
+                            frameElement.classList.remove('is-invalid')
+                        }
+                    }
+                }, 100)
             })
 
             // 회원가입
@@ -50,6 +80,8 @@
                 return;
             }
 
+
+
             // Ajax 호출해서 회원가입하기
             $.ajax({
                     url: "/user/getUserIdExists",
@@ -61,6 +93,7 @@
                         if (json.exists_yn === "Y") {
                             alert("이미 가입된 아이디가 존재합니다.");
                             f.id.focus();
+                            userIdCheck = "Y";
 
                         } else {
                             alert("가입 가능한 아이디입니다.");
@@ -92,6 +125,7 @@
                         if (json.exists_yn === "Y") {
                             alert("이미 가입된 닉네임이 존재합니다.");
                             f.nick.focus();
+                            userNickCheck = "Y";
 
                         } else {
                             alert("가입 가능한 닉네임입니다.");
@@ -166,6 +200,12 @@
 
         }
     </script>
+
+    <style>
+        #is-valid{
+            display: none;
+        }
+    </style>
 </head>
 <body>
 <!-- 로그인 페이지 -->
@@ -188,9 +228,14 @@
                         <legend style="font-size: 34px;">회원가입</legend>
                         <!-- 아이디 입력 영역 -->
                         <label for="id" class="form-label mt-4">아이디</label>
-                        <div class="input-group mb-3">
-                            <input type="text" name="id" id="id" class="form-control" placeholder="ID" aria-label="Recipient's id" aria-describedby="btnId">
-                            <button class="btn btn-primary" type="button" id="btnId">확인</button>
+                        <div class="form-group has-success">
+                            <div class="input-group mb-3">
+                                <input type="text" name="id" id="id" class="form-control" placeholder="ID" aria-label="Recipient's id" aria-describedby="btnId">
+                                <button class="btn btn-primary" type="button" id="btnId">확인</button>
+                            </div>
+                            <div class="valid-feedback">
+                                확인 되었습니다.
+                            </div>
                         </div>
                         <!-- 닉네임 입력 영역 -->
                         <label for="nick" class="form-label mt-4">닉네임</label>

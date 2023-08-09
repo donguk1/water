@@ -25,6 +25,8 @@ public interface IUserMapper {
     // 아이디 찾기
     UserDTO findId(UserDTO pDTO) throws Exception;
 
+    // pw 재설정
+    UserDTO updatePw(UserDTO pDTO) throws Exception;
 
 
 
@@ -36,8 +38,6 @@ public interface IUserMapper {
     // 회원정보 수정
     void updateUser(UserDTO pDTO) throws Exception;
 
-    // pw 재설정
-    UserDTO updatePw(UserDTO pDTO) throws Exception;
 
 
 }
