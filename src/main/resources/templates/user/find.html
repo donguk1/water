@@ -41,7 +41,8 @@
                 f.pn.focus();
                 return false;
             }
-            // Ajax 호출해서 회원가입하기
+
+            // Ajax 호출해서 아이디 찾기
             $.ajax({
                     url: "/user/findid",
                     type: "post", // 전송방식은 Post
@@ -49,17 +50,13 @@
                     data: $("#f").serialize(), // form 태그 내 input 등 객체를 자동으로 전송할 형태로 변경하기
                     success: function (json) { // 호출이 성공했다면..
 
-                        let msg = [[${msg}]];
-
-                        if (json.id !== "null" || json.id !== null) {
+                        if (json.id !== null) {
                             alert("아이디는 " + json.id + "입니다.");
                             // f.id.focus();
 
                         } else {
-                            alert(msg + "아이디가 없습니다. 다시 확인해주세요");
+                            alert("아이디가 없습니다. 다시 확인해주세요");
                         }
-
-                        location.href = "/user/find";
                     }
                 }
 
@@ -90,7 +87,7 @@
                     <h1 style="font-family: 'Do Hyeon', sans-serif;">아이디 찾기</h1>
                 </div>
                 <br>
-                <form action="/user/findId" method="post" onsubmit="checkInputData()" id="f" class="mx-auto" style="width:80%;">
+                <form action="/user/findId" method="post" onsubmit="check InputData()" id="f" class="mx-auto" style="width:80%;">
                     <!-- 이메일 입력 영역 -->
                     <div class="form-group">
                         <input type="text" class="form-control" name="email" placeholder="이메일">
@@ -102,19 +99,19 @@
                     </div>
                     <br>
                     <br><br>
-                    <!-- 아이디 찾기 버튼 영역 -->
-                    <div class="d-grid gap-2">
-                        <button id="btnFindId" class="btn btn-primary btn-lg" type="submit">아이디 찾기</button>
-                    </div>
-                    <br>
                 </form>
+                <!-- 아이디 찾기 버튼 영역 -->
+                <div class="d-grid gap-2">
+                    <button id="btnFindId" class="btn btn-primary btn-lg" type="submit">아이디 찾기</button>
+                </div>
+                <br>
             </div>
             <div class="card mb-3" style="width: 49%; height: 400px; float: right">
                 <div class="card-body mx-auto">
                     <h1 style="font-family: 'Do Hyeon', sans-serif;">비밀번호 찾기</h1>
                 </div>
                 <br>
-                <form action="/user/findPw" method="post" onsubmit="checkInputData()" id="ff" class="mx-auto" style="width:80%;">
+                <form action="/user/updatepw"  id="ff" class="mx-auto" style="width:80%;">
                     <!-- 아이디 입력 영역 -->
                     <div class="form-group">
                         <input type="text" class="form-control" name="id" placeholder="아이디">
