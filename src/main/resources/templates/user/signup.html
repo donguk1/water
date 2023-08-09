@@ -193,12 +193,59 @@
             }
 
             if (f.uloc.value === "지역선택") {
-                alert("지역을 선택해주세요.");
+                alert("지역을 선택하세요.");
                 f.uloc.focus();
                 return;
             }
 
+            if (f.birth.value === "") {
+                alert("생년월일을 입력하세요.");
+                f.birth.focus();
+                return;
+            }
+
+            if (confirm("회원가입을 하시겠습니까?")) {
+                f.submit();
+            }
+
         }
+
+        /* 전화번호 입력시 하이픈 자동 입력 */
+        var autoHypenPhone = function(str){
+            str = str.replace(/[^0-9]/g, '');
+            var tmp = '';
+            if( str.length < 4){
+                return str;
+            }else if(str.length < 7){
+                tmp += str.substr(0, 3);
+                tmp += '-';
+                tmp += str.substr(3);
+                return tmp;
+            }else if(str.length < 11){
+                tmp += str.substr(0, 3);
+                tmp += '-';
+                tmp += str.substr(3, 3);
+                tmp += '-';
+                tmp += str.substr(6);
+                return tmp;
+            }else{
+                tmp += str.substr(0, 3);
+                tmp += '-';
+                tmp += str.substr(3, 4);
+                tmp += '-';
+                tmp += str.substr(7);
+                return tmp;
+            }
+
+            return str;
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            var pn = document.getElementById('pn');
+
+            pn.addEventListener('keyup', function() {
+                this.value = autoHypenPhone(this.value);
+            });
+        });
     </script>
 
     <style>
@@ -208,7 +255,7 @@
     </style>
 </head>
 <body>
-<!-- 로그인 페이지 -->
+<!-- 회원가입 페이지 -->
 
     <!-- 상단바 부분 -->
     <nav class="navbar navbar-expand-lg bg-light" data-bs-theme="light" style="padding: 12px 12px; font-family: 'Do Hyeon', sans-serif;">
@@ -261,7 +308,7 @@
                         <!-- 전화번호 입력 영역 -->
                         <div class="form-group">
                           <label for="pn" class="form-label mt-4">전화번호</label>
-                          <input type="tel" name="pn" class="form-control" id="pn">
+                          <input type="text" name="pn" class="form-control" id="pn" maxlength="13" placeholder="숫자만 입력해주세요.">
                         </div>
                         <!-- 거주지역 입력 영역 -->
                         <div class="form-group" >
