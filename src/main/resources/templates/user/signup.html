@@ -7,6 +7,22 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Hahmlet:wght@400;500&family=Nanum+Gothic+Coding&family=Noto+Sans+KR:wght@100;300;400&display=swap" rel="stylesheet">
+    <style th:inline="css">
+        input {
+            margin: 0 auto;
+            position: relative;
+        }
+
+
+        ::-webkit-calendar-picker-indicator {
+            position: absolute;
+            right: 0;
+            top: 25%;
+            transform: translateX(-10px);
+            padding-left: 3000px;
+            height: 100%;
+        }
+    </style>
 
     <script type="text/javascript" src="/js/jquery-3.6.0.min.js"></script>
     <script type="text/javascript" src="/js/bootstrap.min.js"></script>
@@ -328,7 +344,7 @@
                         <!-- 생년월일 입력 영역 -->
                         <div class="form-group">
                           <label for="birth" class="form-label mt-4">생년월일</label>
-                          <input type="date" name="birth" class="form-control" id="birth">
+                          <input type="date" name="birth" class="form-control date" id="birth">
                         </div>
                         <!-- 성별 입력 영역 -->
                         <fieldset class="form-group">
