@@ -88,8 +88,6 @@
         WHERE ID = #{id}
     </update>
 
-
-
     <!--  id 찾기  -->
     <select id="findId" resultType="UserDTO" parameterType="UserDTO">
         SELECT ID
@@ -104,6 +102,14 @@
         WHERE ID = #{id} AND EMAIL = #{email} AND PN = #{pn}
     </update>
 
-
+    <!--  DB에 있는 이메일인지 확인  -->
+    <select id="getEmailExists" parameterType="UserDTO" resultType="UserDTO">
+        SELECT CASE WHEN COUNT(1) = 0 THEN 'N'
+                    ELSE 'Y' END AS EXISTS_YN
+        FROM USER
+        WHERE EMAIL = #{email} AND
+              ID = #{id} AND
+              PN = #{pn}
+    </select>
 
 </mapper>
