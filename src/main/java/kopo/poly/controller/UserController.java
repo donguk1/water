@@ -414,7 +414,6 @@ public class UserController {
 
         // 데이터 확인
         log.info("email : " + email);
-        log.info("email : " + email);
         log.info("pn : " + pn);
 
         // 데이터 저장
@@ -424,7 +423,7 @@ public class UserController {
 
         UserDTO rDTO = Optional.ofNullable(userService.findId(pDTO)).orElseGet(UserDTO::new);
 
-        log.info(rDTO.getId());
+        log.info("검색된 아이디 : " + rDTO.getId());
 
         log.info(this.getClass().getName() + ".controller 아이디 찾기 종료");
 
