@@ -2,6 +2,7 @@ package kopo.poly.controller;
 
 
 import kopo.poly.dto.UserDTO;
+import kopo.poly.service.IMailService;
 import kopo.poly.service.IUserService;
 import kopo.poly.util.CmmUtil;
 import kopo.poly.util.EncryptUtil;
@@ -30,6 +31,7 @@ public class UserController {
 
     // 서비스를 안에서 사용할 수 있게 하는 선언문
     private final IUserService userService;
+    private final IMailService mailService;
 
     /*  회원가입 화면으로 이동 = "/user/signup"  */
     @GetMapping(value = "/user/signup")
@@ -390,9 +392,6 @@ public class UserController {
         return "/redirect";
     }
 
-
-    /*  pw 재설정  */
-
     /*  아이디 찾기 화면 이동  */
     @GetMapping(value = "/user/find")
     public String findId() {
@@ -414,6 +413,7 @@ public class UserController {
         String pn = CmmUtil.nvl(request.getParameter("pn"));
 
         // 데이터 확인
+        log.info("email : " + email);
         log.info("email : " + email);
         log.info("pn : " + pn);
 
@@ -439,6 +439,65 @@ public class UserController {
 
         return "/user/updatepw";
     }
+
+    /*  임시 비번 설정 및 메일 보내기  */
+    @ResponseBody
+    @PostMapping(value = "/user/tmpPwEmail")
+    public UserDTO tmpPwEmail(HttpServletRequest request) throws Exception {
+
+        /**
+         * 1. 데이터 가져와 저장 O
+         * 2. 이메일 존재 여부 확인(존재시 Y, 없을시 N) O
+         * 3. 임시 비번 만들어 메일로 보내기 O
+         *  3-1 임시 비번 설정 O
+         *  3-2 메일 발송
+         * 4. 임시 비번 가져와 저장(메모리에 올리기)
+         * 5. 비번 변경
+         */
+
+        log.info(this.getClass().getName() + ".controller 임시 비번 설정 및 메일 보내기 실행");
+
+        // 데이터 입력
+        String id = CmmUtil.nvl(request.getParameter("id"));
+        String email = CmmUtil.nvl(request.getParameter("email"));
+        String pn = CmmUtil.nvl(request.getParameter("pn"));
+
+        // 데이터 확인
+        log.info("id : " + id);
+        log.info("email : " + email);
+        log.info("pn : " + pn);
+
+        // 데이터 저장
+        UserDTO pDTO = new UserDTO();
+        pDTO.setId(id);
+        pDTO.setEmail(email);
+        pDTO.setPn(pn);
+
+        // 이메일 존재 여부 확인 존재하면 Y값 반환, 없을시 N값 반환
+        UserDTO rDTO = Optional.ofNullable(userService.getEmailExists(pDTO)).orElseGet(UserDTO::new);
+
+        // 이메일 없을시(N) 실행
+        if (rDTO.getExists_yn().equals("N")) {
+            return rDTO;
+        }
+
+        // 임시 비번 생성 후 메일 발송
+        rDTO = userService.sendEmailPwd(pDTO);
+
+        // 임시 비번 확인용
+        log.info("tmpPwd : " + rDTO.getTmpPwd());
+
+        // 데이터 저장(변경할 임시 비번)
+        pDTO.setPw(EncryptUtil.encHashSHA256(rDTO.getTmpPwd()));
+
+        // 변경된 임시 비번으로 변경
+        userService.updatePw(pDTO);
+
+
+        return rDTO;
+    }
+
+    /*  pw 재설정  */
     /*  패스워드 찾기(현재 페이지 존재하지 않음)  */
 
 

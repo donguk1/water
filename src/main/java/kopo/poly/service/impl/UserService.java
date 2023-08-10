@@ -1,7 +1,9 @@
 package kopo.poly.service.impl;
 
+import kopo.poly.dto.MailDTO;
 import kopo.poly.dto.UserDTO;
 import kopo.poly.persistance.mapper.IUserMapper;
+import kopo.poly.service.IMailService;
 import kopo.poly.service.IUserService;
 import kopo.poly.util.CmmUtil;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +22,9 @@ public class UserService implements IUserService {
 
     // User 관련 SQL 사용하기 위한 Mapper 가져오기
     private final IUserMapper userMapper;
+    private final IMailService mailService;
 
-//    // 메일 서비스 사용시 사용할 메일관련 자바 객체 가져오기
-//    현재 없음 메일 확인 안할에정
-//    private final IMailService mailService;
+
 
     /*  회원가입(회원정보 등록)  */
     @Override
@@ -98,12 +99,17 @@ public class UserService implements IUserService {
         return rDTO;
     }
 
-    // 서버 아이디로 사용자 정보를 조회하는 메서드 구현
+    /*  서버 아이디로 사용자 정보를 조회하는 메서드 구현  */
     @Override
     public UserDTO getUserById(String id) throws Exception {
+
+        log.info(this.getClass().getName() + "사용자 정보 조회 실행");
+
         return userMapper.getUserById(id);
     }
 
+
+    /*  아이디 찾기  */
     @Override
     public UserDTO findId(UserDTO pDTO) throws Exception {
 
@@ -117,7 +123,6 @@ public class UserService implements IUserService {
     }
 
 
-    /*  여기서부턴 확인 필요  */
     /*  회원정보 표시(마이페이지)  */
     @Override
     public UserDTO selectUser(UserDTO pDTO) throws Exception {
@@ -146,14 +151,49 @@ public class UserService implements IUserService {
 
     /*  pw 재설정  */
     @Override
-    public UserDTO updatePw(UserDTO pDTO) throws Exception {
+    public void updatePw(UserDTO pDTO) throws Exception {
 
-        log.info(this.getClass().getName() + ".패스워드 재설정 시작");
+        log.info(this.getClass().getName() + ".패스워드 재설정 실행");
 
-        UserDTO rDTO = userMapper.updatePw(pDTO);
+        userMapper.updatePw(pDTO);
 
-        log.info(this.getClass().getName() + ".패스워드 재설정 종료");
+    }
+
+    /*  임시 비번 메일로 보내기  */
+    @Override
+    public UserDTO sendEmailPwd(UserDTO pDTO) throws Exception {
+
+        log.info(this.getClass().getName() + "임시 비번 설정 및 메일 보내기 실행");
+
+        UserDTO rDTO = new UserDTO();
+
+        // 임시 비번 설정
+        String pwd = mailService.getTmpPassword();
+
+        // 메일 내용 저장
+        MailDTO mailDTO = new MailDTO();
+        mailDTO.setTitle("WATEM 임시 비밀번호 안내 이메일입니다.");
+        mailDTO.setContents("임시 비밀번호는 " + pwd + " 입니다.\n로그인 후 반드시 비밀번호를 변경해주세요.");
+        mailDTO.setToMail(CmmUtil.nvl(pDTO.getEmail()));
+
+        // 메일 발송
+        mailService.doSendMail(mailDTO);
+        mailDTO = null;
+
+        // 임시 비번 결과값에 넣어주기
+        rDTO.setTmpPwd(pwd);
+
+        log.info(this.getClass().getName() + "임시 비번 설정 및 메일 보내기 종료");
 
         return rDTO;
+    }
+
+    /*  이메일 존재 여부 확인  */
+    @Override
+    public UserDTO getEmailExists(UserDTO pDTO) throws Exception {
+
+        log.info(this.getClass().getName() + "이메일 존재 여부 확인");
+
+        return userMapper.getEmailExists(pDTO);
     }
 }

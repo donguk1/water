@@ -26,7 +26,10 @@ public interface IUserMapper {
     UserDTO findId(UserDTO pDTO) throws Exception;
 
     // pw 재설정
-    UserDTO updatePw(UserDTO pDTO) throws Exception;
+    void updatePw(UserDTO pDTO) throws Exception;
+
+    // DB에 이메일 여부 확인(임시 비번 설정 및 메일 보내기에 사용)
+    UserDTO getEmailExists(UserDTO pDTO) throws Exception;
 
 
 
