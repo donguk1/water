@@ -72,7 +72,8 @@
             PN,
             ULOC,
             BIRTH,
-            GENDER
+            GENDER,
+            OAUTH
         FROM USER
         WHERE ID = #{id}
     </select>
