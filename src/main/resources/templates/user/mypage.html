@@ -217,9 +217,11 @@
                 <li class="nav-item" role="presentation">
                     <a class="nav-link active" data-bs-toggle="tab" href="#mp" aria-selected="true" role="tab">마이페이지</a>
                 </li>
-                <li class="nav-item" role="presentation">
-                    <a class="nav-link" data-bs-toggle="tab" href="#up" aria-selected="false" role="tab" tabindex="-1">비밀번호 재설정</a>
-                </li>
+                <div th:if="${rDTO.oauth == 'watem'}">
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" data-bs-toggle="tab" href="#up" aria-selected="false" role="tab" tabindex="-1">비밀번호 재설정</a>
+                    </li>
+                </div>
             </ul>
             <!-- 마이페이지 탭 -->
             <div id="myTabContent" class="tab-content">
