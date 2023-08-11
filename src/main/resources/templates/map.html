@@ -45,6 +45,38 @@
                 });
             });
         });
+
+        // $(document).ready(function () {
+        //
+        //     $("#btnSaveAndWrite").on("click", function () {
+        //         saveMapData();
+        //     })
+        // })
+
+        /* 지도 생성 */
+
+        function saveMapData() {
+            // 이미지 지도에서 마커가 표시될 위치입니다
+            var markerPosition = new kakao.maps.LatLng(33.450701, 126.570667);
+
+            // 이미지 지도에 표시할 마커입니다
+            var marker = {
+                position: markerPosition
+            };
+
+            // 이미지 지도 정보를 객체로 생성
+            var mapDTO = {
+                center: { lat: 33.450701, lng: 126.570667 },
+                level: 3,
+                markerPosition: { lat: markerPosition.getLat(), lng: markerPosition.getLng() }
+            };
+        }
+
+        // 버튼 클릭 이벤트 핸들러 등록
+        // var btnSaveAndWrite = document.getElementById('btnSaveAndWrite');
+        // btnSaveAndWrite.addEventListener('click', saveMapData);
+
+
     </script>
 </head>
 <body>
@@ -121,6 +153,9 @@
                     // 지도에 마커를 표시합니다
                     marker.setMap(map);
 
+                    var mlng;
+                    var mlat;
+
                     // 지도에 클릭 이벤트를 등록합니다
                     // 지도를 클릭하면 마지막 파라미터로 넘어온 함수를 호출합니다
                     kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
@@ -137,7 +172,39 @@
                         var resultDiv = document.getElementById('result');
                         resultDiv.innerHTML = message;
 
+                        mlat = latlng.getLat();
+                        mlng = latlng.getLng();
                     });
+
+                    $(document).ready(function () {
+                        $("#btnSaveAndWrite").on("click", function () {
+                            var mapDTO = {
+                                lat: mlat,
+                                lng: mlng,
+                                level: mapOption.level
+                            };
+
+                            $.ajax({
+                                type: "POST",
+                                url: "/map/save",
+                                data: JSON.stringify(mapDTO),
+                                contentType: "application/json",
+                                success: function(response) {
+                                    console.log("Server response:", response);
+                                    // 성공적으로 응답 받았을 때 실행할 코드
+                                    location.href="map/send"
+                                    console.log(this.data);
+                                    console.log(mapDTO.lat);
+                                    console.log(mapDTO.lng);
+                                    console.log(mapDTO.level);
+                                },
+                                error: function(error) {
+                                    console.error("Error:", error);
+                                    // 요청이 실패했을 때 실행할 코드
+                                }
+                            });
+                        })
+                    })
                     </script>
                 </div>
             </div>

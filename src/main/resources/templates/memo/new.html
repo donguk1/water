@@ -33,6 +33,7 @@
     <script type="text/javascript" src="/js/jquery-3.6.0.min.js"></script>
     <script type="text/javascript" src="/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/js/bootstrap.bundle.js"></script>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=9f7b1b926be42fe85ba854921b7d037e"></script>
     <script th:inline="javascript">
 
         $(document).ready(function () {
@@ -41,6 +42,8 @@
                 location.href = "/memo/list"; // 메모 리스트 이동
             })
         })
+
+
 
         // 메모 저장하기
         function doSubmit() {
@@ -99,10 +102,67 @@
                         <!-- 타이틀 입력 영역 -->
                         <h3 class="card-header" style="font-family: 'Do Hyeon', sans-serif;"><input class="form-control me-sm-2" type="text" placeholder="title" name="title"></h3>
                         <!-- 지도 데이터 영역 -->
-                        <svg xmlns="http://www.w3.org/2000/svg" class="d-block user-select-none" width="100%" height="600" aria-label="Placeholder: Image cap" focusable="false" role="img" preserveAspectRatio="xMidYMid slice" viewBox="0 0 318 180" style="font-size:1.125rem;text-anchor:middle">
-                            <rect width="100%" height="100%" fill="#868e96"></rect>
-                            <text x="50%" y="50%" fill="#dee2e6" dy=".3em">지도 표시 영역</text> <!-- 아직 데이터 미정 -->
-                        </svg>
+<!--                        <svg xmlns="http://www.w3.org/2000/svg" class="d-block user-select-none" width="100%" height="600" aria-label="Placeholder: Image cap" focusable="false" role="img" preserveAspectRatio="xMidYMid slice" viewBox="0 0 318 180" style="font-size:1.125rem;text-anchor:middle">-->
+<!--&lt;!&ndash;                            <rect width="100%" height="600" fill="#868e96">&ndash;&gt;-->
+                                <div id="staticMap" style="width: 100%; height: 600px;"></div>
+                                <script>
+
+                                    var lat;
+                                    var lng;
+                                    var level;
+                                    function fetchMapData() {
+                                        fetch('/map/send')
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                lat = data.lat;
+                                                lng = data.lng;
+                                                level = data.level;
+
+                                                // 이제 lat, lng, level 변수를 JavaScript에서 활용할 수 있음
+                                                console.log("Lat:", lat);
+                                                console.log("Lng:", lng);
+                                                console.log("Level:", level);
+                                            })
+                                            .catch(error => {
+                                                console.error('Error:', error);
+                                            });
+                                    }
+                                    // 함수 호출로 데이터 요청 보내기
+                                    fetchMapData();
+
+                                    $(document).ready(function() {
+                                        lat = [[${lat}]];
+                                        lng = [[${lng}]];
+                                        level = [[${level}]];
+
+                                        // 이미지 지도에서 마커가 표시될 위치입니다
+                                        var markerPosition  = new kakao.maps.LatLng(lat, lng);
+
+                                        // 이미지 지도에 표시할 마커입니다
+                                        // 이미지 지도에 표시할 마커는 Object 형태입니다
+                                        var marker = {
+                                            position: markerPosition
+                                        };
+
+                                        var staticMapContainer  = document.getElementById('staticMap'), // 이미지 지도를 표시할 div
+                                            staticMapOption = {
+                                                center: new kakao.maps.LatLng(lat, lng), // 이미지 지도의 중심좌표
+                                                level: level, // 이미지 지도의 확대 레벨
+                                                marker: marker // 이미지 지도에 표시할 마커
+                                            };
+
+                                        // 이미지 지도를 생성합니다
+                                        var staticMap = new kakao.maps.StaticMap(staticMapContainer, staticMapOption);
+
+                                        console.log("lat"+lat);
+                                        console.log("lng"+lng);
+                                        console.log("level"+lng);
+                                    });
+                                </script>
+<!--                            </rect>-->
+<!--                            <text x="50%" y="50%" fill="#dee2e6" dy=".3em">-->
+<!--                            </text> &lt;!&ndash; 아직 데이터 미정 &ndash;&gt;-->
+<!--                        </svg>-->
                         <br>
                         <!-- 내용 입력 영역 -->
                         <div class="form-group">
