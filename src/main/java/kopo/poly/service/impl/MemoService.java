@@ -32,12 +32,12 @@ public class MemoService implements IMemoService {
 
     /*  메모 검색 목록(반환 타입 List)  */
     @Override
-    public List<MemoDTO> searchMemoList() throws Exception {
+    public List<MemoDTO> searchMemoList(MemoDTO pDTO) throws Exception {
 
         log.info(this.getClass().getName() + ".Memo 검색 목록");
 
         // selectMemoList = 검색 목록
-        return memoMapper.selectMemoList();
+        return memoMapper.searchMemoList(pDTO);
     }
 
 

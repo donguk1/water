@@ -10,6 +10,7 @@
     <style th:inline="css">
         .dropdown-menu {
             right: 0;
+            top: 60px;
         }
         .dropdown-menu a {
             display: block;
@@ -110,7 +111,7 @@
     <nav class="navbar navbar-expand-lg bg-light" data-bs-theme="light" style="padding: 12px 12px; font-family: 'Do Hyeon', sans-serif;">
         <div class="container-fluid d-flex justify-content-between align-items-center">
             <!-- 로고 또는 브랜드 이름 -->
-            <a class="navbar-brand" href="/watem" style="font-size: 45px;">WATEM</a>
+            <a class="navbar-brand" href="/main" style="font-size: 45px;">WATEM</a>
 
             <ul class="navbar-nav ms-auto d-flex flex-row">
                 <li class="nav-item">
@@ -119,14 +120,21 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/memo/list" style="margin: 5px"><img src="/img/memoIcon.png" width="50px"></a> <!-- 메모 메뉴 -->
                 </li>
-                <li class="nav-item dropdown"> <!-- 드롭다운 유저 메뉴 -->
-                    <div class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin: 5px"><img src="/img/userIcon.png" width="50px"></div>
-                    <div class="dropdown-menu dropdown-menu-end">
-                        <a class="dropdown-item" href="/user/mypage">마이페이지</a> <!-- 드롭다운 서브메뉴 : 마이페이지 메뉴 -->
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="/main">로그아웃</a> <!-- 드롭다운 서브메뉴 : 로그아웃 메뉴, 기능은 없고 페이지만 넘어가게 함 -->
-                    </div>
-                </li>
+                <div th:if="${session.SS_ID == null}"> <!-- 로그인 정보가 없을시 로그인 버튼만 활성화 -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="/user/login" style="margin: 5px"><img src="/img/userIcon.png" width="50px"></a> <!-- 로그인 메뉴 -->
+                    </li>
+                </div>
+                <div th:if="${session.SS_ID != null}"> <!-- 로그인 정보가 있을시 드롭다운 메뉴 활성화 -->
+                    <li class="nav-item dropdown"> <!-- 드롭다운 유저 메뉴 -->
+                        <div class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin: 5px"><img src="/img/userIcon.png" width="50px"></div>
+                        <div class="dropdown-menu dropdown-menu-end">
+                            <a class="dropdown-item" href="/user/mypage">마이페이지</a> <!-- 드롭다운 서브메뉴 : 마이페이지 메뉴 -->
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="/logout.do">로그아웃</a> <!-- 드롭다운 서브메뉴 : 로그아웃 메뉴 -->
+                        </div>
+                    </li>
+                </div>
             </ul>
         </div>
     </nav>

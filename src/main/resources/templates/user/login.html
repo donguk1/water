@@ -28,6 +28,24 @@
             }
 
         }
+
+        var kakaoHref = [[${@environment.getProperty('kakao.href')}]];
+        var naverHref = [[${@environment.getProperty('naver.href')}]];
+
+        // HTML로딩이 완료되고, 실행됨
+        $(document).ready(function () {
+
+            // 네이버 로그인
+            $("#btnNaverLogin").on("click", function () {
+                location.href = naverHref;
+            })
+
+            // 카카오 로그인
+            $("#btnKakaoLogin").on("click", function () {
+                location.href = kakaoHref;
+            })
+
+        })
     </script>
 </head>
 <body>
@@ -69,12 +87,10 @@
             <!-- 다른 계정으로 로그인 영역 -->
             <div id="other_login" class="otherButton text-center">
                 <span class="text-secondary">다른 계정으로 로그인</span>
-                <!-- 네이버 로그인 API 가져와야 함 -->
-                <button type="button" id="btnNaverLogin" class="btn"><img src="/img/naverIcon.png" style="width: 40px;height: 40px;"></button>
-                <!-- 카카오 로그인 API 가져와야 함 -->
-                <a href="https://kauth.kakao.com/oauth/authorize?client_id=a9cf415eff39557471ef2d61bda1b541&redirect_uri=http://localhost:11000/kakao/login&response_type=code">
-                    <button type="button" class="btn"><img src="/img/kakaoIcon.png" alt="&copy;https://www.flaticon.com/kr/free-icon/kakao-talk_3991999" style="width: 40px;height: 40px;"></button>
-                </a>
+                <!-- 네이버 로그인 API -->
+                    <button type="button" id="btnNaverLogin" class="btn"><img src="/img/naverIcon.png" alt="네이버로그인" style="width: 40px;height: 40px;"></button>
+                <!-- 카카오 로그인 API -->
+                    <button type="button" id="btnKakaoLogin" class="btn"><img src="/img/kakaoIcon.png" alt="카카오로그인" style="width: 40px;height: 40px;"></button>
             </div>
             <br>
             <div class="row" style="text-align: center">
@@ -82,9 +98,9 @@
                 <div class="mx-auto">
                     <button type="button" class="btn btn-link text-secondary" onclick="location.href='http://localhost:11000/user/signup'">회원가입</button>
                 </div>
-                <!-- 아이디/비밀번호 찾기 영역 (아직 구현 못함) -->
+                <!-- 아이디/비밀번호 찾기 영역 -->
                 <div class="mx-auto">
-                    <button type="button" class="btn btn-link text-secondary">아이디/비밀번호 찾기</button>
+                    <button type="button" class="btn btn-link text-secondary" onclick="location.href='http://localhost:11000/user/find'">아이디/비밀번호 찾기</button>
                 </div>
             </div>
             <br>

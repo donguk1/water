@@ -7,6 +7,29 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Hahmlet:wght@400;500&family=Nanum+Gothic+Coding&family=Noto+Sans+KR:wght@100;300;400&display=swap" rel="stylesheet">
+    <style th:inline="css">
+        .dropdown-menu {
+            right: 0;
+            top: 60px;
+        }
+        .dropdown-menu a {
+            display: block;
+        }
+        .dropdown-menu a:hover {background-color: #ddd;}
+
+        .dropdown:hover .dropdown-menu {display: block;}
+
+        /* 드롭다운 메뉴가 나타날 때 네비게이션 바가 밀리는 현상을 방지 */
+        .navbar-nav {
+            position: relative;
+        }
+
+        .navbar-nav .dropdown-menu {
+            position: absolute;
+            right: 0;
+            z-index: 1000;
+        }
+    </style>
 
     <script type="text/javascript" src="/js/jquery-3.6.0.min.js"></script>
     <script type="text/javascript" src="/js/bootstrap.min.js"></script>
@@ -26,7 +49,7 @@
     </script>
 </head>
 <body>
-<!-- 로그인 전에 볼 메인 페이지 -->
+<!-- 메인 페이지 -->
 
     <!-- 상단바 부분 -->
     <nav class="navbar navbar-expand-lg bg-light" data-bs-theme="light" style="padding: 12px 12px; font-family: 'Do Hyeon', sans-serif;">
@@ -35,16 +58,27 @@
             <a class="navbar-brand" href="/main" style="font-size: 45px;">WATEM</a>
 
             <ul class="navbar-nav ms-auto d-flex flex-row">
-                <!-- 로그인 전이라 모든 메뉴를 로그인 페이지로 넘기게 함 -->
                 <li class="nav-item">
-                    <a class="nav-link" href="/user/login" style="margin: 5px"><img src="/img/mapIcon.png" width="50px"></a> <!-- 지도 메뉴 -->
+                    <a class="nav-link" href="/map" style="margin: 5px"><img src="/img/mapIcon.png" width="50px"></a> <!-- 지도 메뉴 -->
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/user/login" style="margin: 5px"><img src="/img/memoIcon.png" width="50px"></a> <!-- 메모 메뉴 -->
+                    <a class="nav-link" href="/memo/list" style="margin: 5px"><img src="/img/memoIcon.png" width="50px"></a> <!-- 메모 메뉴 -->
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/user/login" style="margin: 5px"><img src="/img/userIcon.png" width="50px"></a> <!-- 로그인 메뉴 -->
-                </li>
+                <div th:if="${session.SS_ID == null}"> <!-- 로그인 정보가 없을시 로그인 버튼만 활성화 -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="/user/login" style="margin: 5px"><img src="/img/userIcon.png" width="50px"></a> <!-- 로그인 메뉴 -->
+                    </li>
+                </div>
+                <div th:if="${session.SS_ID != null}"> <!-- 로그인 정보가 있을시 드롭다운 메뉴 활성화 -->
+                    <li class="nav-item dropdown"> <!-- 드롭다운 유저 메뉴 -->
+                        <div class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin: 5px"><img src="/img/userIcon.png" width="50px"></div>
+                        <div class="dropdown-menu dropdown-menu-end">
+                            <a class="dropdown-item" href="/user/mypage">마이페이지</a> <!-- 드롭다운 서브메뉴 : 마이페이지 메뉴 -->
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="/logout.do">로그아웃</a> <!-- 드롭다운 서브메뉴 : 로그아웃 메뉴 -->
+                        </div>
+                    </li>
+                </div>
             </ul>
         </div>
     </nav>
@@ -69,24 +103,24 @@
         </div>
 
     </div>
-    
+
     <!-- 푸터 부분 -->
     <footer class="footer mx-auto" style="width: 95%; text-align: right;">
-          <a href="#top">Back to top</a>
+        <a href="#top">Back to top</a>
 
-       <figure class="text-center">
-           <!-- 로고 출력 영역 -->
-           <blockquote class="blockquote">
-              <p class="mb-0">WATEM</p>
-           </blockquote>
+        <figure class="text-center">
+            <!-- 로고 출력 영역 -->
+            <blockquote class="blockquote">
+                <p class="mb-0">WATEM</p>
+            </blockquote>
 
-           <figcaption class="blockquote-footer">
-              <!-- 깃허브 연결 영역 -->
-              <p><a href="https://github.com/donguk1/water"><img src="/img/githubIcon.png" width="30px"><br>project GitHub</a></p>
-              <!-- 아이콘에 대한 출처를 표시 -->
-              <p>Icons <a href="https://www.flaticon.com/kr/free-icons/" title="icons">Freepik(map), Pixel perfect(memo), Digby Garrett(user)</a> from Flaticon</p>
-           </figcaption>
-       </figure>
+            <figcaption class="blockquote-footer">
+                <!-- 깃허브 연결 영역 -->
+                <p><a href="https://github.com/donguk1/water"><img src="/img/githubIcon.png" width="30px"><br>project GitHub</a></p>
+                <!-- 아이콘에 대한 출처를 표시 -->
+                <p>Icons <a href="https://www.flaticon.com/kr/free-icons/" title="icons">Freepik(map), Pixel perfect(memo), Digby Garrett(user)</a> from Flaticon</p>
+            </figcaption>
+        </figure>
     </footer>
 
 </body>

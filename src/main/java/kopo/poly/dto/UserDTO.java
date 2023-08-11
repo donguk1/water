@@ -17,11 +17,13 @@ public class UserDTO {
     private String pn;      // 전화번호
     private String gender;  // 성별
 
+    private String oauth;   // 로그인 종류(watem, kakao, naver)
+
+    private String tmpPwd;  // 임시 비번
+
     /*
-     * 회원가입시 중복가입을 방지하기 위해 사용할 변수
-     * DB를 조회해서 회원이 존재하면 Y값 반환
+     * DB를 조회해서 회원이 존재하면 Y값 반환, 없을시 N값 반환
      * DB 테이블에 존재하지 않는 가상의 컬럼(ALIAS)
      */
-
     private String exists_yn;
 }

@@ -1,30 +1,50 @@
 package kopo.poly.dto;
 
-
-import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@Data
 public class KakaoDTO {
+    private String id;
+    private String connected_at;
+    private Properties properties;
+    private KakaoAccount kakao_account;
+    private Map<String, Object> additional_properties = new LinkedHashMap<>();
 
-//    https://developers.kakao.com/docs/latest/ko/kakaologin/rest-api#request-token-response-body
+    @Data
+    public static class Properties {
+        private String nickname;
+        private Map<String, Object> additional_properties = new LinkedHashMap<>();
+    }
 
-    private String access_token;                // 사용자 액세스 토큰 값
+    @Data
+    public static class KakaoAccount {
+        private Boolean profile_nickname_needs_agreement;
+        private Profile profile;
+        private Boolean has_email;
+        private Boolean email_needs_agreement;
+        private Boolean is_email_valid;
+        private Boolean is_email_verified;
+        private String email;
+        private Boolean has_birthday;
+        private Boolean birthday_needs_agreement;
+        private String birthday;
+        private String birthday_type;
+        private Boolean has_gender;
+        private Boolean gender_needs_agreement;
+        private String gender;
+        private Map<String, Object> additional_properties = new LinkedHashMap<>();
 
-    private String refresh_token;               // 사용자 리프레시 토큰 값
-
-    private Integer refresh_token_expires_in;   // 리프레시 토큰 만료 시간(초)
-
-    private Integer expires_in;                 // 액세스 토큰과 ID 토큰의 만료시간(초)(액세스 토큰과 ID 토큰의 만료 시간 동일
-
-    private String scope;                       // 인증된 사용자의 정보 조회 권한 범위(범위가 여러 개일 경우, 공백 구분)
-
-    private String token_type;                  // 토큰 타입, bearer 고정
-
-
+        @Data
+        public static class Profile {
+            private String nickname;
+            private Map<String, Object> additional_properties = new LinkedHashMap<>();
+        }
+    }
 }

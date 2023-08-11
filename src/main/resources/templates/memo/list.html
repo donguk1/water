@@ -10,6 +10,7 @@
     <style th:inline="css">
         .dropdown-menu {
             right: 0;
+            top: 60px;
         }
         .dropdown-menu a {
             display: block;
@@ -40,8 +41,13 @@
 
             // 버튼 클릭했을때, 발생되는 이벤트 생성함(onclick 이벤트와 동일함)
             $("#btnReg").on("click", function () {
+                if (![[${session.SS_ID}]]) {
+                    alert("로그인이 필요한 서비스입니다.");
+                    return location.href = "/user/login";
+                }
                 location.href = "/memo/new"; // 글 작성하는 창으로 이동
             })
+
         })
 
         //상세보기 이동
@@ -69,7 +75,7 @@
     <nav class="navbar navbar-expand-lg bg-light" data-bs-theme="light" style="padding: 12px 12px; font-family: 'Do Hyeon', sans-serif;">
         <div class="container-fluid d-flex justify-content-between align-items-center">
             <!-- 로고 또는 브랜드 이름 -->
-            <a class="navbar-brand" href="/watem" style="font-size: 45px;">WATEM</a>
+            <a class="navbar-brand" href="/main" style="font-size: 45px;">WATEM</a>
 
             <ul class="navbar-nav ms-auto d-flex flex-row">
                 <li class="nav-item">
@@ -78,14 +84,21 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/memo/list" style="margin: 5px"><img src="/img/memoIcon.png" width="50px"></a> <!-- 메모 메뉴 -->
                 </li>
-                <li class="nav-item dropdown"> <!-- 드롭다운 유저 메뉴 -->
-                    <div class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin: 5px"><img src="/img/userIcon.png" width="50px"></div>
-                    <div class="dropdown-menu dropdown-menu-end">
-                        <a class="dropdown-item" href="/user/mypage">마이페이지</a> <!-- 드롭다운 서브메뉴 : 마이페이지 메뉴 -->
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="/main">로그아웃</a> <!-- 드롭다운 서브메뉴 : 로그아웃 메뉴, 기능은 없고 페이지만 넘어가게 함 -->
-                    </div>
-                </li>
+                <div th:if="${session.SS_ID == null}"> <!-- 로그인 정보가 없을시 로그인 버튼만 활성화 -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="/user/login" style="margin: 5px"><img src="/img/userIcon.png" width="50px"></a> <!-- 로그인 메뉴 -->
+                    </li>
+                </div>
+                <div th:if="${session.SS_ID != null}"> <!-- 로그인 정보가 있을시 드롭다운 메뉴 활성화 -->
+                    <li class="nav-item dropdown"> <!-- 드롭다운 유저 메뉴 -->
+                        <div class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin: 5px"><img src="/img/userIcon.png" width="50px"></div>
+                        <div class="dropdown-menu dropdown-menu-end">
+                            <a class="dropdown-item" href="/user/mypage">마이페이지</a> <!-- 드롭다운 서브메뉴 : 마이페이지 메뉴 -->
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="/logout.do">로그아웃</a> <!-- 드롭다운 서브메뉴 : 로그아웃 메뉴 -->
+                        </div>
+                    </li>
+                </div>
             </ul>
         </div>
     </nav>
@@ -115,38 +128,50 @@
             </table>
         </div>
 
-            <!-- 페이지네이션 아직 구현 못해서 일단 주석처리 -->
-            <div class="mx-auto">
-                <ul class="pagination" id="pagination"></ul>
-<!--                    <li class="page-item disabled">-->
-<!--                        <a class="page-link" href="#">&laquo;</a>-->
-<!--                    </li>-->
-<!--                    <li class="page-item active">-->
-<!--                        <a class="page-link" href="#">1</a>-->
-<!--                    </li>-->
-<!--                    <li class="page-item">-->
-<!--                        <a class="page-link" href="#">2</a>-->
-<!--                    </li>-->
-<!--                    <li class="page-item">-->
-<!--                        <a class="page-link" href="#">3</a>-->
-<!--                    </li>-->
-<!--                    <li class="page-item">-->
-<!--                        <a class="page-link" href="#">4</a>-->
-<!--                    </li>-->
-<!--                    <li class="page-item">-->
-<!--                        <a class="page-link" href="#">5</a>-->
-<!--                    </li>-->
-<!--                    <li class="page-item">-->
-<!--                        <a class="page-link" href="#">&raquo;</a>-->
-<!--                    </li>-->
-                </ul>
-            </div>
-<!--        <script src="/static/js/jquery.twbsPagination.js"></script>-->
-
         <!-- 작성 버튼 영역 -->
         <div class="ms-auto" style="padding: 0 20px;">
             <button type="button" class="btn btn-outline-dark" id="btnReg">글작성</button>
         </div>
+
+        <!-- 페이지네이션 영역-->
+        <div class="mx-auto">
+            <ul class="pagination" id="pagination">
+                <li class="page-item">
+                    <a class="page-link" th:href="@{/memo/list?page=1}">&laquo;</a>
+                </li>
+                <!-- 이전 페이지로 이동하는 링크 -->
+                <li class="page-item" th:if="${currentPage > 1}">
+                    <a class="page-link" th:href="@{/memo/list(page=${currentPage - 1})}">&lt;</a>
+                </li>
+                <!-- 현재 페이지 주변에 페이지 번호 링크 표시 -->
+                <li class="page-item" th:each="pageNumber : ${#numbers.sequence(1, totalPages)}" th:class="${pageNumber == currentPage ? 'active' : ''}">
+                    <a class="page-link" th:href="@{/memo/list(page=${pageNumber})}" th:text="${pageNumber}"></a>
+                </li>
+                <!-- 다음 페이지로 이동하는 링크 -->
+                <li class="page-item" th:if="${currentPage < totalPages}">
+                    <a class="page-link" th:href="@{/memo/list(page=${currentPage + 1})}">&gt;</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" th:href="@{/memo/list(page=${totalPages})}">&raquo;</a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 검색 버튼 영역 -->
+        <form class="form-inline my-2 my-lg-0 mx-auto" action="/memo/search">
+            <div class="input-group mb-3">
+                <select name="type" id="type">
+                    <option selected value="">검색 내용 선택</option>
+                    <option value="title">제목</option>
+                    <option value="nick">작성자</option>
+                    <option value="mloc">지역</option>
+                </select>
+                <input class="form-control mr-sm-2" type="text" placeholder="Search" name="keyword">
+                <button type="submit" class="btn btn-secondary my-2 my-sm-0" id="btnSend" onclick="getSelectMemoList">검색</button>
+            </div>
+        </form>
+
+
         <br>
     </div>
 

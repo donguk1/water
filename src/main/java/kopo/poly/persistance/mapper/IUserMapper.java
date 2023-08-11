@@ -19,6 +19,18 @@ public interface IUserMapper {
     // 회원가입 전 nick 중복확인
     UserDTO getUserNickExists(UserDTO pDTO) throws Exception;
 
+    // 서버 아이디로 사용자 정보를 조회
+    UserDTO getUserById(String id) throws Exception;
+
+    // 아이디 찾기
+    UserDTO findId(UserDTO pDTO) throws Exception;
+
+    // pw 재설정
+    void updatePw(UserDTO pDTO) throws Exception;
+
+    // DB에 이메일 여부 확인(임시 비번 설정 및 메일 보내기에 사용)
+    UserDTO getEmailExists(UserDTO pDTO) throws Exception;
+
 
 
     /* 여기서부턴 확인 필요 */
@@ -29,8 +41,6 @@ public interface IUserMapper {
     // 회원정보 수정
     void updateUser(UserDTO pDTO) throws Exception;
 
-    // pw 재설정
-    UserDTO updatePw(UserDTO pDTO) throws Exception;
 
 
 }

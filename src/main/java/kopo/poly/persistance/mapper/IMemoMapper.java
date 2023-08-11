@@ -13,7 +13,7 @@ public interface IMemoMapper {
     List<MemoDTO> getMemoList() throws Exception;
 
     // 메모 검색 목록(반환 타입 List)
-    List<MemoDTO> selectMemoList() throws Exception;
+    List<MemoDTO> searchMemoList(MemoDTO pDTO) throws Exception;
 
     // 메모 등록
     void insertMemoInfo(MemoDTO pDTO) throws Exception;

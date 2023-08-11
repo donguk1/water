@@ -2,6 +2,7 @@ package kopo.poly.controller;
 
 
 import kopo.poly.dto.UserDTO;
+import kopo.poly.service.IMailService;
 import kopo.poly.service.IUserService;
 import kopo.poly.util.CmmUtil;
 import kopo.poly.util.EncryptUtil;
@@ -30,7 +31,7 @@ public class UserController {
 
     // 서비스를 안에서 사용할 수 있게 하는 선언문
     private final IUserService userService;
-
+    private final IMailService mailService;
 
     /*  회원가입 화면으로 이동 = "/user/signup"  */
     @GetMapping(value = "/user/signup")
@@ -41,7 +42,7 @@ public class UserController {
         return "/user/signup";
     }
 
-    /*  회원가입 실행  */
+    /*  WATEM 회원가입 실행  */
     @PostMapping(value = "/user/insertUser")
     public String insertUser(HttpServletRequest request, ModelMap modelMap) throws Exception {
 
@@ -74,6 +75,7 @@ public class UserController {
             String uloc = CmmUtil.nvl(request.getParameter("uloc"));
             String birth = CmmUtil.nvl(request.getParameter("birth"));
             String gender = CmmUtil.nvl(request.getParameter("gender"));
+            String oauth = "watem"; // 홈페이지 회원가입
             
             /*  데이터 확인  */
             log.info("id : " + id);
@@ -84,6 +86,7 @@ public class UserController {
             log.info("uloc : " + uloc);
             log.info("birth : " + birth);
             log.info("gender : " + gender);
+            log.info("oauth : " + oauth);
 
             /*  데이터 저장  */
             pDTO = new UserDTO();
@@ -97,6 +100,9 @@ public class UserController {
             pDTO.setUloc(uloc);
             pDTO.setBirth(birth);
             pDTO.setGender(gender);
+            pDTO.setOauth(oauth);
+
+            log.info(String.valueOf(pDTO));
 
             /*  회원가입  */
             res = userService.insertUser(pDTO);
@@ -185,7 +191,7 @@ public class UserController {
                 session.setAttribute("SS_NICK", CmmUtil.nvl(rDTO.getNick()));
 
                 msg = "로그인이 성공했습니다. \n" + rDTO.getNick() + "님 환영합니다.";
-                url = "/watem";
+                url = "/main";
 
             } else { // 로그인 실패시
 
@@ -263,12 +269,6 @@ public class UserController {
         return rDTO;
     }
 
-    /*  아이디 찾기(현재 페이지 존재하지 않음)  */
-
-    /*  패스워드 찾기(현재 페이지 존재하지 않음)  */
-
-
-
     /*  마이페이지로 이동 = "/user/mypage"  */
     @GetMapping(value = "/user/mypage")
     public String mypage(ModelMap modelMap, HttpSession session) throws Exception {
@@ -277,6 +277,18 @@ public class UserController {
 
         /*  id = P.K  */
         String id = CmmUtil.nvl((String) session.getAttribute("SS_ID"));
+
+        if (id == "") {
+            log.info("로그인 정보 없음");
+
+            String msg = "로그인 정보가 없습니다.";
+            String url = "/user/login";
+
+            modelMap.addAttribute("msg", msg);
+            modelMap.addAttribute("url", url);
+
+            return "/redirect";
+        }
 
         /*  값 전달은 반드시 pDTO 객체 이용 처리  */
         UserDTO pDTO = new UserDTO();
@@ -296,10 +308,6 @@ public class UserController {
         return "/user/mypage";
 
     }
-
-
-
-
 
     /*  mypage 수정(회원정보 수정)(추후 수정 필요)  */
     @PostMapping(value = "/user/updateUser")
@@ -362,10 +370,134 @@ public class UserController {
 
     }
 
+    /*  로그아웃  */
+    @GetMapping(value = "/logout.do")
+    public String logout(HttpServletRequest request, ModelMap modelMap) throws Exception {
+
+        log.info(this.getClass().getName() + ".controller 로그아웃 실행");
+
+        HttpSession session = request.getSession();
+
+        String id = CmmUtil.nvl((String) session.getAttribute("SS_ID"));
+        log.info("로그아웃 id : " + id);
+
+        session.invalidate();;
+
+        String msg = "로그아웃 하였습니다.";
+        String url = "/main";
+
+        modelMap.addAttribute("msg", msg);
+        modelMap.addAttribute("url", url);
+
+        return "/redirect";
+    }
+
+    /*  아이디 찾기 화면 이동  */
+    @GetMapping(value = "/user/find")
+    public String findId() {
+
+        log.info(this.getClass().getName() + ".controller 아이디 찾기 화면으로 이동");
+
+        return "/user/find";
+    }
+
+    /*  아이디 찾기(현재 페이지 존재하지 않음)  */
+    @ResponseBody
+    @PostMapping(value = "/user/findid")
+    public UserDTO findId(HttpServletRequest request) throws Exception {
+
+        log.info(this.getClass().getName() + ".controller 아이디 찾기 실행");
+
+        // 데이터 입력
+        String email = CmmUtil.nvl(request.getParameter("email"));
+        String pn = CmmUtil.nvl(request.getParameter("pn"));
+
+        // 데이터 확인
+        log.info("email : " + email);
+        log.info("pn : " + pn);
+
+        // 데이터 저장
+        UserDTO pDTO = new UserDTO();
+        pDTO.setEmail(email);
+        pDTO.setPn(pn);
+
+        UserDTO rDTO = Optional.ofNullable(userService.findId(pDTO)).orElseGet(UserDTO::new);
+
+        log.info("검색된 아이디 : " + rDTO.getId());
+
+        log.info(this.getClass().getName() + ".controller 아이디 찾기 종료");
+
+        return rDTO;
+    }
+
+    /*  패스워드 재설정 창으로 이동  */
+    @GetMapping(value = "/user/updatepw")
+    public String updatepw() {
+
+        log.info(this.getClass().getName() + ".controller 비번 재설정 화면으로 이동");
+
+        return "/user/updatepw";
+    }
+
+    /*  임시 비번 설정 및 메일 보내기  */
+    @ResponseBody
+    @PostMapping(value = "/user/tmpPwEmail")
+    public UserDTO tmpPwEmail(HttpServletRequest request) throws Exception {
+
+        /**
+         * 1. 데이터 가져와 저장 O
+         * 2. 이메일 존재 여부 확인(존재시 Y, 없을시 N) O
+         * 3. 임시 비번 만들어 메일로 보내기 O
+         *  3-1 임시 비번 설정 O
+         *  3-2 메일 발송
+         * 4. 임시 비번 가져와 저장(메모리에 올리기)
+         * 5. 비번 변경
+         */
+
+        log.info(this.getClass().getName() + ".controller 임시 비번 설정 및 메일 보내기 실행");
+
+        // 데이터 입력
+        String id = CmmUtil.nvl(request.getParameter("id"));
+        String email = CmmUtil.nvl(request.getParameter("email"));
+        String pn = CmmUtil.nvl(request.getParameter("pn"));
+
+        // 데이터 확인
+        log.info("id : " + id);
+        log.info("email : " + email);
+        log.info("pn : " + pn);
+
+        // 데이터 저장
+        UserDTO pDTO = new UserDTO();
+        pDTO.setId(id);
+        pDTO.setEmail(email);
+        pDTO.setPn(pn);
+
+        // 이메일 존재 여부 확인 존재하면 Y값 반환, 없을시 N값 반환
+        UserDTO rDTO = Optional.ofNullable(userService.getEmailExists(pDTO)).orElseGet(UserDTO::new);
+
+        // 이메일 없을시(N) 실행
+        if (rDTO.getExists_yn().equals("N")) {
+            return rDTO;
+        }
+
+        // 임시 비번 생성 후 메일 발송
+        rDTO = userService.sendEmailPwd(pDTO);
+
+        // 임시 비번 확인용
+        log.info("tmpPwd : " + rDTO.getTmpPwd());
+
+        // 데이터 저장(변경할 임시 비번)
+        pDTO.setPw(EncryptUtil.encHashSHA256(rDTO.getTmpPwd()));
+
+        // 변경된 임시 비번으로 변경
+        userService.updatePw(pDTO);
+
+
+        return rDTO;
+    }
 
     /*  pw 재설정  */
-
-
+    /*  패스워드 찾기(현재 페이지 존재하지 않음)  */
 
 
 

@@ -14,7 +14,8 @@
          PN,
          ULOC,
          BIRTH,
-         GENDER
+         GENDER,
+         OAUTH
          )
 
         VALUES
@@ -26,7 +27,8 @@
             #{pn},
             #{uloc},
             #{birth},
-            #{gender}
+            #{gender},
+            #{oauth}
         )
     </insert>
 
@@ -54,6 +56,13 @@
         WHERE NICK = #{nick};
     </select>
 
+    <!-- 서버 아이디로 사용자 정보를 조회하는 쿼리 -->
+    <select id="getUserById" parameterType="UserDTO" resultType="UserDTO">
+        SELECT *
+        FROM USER
+        WHERE id = #{id}
+    </select>
+
     <!--  회원정보 표시(패스워드 미표시)  -->
     <select id="selectUser" parameterType="UserDTO" resultType="UserDTO">
         SELECT
@@ -63,7 +72,8 @@
             PN,
             ULOC,
             BIRTH,
-            GENDER
+            GENDER,
+            OAUTH
         FROM USER
         WHERE ID = #{id}
     </select>
@@ -79,14 +89,28 @@
         WHERE ID = #{id}
     </update>
 
+    <!--  id 찾기  -->
+    <select id="findId" resultType="UserDTO" parameterType="UserDTO">
+        SELECT ID
+        FROM USER
+        WHERE EMAIL = #{email} AND PN = #{pn}
+    </select>
+
     <!--  비밀번호 재설정 로직(맞는지 확인 필요)  -->
     <update id="updatePw" parameterType="UserDTO">
         UPDATE USER
         SET PW = #{pw}
-        WHERE ID = #{id}
+        WHERE ID = #{id} AND EMAIL = #{email} AND PN = #{pn}
     </update>
 
-
-
+    <!--  DB에 있는 이메일인지 확인  -->
+    <select id="getEmailExists" parameterType="UserDTO" resultType="UserDTO">
+        SELECT CASE WHEN COUNT(1) = 0 THEN 'N'
+                    ELSE 'Y' END AS EXISTS_YN
+        FROM USER
+        WHERE EMAIL = #{email} AND
+              ID = #{id} AND
+              PN = #{pn}
+    </select>
 
 </mapper>
