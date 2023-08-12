@@ -103,6 +103,13 @@
         WHERE ID = #{id} AND EMAIL = #{email} AND PN = #{pn}
     </update>
 
+    <!--  비밀번호 재설정(로그인)  -->
+    <update id="loginNewPw" parameterType="UserDTO">
+        UPDATE USER
+        SET PW = #{newPw}
+        WHERE ID = #{id} AND PW = #{pw}
+    </update>
+
     <!--  DB에 있는 이메일인지 확인  -->
     <select id="getEmailExists" parameterType="UserDTO" resultType="UserDTO">
         SELECT CASE WHEN COUNT(1) = 0 THEN 'N'

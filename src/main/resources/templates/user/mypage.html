@@ -37,6 +37,9 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script th:inline="javascript">
 
+        // Controller에서 받은 세션에 저장된 값
+        const SS_NICK = [[${session.SS_NICK}]];
+
         // 닉네임 중복체크여부 (중복 Y / 중복아님 : N)
         let userNickCheck = "Y";
 
@@ -45,10 +48,44 @@
 
             let f = document.getElementById("f");
 
+            // NICK 엔터키
+            $("#nick").on("keypress", function (event) {
+                if (event.key === "Enter") {
+                    event.preventDefault(); // 폼 제출 방지
+                    $("#btnNick").click();
+                }
+            });
+
             // 닉네임 중복체크
             $("#btnNick").on("click", function () { // 버튼 클릭했을때, 발생되는 이벤트 생성함(onclick 이벤트와 동일함)
+
+                const element = document.getElementById('nick');
+                element.classList.remove('is-invalid')
+                element.classList.remove('is-valid')
+
                 userNickExists(f)
 
+
+                setTimeout(function () {
+                    if (f.nick.value === "") {
+                        element.classList.add('is-invalid')
+                        $('#nickConfirm').text('수정하시려면 닉네임을 입력하세요').css('color', 'red');
+                        return;
+                    }
+
+                    if (f.nick.value === SS_NICK) {
+                        element.classList.add('is-valid')
+                        $('#nickConfirm').text('현재 사용중인 닉네임으로 사용가능합니다.').css('color', 'green');
+                        return;
+                    }
+                    if (userNickCheck === "Y") {
+                        element.classList.add('is-invalid')
+                        $('#nickConfirm').text('이미 가입된 닉네임이 존재합니다.').css('color', 'red');
+                    } else if (userNickCheck === "N"){
+                        element.classList.add('is-valid')
+                        $('#nickConfirm').text('사용 가능한 닉네임입니다.').css('color', 'green');
+                    }
+                }, 100)
             })
 
             // 버튼 클릭했을때, 발생되는 이벤트 생성함(onclick 이벤트와 동일함)
@@ -56,10 +93,32 @@
                 doSubmit(f); // mypage 수정하기 실행
             })
 
+            // 버튼 클릭했을때, 발생되는 이벤트 생성함(onclick 이벤트와 동일함)
+            $("#btnUp").on("click", function () {
+                doSubmitPw(fo); // mypage 수정하기 실행
+            })
+
         })
+
+        // 비밀번호 확인
+        function pwCheck() {
+            const element = document.getElementById('pw2');
+            element.classList.remove('is-invalid')
+            element.classList.remove('is-valid')
+            if ($('#pw1').val() === $('#pw2').val()) {
+                $('#pwConfirm').text('비밀번호 일치').css('color', 'green');
+                document.getElementById('pw2').className += ' is-valid'
+
+            } else {
+                $('#pwConfirm').text('비밀번호 불일치').css('color', 'red');
+                document.getElementById('pw2').className += ' is-invalid'
+            }
+        }
 
         // 닉네임 중복 체크
         function userNickExists(f) {
+
+            const element = document.getElementById('nick');
 
             if (f.nick.value === "") {
                 alert("닉네임을 입력하세요.");
@@ -67,7 +126,15 @@
                 return;
             }
 
-            // Ajax 호출해서 회원가입하기
+            if (f.nick.value === SS_NICK) {
+                var res = confirm("현재 사용중인 닉네임과 동일합니다.\n계속 사용하시려면 확인을 눌러주세요.")
+                if (res === false) {
+                    f.nick.focus();
+                }
+                return;
+            }
+
+            // Ajax 호출
             $.ajax({
                     url: "/user/getUserNickExists",
                     type: "post", // 전송방식은 Post
@@ -80,7 +147,7 @@
                             f.nick.focus();
 
                         } else {
-                            alert("가입 가능한 닉네임입니다.");
+                            alert("사용 가능한 닉네임입니다.");
                             userNickCheck = "N";
                         }
 
@@ -89,6 +156,7 @@
             )
         }
 
+        // 마이페이지 수정
         function doSubmit(f) {
 
             if (f.nick.value === "") {
@@ -117,6 +185,33 @@
 
             if (confirm("회원정보를 수정하시겠습니까?")) {
                 f.submit();
+            }
+
+        }
+
+        // 비번 수정
+        function doSubmitPw(fo) {
+
+            if (fo.pw.value === "") {
+                alert("현재 비밀번호를 입력하세요.");
+                fo.pw.focus();
+                return;
+            }
+
+            if (fo.pw1.value === "") {
+                alert("변경할 비밀번호 입력하세요.");
+                fo.pw1.focus();
+                return;
+            }
+
+            if (fo.pw2.value === "") {
+                alert("변경할 비밀번호 확인을 입력하세요.");
+                fo.pw2.focus();
+                return;
+            }
+
+            if (confirm("회원정보를 수정하시겠습니까?")) {
+                fo.submit();
             }
 
         }
@@ -244,6 +339,7 @@
                             <div class="input-group mb-3">
                                 <input type="text" id="nick" class="form-control" name="nick" th:value="${rDTO.nick}" aria-label="Recipient's nickname" aria-describedby="btnNick">
                                 <button class="btn btn-primary" type="button" id="btnNick">확인</button>
+                                <span id="nickConfirm"></span>
                             </div>
                             <!-- 이메일 출력 및 수정 영역 -->
                             <div class="form-group">
@@ -311,7 +407,7 @@
                 </div>
                 <!-- 비밀번호 재설정 탭 -->
                 <div class="tab-pane fade" id="up" role="tabpanel">
-                    <form th:name="updatepw" method="post" action="/user/updatepw" onsubmit="doSubmit(this)" id="fo">
+                    <form th:name="updatepw" method="post" action="/user/loginNewPw" onsubmit="doSubmitPw(this)" id="fo">
                         <!-- 비밀번호 입력 영역 -->
                         <div class="form-group">
                             <label for="pw" class="form-label mt-4">현재 비밀번호</label>
@@ -321,20 +417,21 @@
                         <!-- 비밀번호 입력 영역 -->
                         <div class="form-group">
                             <label for="pw1" class="form-label mt-4">새 비밀번호</label>
-                            <input type="password" name="pw1" class="form-control" id="pw1" placeholder="Password">
+                            <input type="password" name="pw1" class="form-control" id="pw1" placeholder="Password" oninput="pwCheck()">
                         </div>
                         <!-- 비밀번호 재확인 영역 -->
                         <div class="form-group">
                             <label for="pw2" class="form-label mt-4">새 비밀번호 확인</label>
-                            <input type="password" name="pw2" class="form-control" id="pw2" placeholder="Password">
+                            <input type="password" name="pw2" class="form-control" id="pw2" placeholder="Password" oninput="pwCheck()">
+                            <span id="pwConfirm">비밀번호를 입력하세요</span>
                         </div>
                     </form>
                     <br>
                     <!-- 수정 버튼 영역 -->
                     <button type="submit" id="btnUp" class="btn btn-primary" style="float: right;">수정</button>
                     <br><br><br>
+                </div>
             </div>
-
         </div>
     </div>
 

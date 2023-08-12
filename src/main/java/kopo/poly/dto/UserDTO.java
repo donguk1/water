@@ -16,10 +16,9 @@ public class UserDTO {
     private String uloc;    // 거주지역
     private String pn;      // 전화번호
     private String gender;  // 성별
-
     private String oauth;   // 로그인 종류(watem, kakao, naver)
-
     private String tmpPwd;  // 임시 비번
+    private String newPw;   // 새로운 비밀번호
 
     /*
      * DB를 조회해서 회원이 존재하면 Y값 반환, 없을시 N값 반환

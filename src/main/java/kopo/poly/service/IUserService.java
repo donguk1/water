@@ -31,6 +31,9 @@ public interface IUserService {
     // pw 재설정
     void updatePw(UserDTO pDTO) throws Exception;
 
+    // 로그인 상패 pw 재설정
+    void loginNewPw(UserDTO pDTO) throws Exception;
+
     // 임시 비번 메일로 보내기
     UserDTO sendEmailPwd(UserDTO pDTO) throws Exception;
 
