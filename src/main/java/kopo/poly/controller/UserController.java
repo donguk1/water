@@ -524,7 +524,7 @@ public class UserController {
             }
 
             // 현재 사용중인 비번
-            if (!newPw.equals(pw)) {
+            if (newPw.equals(pw)) {
 
                 log.info("새 비밀번호가 쓰던 비밀번호와 일치");
 
