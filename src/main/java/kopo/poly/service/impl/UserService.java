@@ -156,7 +156,15 @@ public class UserService implements IUserService {
         log.info(this.getClass().getName() + ".패스워드 재설정 실행");
 
         userMapper.updatePw(pDTO);
+    }
 
+    /*  로그인 상태 pw 재설정  */
+    @Override
+    public void loginNewPw(UserDTO pDTO) throws Exception {
+
+        log.info(this.getClass().getName() + ".패스워드 재설정 실행");
+
+        userMapper.loginNewPw(pDTO);
     }
 
     /*  임시 비번 메일로 보내기  */

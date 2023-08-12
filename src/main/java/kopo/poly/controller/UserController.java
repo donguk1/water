@@ -2,7 +2,6 @@ package kopo.poly.controller;
 
 
 import kopo.poly.dto.UserDTO;
-import kopo.poly.service.IMailService;
 import kopo.poly.service.IUserService;
 import kopo.poly.util.CmmUtil;
 import kopo.poly.util.EncryptUtil;
@@ -31,7 +30,7 @@ public class UserController {
 
     // 서비스를 안에서 사용할 수 있게 하는 선언문
     private final IUserService userService;
-    private final IMailService mailService;
+
 
     /*  회원가입 화면으로 이동 = "/user/signup"  */
     @GetMapping(value = "/user/signup")
@@ -330,6 +329,7 @@ public class UserController {
             /*  데이터 확인  */
             log.info("id : " + id);
             log.info("nick : " + nick);
+            log.info("ss_nick : " + CmmUtil.nvl((String) session.getAttribute("SS_NICK")));
             log.info("email : " + email);
             log.info("pn : " + pn);
             log.info("uloc : " + uloc);
@@ -430,15 +430,6 @@ public class UserController {
         return rDTO;
     }
 
-    /*  패스워드 재설정 창으로 이동  */
-    @GetMapping(value = "/user/updatepw")
-    public String updatepw() {
-
-        log.info(this.getClass().getName() + ".controller 비번 재설정 화면으로 이동");
-
-        return "/user/updatepw";
-    }
-
     /*  임시 비번 설정 및 메일 보내기  */
     @ResponseBody
     @PostMapping(value = "/user/tmpPwEmail")
@@ -496,8 +487,84 @@ public class UserController {
         return rDTO;
     }
 
-    /*  pw 재설정  */
-    /*  패스워드 찾기(현재 페이지 존재하지 않음)  */
+    /*  pw 변경  */
+    @PostMapping(value = "/user/loginNewPw")
+    public String  loginNewPw(HttpSession session, HttpServletRequest request, ModelMap modelMap) throws Exception {
+
+        log.info(this.getClass().getName() + ".controller 패스워드 변경 실행");
+
+        String msg = "";
+        String url = "/user/mypage";
+
+        try {
+
+            // 데이터 입력
+            String id = CmmUtil.nvl((String) session.getAttribute("SS_ID"));
+            String pw = CmmUtil.nvl(request.getParameter("pw"));
+            String newPw = CmmUtil.nvl(request.getParameter("pw1"));
+            String newPw2 = CmmUtil.nvl(request.getParameter("pw2"));
+
+            // 데이터 확인
+            log.info("id : " + id);
+            log.info("pw : " + pw);
+            log.info("newPw : " + newPw);
+            log.info("newPw2 : " + newPw2);
+
+            // 새 비밀번호 일치 확인
+            if (!newPw.equals(newPw2)) {
+
+                log.info("새 비밀번호 불일치");
+
+                msg = "작성하신 새 비밀번호가 일치하지 않습니다.\n다시 입력해주세요.";
+
+                modelMap.addAttribute("msg", msg);
+                modelMap.addAttribute("url", url);
+
+                return "/redirect";
+            }
+
+            // 현재 사용중인 비번
+            if (!newPw.equals(pw)) {
+
+                log.info("새 비밀번호가 쓰던 비밀번호와 일치");
+
+                msg = "현재 사용중인 비밀번호입니다.";
+
+                modelMap.addAttribute("msg", msg);
+                modelMap.addAttribute("url", url);
+
+                return "/redirect";
+            }
+
+            // 데이터 저장
+            UserDTO pDTO = new UserDTO();
+            pDTO.setId(id);
+            pDTO.setPw(EncryptUtil.encHashSHA256(pw));
+            pDTO.setNewPw(EncryptUtil.encHashSHA256(newPw));
+
+
+            // 정보 수정
+            userService.loginNewPw(pDTO);
+
+            msg = "수정되었습니다.";
+
+        } catch (Exception e) {
+
+            log.info("에러캐치");
+
+            msg = "수정 실패하였습니다.";
+
+            log.info(e.toString());
+            e.printStackTrace();
+
+        } finally {
+
+            modelMap.addAttribute("msg", msg);
+            modelMap.addAttribute("url", url);
+        }
+
+        return "/redirect";
+    }
 
 
 

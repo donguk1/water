@@ -112,10 +112,8 @@ public class MemoController {
 //            rList = new ArrayList<>();
 //        }
 
-        // 조회된 리스트 결과값 넣어주기
+        // 객체 바인딩
         modelMap.addAttribute("rList", rList);
-
-        // 현재 페이지 정보를 넣어주기
         modelMap.addAttribute("currentPage", page);
         modelMap.addAttribute("totalPages", totalPages);
 
@@ -188,6 +186,7 @@ public class MemoController {
 
         } finally {
 
+            // 객체 바인딩
             modelMap.addAttribute("msg", msg);
             modelMap.addAttribute("url", url);
 
@@ -215,7 +214,7 @@ public class MemoController {
         /*  상세정보 가져오기  */
         MemoDTO rDTO = Optional.ofNullable(memoService.getMemoInfo(pDTO)).orElseGet(MemoDTO::new);
 
-        /*  조회된 리스트 결과값 넣어주기  */
+        /*  객체 바인딩  */
         modelMap.addAttribute("rDTO", rDTO);
 
         log.info(this.getClass().getName() + ".controller 메모 상세보기 종료");
@@ -305,6 +304,7 @@ public class MemoController {
 
         } finally {
 
+            // 객체 바인딩
             modelMap.addAttribute("msg", msg);
             modelMap.addAttribute("url", url);
 
@@ -357,6 +357,14 @@ public class MemoController {
 
         return "/redirect";
     }
+
+    /**  map.html 페이지에서 작성 버튼 눌렀을시
+     *   이미지 지도 가져오기
+     *   지도 정보 가져오기(contents로 합쳐서?)
+     *   필요 정보(시/도)
+     *   데이터 융합(백분위(수질오염정보 + 호우 예상 => 물놀이 가기 좋은 등급)
+     */
+//    public String mapMemo
 
 
 

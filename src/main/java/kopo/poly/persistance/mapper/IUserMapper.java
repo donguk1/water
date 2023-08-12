@@ -28,12 +28,11 @@ public interface IUserMapper {
     // pw 재설정
     void updatePw(UserDTO pDTO) throws Exception;
 
+    // 로그인 상태 pw 재설정
+    void loginNewPw(UserDTO pDTO) throws Exception;
+
     // DB에 이메일 여부 확인(임시 비번 설정 및 메일 보내기에 사용)
     UserDTO getEmailExists(UserDTO pDTO) throws Exception;
-
-
-
-    /* 여기서부턴 확인 필요 */
 
     // 회원정보 표시(마이페이지)
     UserDTO selectUser(UserDTO pDTO) throws Exception;
