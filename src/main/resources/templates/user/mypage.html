@@ -120,20 +120,6 @@
 
             const element = document.getElementById('nick');
 
-            if (f.nick.value === "") {
-                alert("닉네임을 입력하세요.");
-                f.nick.focus();
-                return;
-            }
-
-            if (f.nick.value === SS_NICK) {
-                var res = confirm("현재 사용중인 닉네임과 동일합니다.\n계속 사용하시려면 확인을 눌러주세요.")
-                if (res === false) {
-                    f.nick.focus();
-                }
-                return;
-            }
-
             // Ajax 호출
             $.ajax({
                     url: "/user/getUserNickExists",
@@ -143,11 +129,10 @@
                     success: function (json) { // 호출이 성공했다면..
 
                         if (json.exists_yn === "Y") {
-                            alert("이미 가입된 닉네임이 존재합니다.");
                             f.nick.focus();
+                            userNickCheck = "Y";
 
                         } else {
-                            alert("사용 가능한 닉네임입니다.");
                             userNickCheck = "N";
                         }
 
@@ -336,11 +321,16 @@
                             </div>
                             <!-- 닉네임 출력 및 수정 영역 -->
                             <label for="nick" class="form-label mt-4">닉네임</label>
-                            <div class="input-group mb-3">
+<!--                            <div class="input-group mb-3">-->
+<!--                                <input type="text" id="nick" class="form-control" name="nick" th:value="${rDTO.nick}" aria-label="Recipient's nickname" aria-describedby="btnNick">-->
+<!--                                <button class="btn btn-primary" type="button" id="btnNick">확인</button>-->
+<!--                                <span id="nickConfirm"></span>-->
+<!--                            </div>-->
+                            <div class="input-group mb-3" style="display: flex; align-items: baseline;">
                                 <input type="text" id="nick" class="form-control" name="nick" th:value="${rDTO.nick}" aria-label="Recipient's nickname" aria-describedby="btnNick">
                                 <button class="btn btn-primary" type="button" id="btnNick">확인</button>
-                                <span id="nickConfirm"></span>
                             </div>
+                            <span id="nickConfirm" style="display: block; margin-top: -1em;"></span>
                             <!-- 이메일 출력 및 수정 영역 -->
                             <div class="form-group">
                                 <label for="email" class="form-label mt-4">이메일</label>
