@@ -1,7 +1,9 @@
 package kopo.poly.controller;
 
 
+import kopo.poly.dto.MapDTO;
 import kopo.poly.dto.MemoDTO;
+import kopo.poly.service.IMapService;
 import kopo.poly.service.IMemoService;
 import kopo.poly.util.CmmUtil;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +36,7 @@ public class MemoController {
 
     // 서비스를 안에서 사용할 수 있게 하는 선언문
     private final IMemoService memoService;
+    private final IMapService mapService;
 
 
     /*  메모 리스트 = "/memo/list"  */
@@ -147,7 +150,6 @@ public class MemoController {
             String id = CmmUtil.nvl((String) session.getAttribute("SS_ID")); // 로그인된 ID 가져오기
             String nick = CmmUtil.nvl((String) session.getAttribute("SS_NICK")); // 로그인된 NICK 가져오기
             String title = CmmUtil.nvl(request.getParameter("title"));           // 제목
-            String map = CmmUtil.nvl(request.getParameter("map"));               // 이미지 지도
             String contents = CmmUtil.nvl(request.getParameter("contents"));     // 글 내용
             String mloc = CmmUtil.nvl(request.getParameter("mloc"));
 
@@ -156,7 +158,6 @@ public class MemoController {
             log.info("id : " + id);
             log.info("nick : " + nick);
             log.info("title : " + title);
-            log.info("map : " + map);
             log.info("contents : " + contents);
             log.info("mloc : " + mloc);
 
@@ -165,7 +166,6 @@ public class MemoController {
             pDTO.setId(id);
             pDTO.setNick(nick);
             pDTO.setTitle(title);
-            pDTO.setMap(map);
             pDTO.setContents(contents);
             pDTO.setMloc(mloc);
 
@@ -211,11 +211,30 @@ public class MemoController {
         MemoDTO pDTO = new MemoDTO();
         pDTO.setNum(num);
 
+        MapDTO mapDTO = new MapDTO();
+        mapDTO.setNum(num);
+
         /*  상세정보 가져오기  */
         MemoDTO rDTO = Optional.ofNullable(memoService.getMemoInfo(pDTO)).orElseGet(MemoDTO::new);
+        MapDTO aDTO = Optional.ofNullable(memoService.getLatLng(mapDTO)).orElseGet(MapDTO::new);
+
 
         /*  객체 바인딩  */
         modelMap.addAttribute("rDTO", rDTO);
+        modelMap.addAttribute("aDTO", aDTO);
+
+        log.info("rDTO : " + rDTO.getNum());
+        log.info("rDTO : " + rDTO.getNick());
+        log.info("rDTO : " + rDTO.getTitle());
+        log.info("rDTO : " + rDTO.getDt());
+        log.info("rDTO : " + rDTO.getContents());
+        log.info("rDTO : " + rDTO.getId());
+
+        log.info("aDTO : " + aDTO.getNum());
+        log.info("aDTO : " + aDTO.getLat());
+        log.info("aDTO : " + aDTO.getLng());
+        log.info("aDTO : " + aDTO.getLevel());
+
 
         log.info(this.getClass().getName() + ".controller 메모 상세보기 종료");
 
@@ -238,6 +257,7 @@ public class MemoController {
 
         /*  상세정보 가져오기  */
         MemoDTO rDTO = memoService.getMemoInfo(pDTO);
+
         if (rDTO == null) {
             rDTO = new MemoDTO();
         }

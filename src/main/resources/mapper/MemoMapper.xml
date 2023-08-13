@@ -3,6 +3,24 @@
 <!-- JAVA와 연결할 Mapper 파일 설정 -->
 <mapper namespace="kopo.poly.persistance.mapper.IMemoMapper">
 
+    <resultMap id="MemoResultMap" type="kopo.poly.dto.MemoDTO">
+        <id property="num" column="NUM"/>
+        <result property="id" column="ID"/>
+        <result property="title" column="TITLE"/>
+        <result property="mloc" column="MLOC"/>
+        <result property="nick" column="NICK"/>
+        <result property="contents" column="CONTENTS"/>
+        <result property="dt" column="DT"/>
+        <association property="mapDTO" resultMap="MapDTOResultMap"/>
+    </resultMap>
+
+    <resultMap id="MapDTOResultMap" type="kopo.poly.dto.MapDTO">
+        <result property="lat" column="LAT"/>
+        <result property="lng" column="LNG"/>
+        <result property="level" column="LEVEL"/>
+        <result property="mloc" column="MLOC"/>
+    </resultMap>
+
     <!--  메모 리스트  -->
     <select id="getMemoList" resultType="MemoDTO">
         SELECT NUM,
@@ -34,7 +52,6 @@
          TITLE,
          MLOC,
          NICK,
-         MAP,
          CONTENTS,
          DT
         )
@@ -44,25 +61,41 @@
          #{title},
          #{mloc},
          #{nick},
-         #{map},
          #{contents},
          SYSDATE()
         )
     </insert>
 
     <!--  메모 상세보기  -->
-    <select id="getMemoInfo" resultType="MemoDTO">
+    <select id="getMemoInfo" resultMap="MemoResultMap">
         SELECT
-            NUM,
-            ID,
-            TITLE,
-            MLOC,
-            NICK,
-            MAP,
-            CONTENTS,
-            TO_CHAR(DT, 'YYYY-MM-DD') AS DT
-        FROM MEMO
-        WHERE NUM = #{num}
+            M.NUM,
+            M.ID,
+            M.TITLE,
+            M.MLOC,
+            M.NICK,
+            M.CONTENTS,
+            TO_CHAR(M.DT, 'YYYY-MM-DD') AS DT,
+            MA.LAT,
+            MA.LNG,
+            MA.LEVEL
+        FROM
+            MEMO M
+                JOIN
+            MAP MA ON M.NUM = MA.NUM
+        WHERE
+            M.NUM = #{num};
+    </select>
+
+    <select id="getLatLng" resultType="MapDTO">
+        SELECT
+            LAT,
+            LNG,
+            LEVEL
+        FROM
+            MAP
+        WHERE
+            NUM = #{num}
     </select>
 
     <!--  메모 수정  -->
