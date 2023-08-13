@@ -204,4 +204,15 @@ public class UserService implements IUserService {
 
         return userMapper.getEmailExists(pDTO);
     }
+
+    /* 회원 탈퇴 */
+    @Transactional
+    @Override
+    public void deleteUser(UserDTO pDTO) throws Exception {
+
+        log.info(this.getClass().getName() + ".회원 탈퇴");
+
+        userMapper.deleteUser(pDTO);
+    }
+
 }
