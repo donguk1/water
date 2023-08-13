@@ -3,8 +3,8 @@
 <!-- JAVA와 연결할 Mapper 파일 설정 -->
 <mapper namespace="kopo.poly.persistance.mapper.IMapMapper">
     <insert id="insertMapData" parameterType="MapDTO">
-        INSERT INTO MAP (LAT, LNG, LEVEL)
-        VALUES (#{lat}, #{lng}, #{level})
+        INSERT INTO MAP (LAT, LNG, LEVEL, MLOC)
+        VALUES (#{lat}, #{lng}, #{level}, #{mloc})
     </insert>
 
 
