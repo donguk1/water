@@ -11,7 +11,6 @@ public class MapDTO {
     private Double lat;
     private Double lng;
     private Integer level;
-//    private Double markerLat;
-//    private Double markerLng;
+
 
 }
