@@ -120,4 +120,11 @@
               PN = #{pn}
     </select>
 
+    <!-- 회원 탈퇴 -->
+    <delete id="deleteUser" parameterType="UserDTO">
+        DELETE FROM USER
+        WHERE ID = #{id} AND
+              PW = #{pw}
+    </delete>
+
 </mapper>

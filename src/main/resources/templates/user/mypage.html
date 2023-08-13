@@ -97,6 +97,26 @@
             $("#btnUp").on("click", function () {
                 doSubmitPw(fo); // mypage 수정하기 실행
             })
+            
+            // 마이페이지에서 탈퇴하기 팝업창 열기 클릭 이벤트
+            $("#btnDel").on("click", function () {
+                // userDelete 팝업을 보이도록 설정
+                $("#userDelete").modal("show");
+            });
+
+            // 탈퇴하기 버튼 클릭 이벤트
+            $("#modalBtnDel").click(function() {
+                var res = confirm("정말로 탈퇴하시겠습니까?");
+
+                if (res === false) {
+                    return ;
+                }
+
+                if (res === true) {
+                    doSubmitDel(del);
+                }
+
+            });
 
         })
 
@@ -199,6 +219,10 @@
                 fo.submit();
             }
 
+        }
+
+        function doSubmitDel(del) {
+            del.submit();
         }
 
         /* back to top 클릭시 주소창에 #top 추가 안되게 함 */
@@ -391,6 +415,10 @@
                         <br><br>
                     </form>
                     <br>
+                    <!-- 탈퇴 버튼 영역 -->
+                    <div th:if="${rDTO.oauth == 'watem'}">
+                        <button type="button" id="btnDel" class="btn btn-link" data-bs-toggle="modal" data-bs-target="userDelete" style="font-family: 'Noto Sans KR', sans-serif; float: left">탈퇴하시려면 여기를 눌러주세요.</button>
+                    </div>
                     <!-- 수정 버튼 영역 -->
                     <button type="submit" id="btnSend" class="btn btn-primary" style="float: right;">수정</button>
                     <br>
@@ -420,6 +448,30 @@
                     <!-- 수정 버튼 영역 -->
                     <button type="submit" id="btnUp" class="btn btn-primary" style="float: right;">수정</button>
                     <br><br><br>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 회원 탈퇴 팝업 -->
+    <div id="userDelete" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" style="font-family: 'Do Hyeon', sans-serif;">회원 탈퇴</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="/user/delete" method="post" onsubmit="doSubmitDel(this)" id="del">
+                    <div class="modal-body">
+                        <p>탈퇴를 진행하시려면 비밀번호를 입력해주세요.</p>
+                        <div class="input-group input-group-outline my-3">
+                            <input type="password" id="userDeletePw" name="userDeletePw" class="form-control" placeholder="password" required>
+                        </div>
+                    </div>
+                </form>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                    <button type="submit" class="btn btn-primary" id="modalBtnDel">탈퇴하기</button>
                 </div>
             </div>
         </div>
