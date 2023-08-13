@@ -188,6 +188,7 @@ public class UserController {
 
                 session.setAttribute("SS_ID", id);
                 session.setAttribute("SS_NICK", CmmUtil.nvl(rDTO.getNick()));
+                session.setAttribute("SS_PW", pw);
 
                 msg = "로그인이 성공했습니다. \n" + rDTO.getNick() + "님 환영합니다.";
                 url = "/main";
@@ -308,7 +309,7 @@ public class UserController {
 
     }
 
-    /*  mypage 수정(회원정보 수정)(추후 수정 필요)  */
+    /*  mypage 수정(회원정보 수정)  */
     @PostMapping(value = "/user/updateUser")
     public String updateUser(HttpSession session, ModelMap modelMap, HttpServletRequest request) throws Exception {
 
@@ -401,7 +402,7 @@ public class UserController {
         return "/user/find";
     }
 
-    /*  아이디 찾기(현재 페이지 존재하지 않음)  */
+    /*  아이디 찾기  */
     @ResponseBody
     @PostMapping(value = "/user/findid")
     public UserDTO findId(HttpServletRequest request) throws Exception {
@@ -566,7 +567,68 @@ public class UserController {
         return "/redirect";
     }
 
+    /*  회원 탈퇴 실행 로직  */
+    @PostMapping(value = "/user/delete")
+    public String userDelete(ModelMap modelMap, HttpServletRequest request, HttpSession session) {
 
+        log.info(this.getClass().getName() + ".controller 회원 탈퇴 실행");
 
+        String id = CmmUtil.nvl((String) session.getAttribute("SS_ID"));
+        String ssPw = CmmUtil.nvl((String) session.getAttribute("SS_PW"));
+        String pw = CmmUtil.nvl(request.getParameter("userDeletePw"));
+
+        log.info("탈퇴할 회원 ID : " + id);
+        log.info("세션에 저장된 pw : " + ssPw);
+        log.info("입력한 pw : " + pw);
+
+        String msg = "";
+        String url = "/main";
+
+        try {
+
+            if (!ssPw.equals(pw)) {
+
+                log.info("비밀번호 불일치");
+
+                msg = "작성하신 비밀번호가 일치하지 않습니다.\n다시 입력해주세요.";
+                url = "/user/mypage";
+
+                modelMap.addAttribute("msg", msg);
+                modelMap.addAttribute("url", url);
+
+                return "/redirect";
+            }
+
+            /*  회원 삭제용 비밀번호 데이터 저장  */
+            UserDTO pDTO = new UserDTO();
+            pDTO.setId(id);
+            pDTO.setPw(EncryptUtil.encHashSHA256(pw));
+
+            /*  회원 삭제용 비즈니스 로직 호출(쿼리문)  */
+           userService.deleteUser(pDTO);
+
+            msg = "탈퇴되었습니다.";
+
+            session.invalidate();
+
+        } catch (Exception e) {
+
+            msg = "탈퇴에 실패하였습니다.";
+
+            /*  실패 사유 확인용 로그  */
+            log.info(e.toString());
+            e.printStackTrace();    // Exception 발생 이유와 위치는 어디에서 발생했는지 전체적인 단계 출력
+
+        } finally {
+
+            modelMap.addAttribute("msg", msg);
+            modelMap.addAttribute("url", url);
+
+            log.info(this.getClass().getName() + ".controller 회원 탈퇴 종료");
+
+        }
+
+        return "/redirect";
+    }
 
 }
