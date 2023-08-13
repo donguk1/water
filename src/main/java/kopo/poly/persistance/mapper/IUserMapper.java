@@ -40,6 +40,7 @@ public interface IUserMapper {
     // 회원정보 수정
     void updateUser(UserDTO pDTO) throws Exception;
 
-
+    // 회원 탈퇴
+    void deleteUser(UserDTO pDTO) throws Exception;
 
 }
