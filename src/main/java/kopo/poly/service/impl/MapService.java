@@ -25,10 +25,12 @@ public class MapService implements IMapService {
         rDTO.setLevel(mapDTO.getLevel());
         rDTO.setLat(mapDTO.getLat());
         rDTO.setLng(mapDTO.getLng());
+        rDTO.setMloc(mapDTO.getMloc());
 
         log.info(rDTO.getLat().toString());
         log.info(rDTO.getLng().toString());
         log.info(rDTO.getLevel().toString());
+        log.info(rDTO.getMloc());
 
         mapMapper.insertMapData(rDTO);
 

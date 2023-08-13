@@ -29,6 +29,11 @@
             right: 0;
             z-index: 1000;
         }
+        .map_wrap {position:relative;width:100%;height:350px;}
+        .title {font-weight:bold;display:block;}
+        .hAddr {position:absolute;left:10px;top:10px;border-radius: 2px;background:#fff;background:rgba(255,255,255,0.8);z-index:1;padding:5px;}
+        #centerAddr {display:block;margin-top:2px;font-weight: normal;}
+        .bAddr {padding:5px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;}
     </style>
 
     <script type="text/javascript" src="/js/jquery-3.6.0.min.js"></script>
@@ -68,24 +73,6 @@
         //     })
         // })
 
-        /* 지도 생성 */
-
-        function saveMapData() {
-            // 이미지 지도에서 마커가 표시될 위치입니다
-            var markerPosition = new kakao.maps.LatLng(33.450701, 126.570667);
-
-            // 이미지 지도에 표시할 마커입니다
-            var marker = {
-                position: markerPosition
-            };
-
-            // 이미지 지도 정보를 객체로 생성
-            var mapDTO = {
-                center: { lat: 33.450701, lng: 126.570667 },
-                level: 3,
-                markerPosition: { lat: markerPosition.getLat(), lng: markerPosition.getLng() }
-            };
-        }
 
         // 버튼 클릭 이벤트 핸들러 등록
         // var btnSaveAndWrite = document.getElementById('btnSaveAndWrite');
@@ -137,7 +124,13 @@
             <div class="list-group list-group-flushs mx-auto" style="width: 98%">
                 <div class="list-group-item" style="height: 800px">
                     <!-- 지도를 표시할 div 입니다 -->
-                    <div id="map" style="width:65%; height:790px; border: 3px solid grey; float: left"></div>
+                    <div class="map_wrap">
+                        <div id="map" style="width:65%; height:790px; border: 3px solid grey; float: left"></div>
+                        <div class="hAddr">
+                            <span class="title">지도중심기준 행정동 주소정보</span>
+                            <span id="centerAddr"></span>
+                        </div>
+                    </div>
                     <p id="result"></p>
                     <br>
                     <p>다른 정보</p>
@@ -146,7 +139,7 @@
                     <button type="button" class="btn btn-outline-dark" id="btnSaveAndWrite">글작성</button>
                     <!-- 메모 작성하는 페이지로 넘어가게 해놨으니 데이터 끌고서 넘어갈 수 있도록 손봐주세요 -->
 
-                    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=9f7b1b926be42fe85ba854921b7d037e"></script>
+                    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=9f7b1b926be42fe85ba854921b7d037e&libraries=services"></script>
                     <script>
                     var mapContainer = document.getElementById('map'), // 지도를 표시할 div
                     mapOption = {
@@ -168,16 +161,38 @@
                     var zoomControl = new kakao.maps.ZoomControl();
                     map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
 
+                    // 주소-좌표 변환 객체를 생성합니다
+                    var geocoder = new kakao.maps.services.Geocoder();
+
                     // 지도를 클릭한 위치에 표출할 마커입니다
                     var marker = new kakao.maps.Marker({
                         // 지도 중심좌표에 마커를 생성합니다
                         position: map.getCenter()
-                    });
+                    }), infowindow = new kakao.maps.InfoWindow({zindex:1}); // 클릭한 위치에 대한 주소를 표시할 인포윈도우입니다;
                     // 지도에 마커를 표시합니다
                     marker.setMap(map);
 
                     var mlng;
                     var mlat;
+                    var mloc;
+
+                    // 현재 지도 중심좌표로 주소를 검색해서 지도 좌측 상단에 표시합니다
+                    searchAddrFromCoords(map.getCenter(), displayCenterInfo);
+
+                    // 지도 좌측상단에 지도 중심좌표에 대한 주소정보를 표출하는 함수입니다
+                    function displayCenterInfo(result, status) {
+                        if (status === kakao.maps.services.Status.OK) {
+                            var infoDiv = document.getElementById('centerAddr');
+
+                            for(var i = 0; i < result.length; i++) {
+                                // 행정동의 region_type 값은 'H' 이므로
+                                if (result[i].region_type === 'H') {
+                                    infoDiv.innerHTML = result[i].address_name;
+                                    break;
+                                }
+                            }
+                        }
+                    }
 
                     // 지도에 클릭 이벤트를 등록합니다
                     // 지도를 클릭하면 마지막 파라미터로 넘어온 함수를 호출합니다
@@ -185,26 +200,63 @@
 
                         // 클릭한 위도, 경도 정보를 가져옵니다
                         var latlng = mouseEvent.latLng;
-
-                        // 마커 위치를 클릭한 위치로 옮깁니다
-                        marker.setPosition(latlng);
-
-                        var message = '클릭한 위치의 위도는 ' + latlng.getLat() + ' 이고, ';
-                        message += '경도는 ' + latlng.getLng() + ' 입니다';
-
-                        var resultDiv = document.getElementById('result');
-                        resultDiv.innerHTML = message;
-
                         mlat = latlng.getLat();
                         mlng = latlng.getLng();
+
+                        searchDetailAddrFromCoords(mouseEvent.latLng, function(result, status) {
+                            // if (status === kakao.maps.services.Status.OK) {
+                                var detailAddr = !!result[0].road_address ? '<div>도로명주소 : ' + result[0].road_address.address_name + '</div>' : '';
+                                detailAddr += '<div>지번 주소 : ' + result[0].address.address_name + '</div>';
+
+                                var content = '<div class="bAddr">' +
+                                    '<span class="title">법정동 주소정보</span>' +
+                                    detailAddr +
+                                    '</div>';
+
+                                // 마커 위치를 클릭한 위치로 옮깁니다
+                                marker.setPosition(latlng);
+
+
+                                // 인포윈도우에 클릭한 위치에 대한 법정동 상세 주소정보를 표시합니다
+                                infowindow.setContent(content);
+                                infowindow.open(map, marker);
+
+                                var message = '클릭한 위치의 위도는 ' + latlng.getLat() + ' 이고, ';
+                                message += '경도는 ' + latlng.getLng() + ' 입니다';
+
+                                var resultDiv = document.getElementById('result');
+                                resultDiv.innerHTML = message;
+
+                                mlat = latlng.getLat();
+                                mlng = latlng.getLng();
+                                mloc = result[0].address.address_name.substring(0, 2);  //  ex) 서울, 제주 등으로 표기, 맨앞 두글자만
+
+                        });
                     });
+
+                    // 중심 좌표나 확대 수준이 변경됐을 때 지도 중심 좌표에 대한 주소 정보를 표시하도록 이벤트를 등록합니다
+                    kakao.maps.event.addListener(map, 'idle', function() {
+
+                        searchAddrFromCoords(map.getCenter(), displayCenterInfo);
+                    });
+
+                    function searchAddrFromCoords(coords, callback) {
+                        // 좌표로 행정동 주소 정보를 요청합니다
+                        geocoder.coord2RegionCode(coords.getLng(), coords.getLat(), callback);
+                    }
+
+                    function searchDetailAddrFromCoords(coords, callback) {
+                        // 좌표로 법정동 상세 주소 정보를 요청합니다
+                        geocoder.coord2Address(coords.getLng(), coords.getLat(), callback);
+                    }
 
                     $(document).ready(function () {
                         $("#btnSaveAndWrite").on("click", function () {
                             var mapDTO = {
                                 lat: mlat,
                                 lng: mlng,
-                                level: mapOption.level
+                                level: mapOption.level,
+                                mloc: mloc
                             };
 
                             $.ajax({
@@ -220,6 +272,7 @@
                                     console.log(mapDTO.lat);
                                     console.log(mapDTO.lng);
                                     console.log(mapDTO.level);
+                                    console.log(mapDTO.mloc);
                                 },
                                 error: function(error) {
                                     console.error("Error:", error);

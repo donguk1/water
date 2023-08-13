@@ -1,6 +1,5 @@
 package kopo.poly.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,9 +7,12 @@ import lombok.Setter;
 @Setter
 public class MapDTO {
 
-    private Double lat;
-    private Double lng;
-    private Integer level;
+    private Double lat;     // 위도
+    private Double lng;     // 경도
+    private Integer level;  // 스케일
+    private String mloc;
 
+//    private Double markerLat;
+//    private Double markerLng;
 
 }
