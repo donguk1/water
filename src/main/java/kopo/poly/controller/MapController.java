@@ -45,14 +45,17 @@ public class MapController {
             model.addAttribute("lat", savedMapData.getLat());
             model.addAttribute("lng", savedMapData.getLng());
             model.addAttribute("level", savedMapData.getLevel());
+            model.addAttribute("mloc", savedMapData.getMloc());
 
             log.info("lat : {}", savedMapData.getLat());
             log.info("lng : {}", savedMapData.getLng());
             log.info("level : {}", savedMapData.getLevel());
+            log.info("mloc : {}", savedMapData.getMloc());
 
             log.info("model lat : " + model.getAttribute("lat"));
             log.info("model lng : " + model.getAttribute("lng"));
             log.info("model level : " + model.getAttribute("level"));
+            log.info("model mloc : " + model.getAttribute("mloc"));
 
             log.info("MapController send End!");
 
