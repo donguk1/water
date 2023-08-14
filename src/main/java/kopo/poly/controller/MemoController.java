@@ -234,6 +234,7 @@ public class MemoController {
         log.info("aDTO : " + aDTO.getLat());
         log.info("aDTO : " + aDTO.getLng());
         log.info("aDTO : " + aDTO.getLevel());
+        log.info("aDTO : " + aDTO.getMloc());
 
 
         log.info(this.getClass().getName() + ".controller 메모 상세보기 종료");

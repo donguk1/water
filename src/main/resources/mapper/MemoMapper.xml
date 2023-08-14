@@ -91,7 +91,8 @@
         SELECT
             LAT,
             LNG,
-            LEVEL
+            LEVEL,
+            MLOC
         FROM
             MAP
         WHERE
@@ -102,7 +103,6 @@
     <update id="updateMemoInfo" parameterType="MemoDTO">
         UPDATE MEMO
         SET TITLE     = #{title},
-            MLOC      = #{mloc},
             MAP       = #{map},
             CONTENTS  = #{contents}
         WHERE NUM = #{num}
