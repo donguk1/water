@@ -3,11 +3,16 @@ package kopo.poly.controller;
 
 import kopo.poly.dto.MapDTO;
 import kopo.poly.service.IMapService;
+import kopo.poly.util.CmmUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpSession;
 
@@ -19,7 +24,7 @@ public class MapController {
     private final IMapService mapService;
 
     @PostMapping(value="/map/save")
-    public String saveMapData(@RequestBody MapDTO mapDTO, HttpSession session) {
+    public String saveMapData   (@RequestBody MapDTO mapDTO, HttpSession session) {
         try {
             log.info("MapController save Start!");
 
@@ -36,7 +41,23 @@ public class MapController {
     }
 
     @GetMapping(value="/map/send")
-    public String sendMapData(Model model, HttpSession session) throws Exception {
+    public String sendMapData(Model model, HttpSession session, ModelMap modelMap) throws Exception {
+
+                /*  id = P.K  */
+        String id = CmmUtil.nvl((String) session.getAttribute("SS_ID"));
+
+        if (id == "") {
+            log.info("로그인 정보 없음");
+
+            String msg = "로그인 정보가 없습니다.";
+            String url = "/user/login";
+
+            modelMap.addAttribute("msg", msg);
+            modelMap.addAttribute("url", url);
+
+            return "/redirect";
+        }
+
         try {
             log.info("MapController send Start!");
 
