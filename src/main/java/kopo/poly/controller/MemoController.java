@@ -129,7 +129,23 @@ public class MemoController {
 
     /*  메모 작성 페이지 = "/memo/new"  */
     @GetMapping(value = "/memo/new")
-    public String MemoInsert() {
+    public String MemoInsert(HttpSession session, ModelMap modelMap) {
+
+        /*  id = P.K  */
+        String id = CmmUtil.nvl((String) session.getAttribute("SS_ID"));
+
+        if (id == "") {
+            log.info("로그인 정보 없음");
+
+            String msg = "로그인 정보가 없습니다.";
+            String url = "/user/login";
+
+            modelMap.addAttribute("msg", msg);
+            modelMap.addAttribute("url", url);
+
+            return "/redirect";
+        }
+
 
         log.info(this.getClass().getName() + ".controller 메모 작성 실행");
 
@@ -142,6 +158,8 @@ public class MemoController {
 
         log.info(this.getClass().getName() + ".controller 메모 등록 실행");
 
+        MapDTO savedMapData = (MapDTO) session.getAttribute("savedMapData");
+
         String msg = "";            // 메시지(알림용)
         String url = "/memo/new";   // 이동할 경로
 
@@ -151,7 +169,19 @@ public class MemoController {
             String nick = CmmUtil.nvl((String) session.getAttribute("SS_NICK")); // 로그인된 NICK 가져오기
             String title = CmmUtil.nvl(request.getParameter("title"));           // 제목
             String contents = CmmUtil.nvl(request.getParameter("contents"));     // 글 내용
-            String mloc = CmmUtil.nvl(request.getParameter("mloc"));
+            String mloc = savedMapData.getMloc();
+
+            if (id == "") {
+                log.info("로그인 정보 없음");
+
+                msg = "로그인 정보가 없습니다.";
+                url = "/user/login";
+
+                modelMap.addAttribute("msg", msg);
+                modelMap.addAttribute("url", url);
+
+                return "/redirect";
+            }
 
 
             /*  데이터 확인  */
