@@ -23,8 +23,8 @@ public class MemoDTO {
     private String keyword;     // 검색 내용
     private String[] typeArr;   //
 
-//    public void setType(String type) {
-//        this.type = type;
-//        this.typeArr = type.split("");
-//    }
+    private MapDTO mapDTO;
+    private Double lat;
+    private Double lng;
+    private int level;
 }

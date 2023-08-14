@@ -12,7 +12,8 @@ public class MapDTO {
     private Integer level;  // 스케일
     private String mloc;
 
+    private String num;
+
 //    private Double markerLat;
 //    private Double markerLng;
-
 }

@@ -1,5 +1,6 @@
 package kopo.poly.service;
 
+import kopo.poly.dto.MapDTO;
 import kopo.poly.dto.MemoDTO;
 
 import java.util.List;
@@ -28,5 +29,5 @@ public interface IMemoService {
     // 메모 삭제
     void deleteMemoInfo(MemoDTO pDTO) throws Exception;
 
-
+    MapDTO getLatLng(MapDTO mapDTO) throws Exception;
 }

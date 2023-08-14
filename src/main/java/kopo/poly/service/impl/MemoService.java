@@ -1,5 +1,6 @@
 package kopo.poly.service.impl;
 
+import kopo.poly.dto.MapDTO;
 import kopo.poly.dto.MemoDTO;
 import kopo.poly.persistance.mapper.IMemoMapper;
 import kopo.poly.service.IMemoService;
@@ -82,5 +83,13 @@ public class MemoService implements IMemoService {
         log.info(this.getClass().getName() + ".메모 삭제");
 
         memoMapper.deleteMemoInfo(pDTO);
+    }
+
+    @Transactional
+    @Override
+    public MapDTO getLatLng(MapDTO mapDTO) throws Exception {
+        log.info(this.getClass().getName() + ".위경도 가져오기");
+
+        return memoMapper.getLatLng(mapDTO);
     }
 }
