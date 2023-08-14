@@ -29,6 +29,11 @@
             right: 0;
             z-index: 1000;
         }
+
+        #btnDel:hover {
+            text-decoration: underline;
+            font-weight: bold;
+        }
     </style>
 
     <script type="text/javascript" src="/js/jquery-3.6.0.min.js"></script>
@@ -39,6 +44,7 @@
 
         // Controller에서 받은 세션에 저장된 값
         const SS_NICK = [[${session.SS_NICK}]];
+        const SS_PW = [[${session.SS_PW}]]
 
         // 닉네임 중복체크여부 (중복 Y / 중복아님 : N)
         let userNickCheck = "Y";
@@ -203,6 +209,12 @@
                 return;
             }
 
+            if(fo.pw.value !== [[${session.SS_PW}]]) {
+                alert("현재 비밀번호가 아닙니다.")
+                fo.pw.focus();
+                return;
+            }
+
             if (fo.pw1.value === "") {
                 alert("변경할 비밀번호 입력하세요.");
                 fo.pw1.focus();
@@ -222,6 +234,13 @@
         }
 
         function doSubmitDel(del) {
+
+            if(del.userDeletePw.value !== [[${session.SS_PW}]]) {
+                alert("비밀번호가 일치하지 않습니다.")
+                del.userDeletePw.focus();
+                return;
+            }
+
             del.submit();
         }
 
