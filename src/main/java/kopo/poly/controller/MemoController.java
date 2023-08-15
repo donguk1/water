@@ -285,9 +285,12 @@ public class MemoController {
         /*  데이터 저장  */
         MemoDTO pDTO = new MemoDTO();
         pDTO.setNum(num);
+        MapDTO mapDTO = new MapDTO();
+        mapDTO.setNum(num);
 
         /*  상세정보 가져오기  */
         MemoDTO rDTO = memoService.getMemoInfo(pDTO);
+        MapDTO aDTO = memoService.getLatLng(mapDTO);
 
         if (rDTO == null) {
             rDTO = new MemoDTO();
@@ -295,6 +298,7 @@ public class MemoController {
 
         /*  조회된 리스트 결과값 넣어주기(확인 필요)  */
         modelMap.addAttribute("rDTO", rDTO);
+        modelMap.addAttribute("aDTO", aDTO);
 
         log.info(this.getClass().getName() + ".controller 메모 수정페이지 접근 종료");
 
