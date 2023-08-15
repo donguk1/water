@@ -22,6 +22,31 @@ function fetchMapData() {
 /*
 마커
  */
+// 지도에 마커와 인포윈도우를 표시하는 함수입니다
+function displayMarker(locPosition, message) {
+
+    // 마커를 생성합니다
+    var marker = new kakao.maps.Marker({
+        map: map,
+        position: locPosition
+    });
+
+    var iwContent = message, // 인포윈도우에 표시할 내용
+        iwRemoveable = true;
+
+    // 인포윈도우를 생성합니다
+    var infowindow = new kakao.maps.InfoWindow({
+        content : iwContent,
+        removable : iwRemoveable
+    });
+
+    // 인포윈도우를 마커위에 표시합니다
+    infowindow.open(map, marker);
+
+    // 지도 중심좌표를 접속위치로 변경합니다
+    map.setCenter(locPosition);
+}
+
 // 검색결과 목록 또는 마커를 클릭했을 때 호출되는 함수입니다
 // 인포윈도우에 장소명을 표시합니다
 function displayInfowindow(marker, title) {
@@ -82,7 +107,6 @@ function displayCenterInfo(result, status) {
         }
     }
 }
-
 
 /*
 검색
