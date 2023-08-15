@@ -123,11 +123,11 @@
                     <!-- 지도를 표시할 div 입니다 -->
                     <div class="map_wrap">
                         <div id="map" style="width:65%; height:790px; border: 3px solid grey; float: left"></div>
-                        <!-- 지도 좌상단 주소 -->
-                        <div class="hAddr">
-                            <span class="title">지도중심기준 행정동 주소정보</span>
-                            <span id="centerAddr"></span>
-                        </div>
+<!--                        &lt;!&ndash; 지도 좌상단 주소 &ndash;&gt;-->
+<!--                        <div class="hAddr">-->
+<!--                            <span class="title">지도중심기준 행정동 주소정보</span>-->
+<!--                            <span id="centerAddr"></span>-->
+<!--                        </div>-->
                         <!-- 장소 검색 -->
                         <div id="menu_wrap" class="bg_white">
                             <div class="option">
@@ -143,7 +143,7 @@
                             <div id="pagination"></div>
                         </div>
                     </div>
-                    <p id="result"></p>
+                    <p id="markerAddr"></p>
                     <br>
                     <p>다른 정보</p>
                     <br>
@@ -162,9 +162,6 @@
                             level: 3 // 지도의 확대 레벨
                         };
 
-                        // 마커를 담을 배열입니다
-                        var markers = [];
-
                         // 지도를 표시할 div와  지도 옵션으로  지도를 생성합니다
                         var map = new kakao.maps.Map(mapContainer, mapOption);
 
@@ -179,6 +176,29 @@
                         var zoomControl = new kakao.maps.ZoomControl();
                         map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
 
+                        // HTML5의 geolocation으로 사용할 수 있는지 확인합니다
+                        if (navigator.geolocation) {
+
+                            // GeoLocation을 이용해서 접속 위치를 얻어옵니다
+                            navigator.geolocation.getCurrentPosition(function (position) {
+
+                                var lat = position.coords.latitude, // 위도
+                                    lon = position.coords.longitude; // 경도
+
+                                var locPosition = new kakao.maps.LatLng(lat, lon), // 마커가 표시될 위치를 geolocation으로 얻어온 좌표로 생성합니다
+                                    message = '<div style="padding:5px;">현재 위치</div>'; // 인포윈도우에 표시될 내용입니다
+
+                                // 마커와 인포윈도우를 표시합니다
+                                displayMarker(locPosition, message);
+
+                            });
+                        } else { // HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정합니다
+
+                            var locPosition = new kakao.maps.LatLng(33.450701, 126.570667),
+                                message = 'geolocation을 사용할수 없어요..'
+
+                            displayMarker(locPosition, message);
+                        }
 
                         // 지도를 클릭한 위치에 표출할 마커입니다
                         var marker = new kakao.maps.Marker({
@@ -187,6 +207,9 @@
                         }), markerInfowindow = new kakao.maps.InfoWindow({zindex:1}); // 클릭한 위치에 대한 주소를 표시할 인포윈도우입니다;
                         // 지도에 마커를 표시합니다
                         marker.setMap(map);
+
+                        // 마커를 담을 배열입니다
+                        var markers = [];
 
                         // 검색 결과 목록이나 마커를 클릭했을 때 장소명을 표출할 인포윈도우를 생성합니다
                         var infowindow = new kakao.maps.InfoWindow({zIndex:1});
@@ -211,27 +234,24 @@
                             mlng = latlng.getLng();
 
                             searchDetailAddrFromCoords(mouseEvent.latLng, function(result, status) {
-                                // if (status === kakao.maps.services.Status.OK) {
                                 var detailAddr = !!result[0].road_address ? '<div>도로명주소 : ' + result[0].road_address.address_name + '</div>' : '';
                                 detailAddr += '<div>지번 주소 : ' + result[0].address.address_name + '</div>';
 
-                                var content = '<div class="bAddr">' +
-                                    '<span class="title">법정동 주소정보</span>' +
-                                    detailAddr +
-                                    '</div>';
+                                // var content = '<div class="bAddr">' +
+                                //     '<span class="title">법정동 주소정보</span>' +
+                                //     detailAddr +
+                                //     '</div>';
 
                                 // 마커 위치를 클릭한 위치로 옮깁니다
                                 marker.setPosition(latlng);
 
+                                // // 인포윈도우에 클릭한 위치에 대한 법정동 상세 주소정보를 표시합니다
+                                // markerInfowindow.setContent(content);
+                                // markerInfowindow.open(map, marker);
 
-                                // 인포윈도우에 클릭한 위치에 대한 법정동 상세 주소정보를 표시합니다
-                                markerInfowindow.setContent(content);
-                                markerInfowindow.open(map, marker);
+                                var message = '클릭한 위치의 법정동 주소정보 입니다.  \n' + detailAddr;
 
-                                var message = '클릭한 위치의 위도는 ' + latlng.getLat() + ' 이고, ';
-                                message += '경도는 ' + latlng.getLng() + ' 입니다';
-
-                                var resultDiv = document.getElementById('result');
+                                var resultDiv = document.getElementById('markerAddr');
                                 resultDiv.innerHTML = message;
 
                                 mlat = latlng.getLat();
