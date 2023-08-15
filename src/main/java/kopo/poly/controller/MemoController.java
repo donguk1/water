@@ -169,7 +169,11 @@ public class MemoController {
             String nick = CmmUtil.nvl((String) session.getAttribute("SS_NICK")); // 로그인된 NICK 가져오기
             String title = CmmUtil.nvl(request.getParameter("title"));           // 제목
             String contents = CmmUtil.nvl(request.getParameter("contents"));     // 글 내용
-            String mloc = savedMapData.getMloc();
+            String mloc = savedMapData.getMloc();   // 지역
+            Double lat = savedMapData.getLat();     // 위도
+            Double lng = savedMapData.getLng();     // 경도
+            int level = savedMapData.getLevel();    // 스케일
+
 
             if (id == "") {
                 log.info("로그인 정보 없음");
@@ -190,6 +194,9 @@ public class MemoController {
             log.info("title : " + title);
             log.info("contents : " + contents);
             log.info("mloc : " + mloc);
+            log.info("lat : " + lat);
+            log.info("lng : " + lng);
+            log.info("level : " + level);
 
             /*  데이터 저장  */
             MemoDTO pDTO = new MemoDTO();
@@ -198,6 +205,9 @@ public class MemoController {
             pDTO.setTitle(title);
             pDTO.setContents(contents);
             pDTO.setMloc(mloc);
+            pDTO.setLat(lat);
+            pDTO.setLng(lng);
+            pDTO.setLevel(level);
 
             /*  메모 등록용 비즈니스 로직 호출(쿼리문)  */
             memoService.insertMemoInfo(pDTO);
@@ -241,30 +251,29 @@ public class MemoController {
         MemoDTO pDTO = new MemoDTO();
         pDTO.setNum(num);
 
-        MapDTO mapDTO = new MapDTO();
-        mapDTO.setNum(num);
+//        MapDTO mapDTO = new MapDTO();
+//        mapDTO.setNum(num);
 
         /*  상세정보 가져오기  */
         MemoDTO rDTO = Optional.ofNullable(memoService.getMemoInfo(pDTO)).orElseGet(MemoDTO::new);
-        MapDTO aDTO = Optional.ofNullable(memoService.getLatLng(mapDTO)).orElseGet(MapDTO::new);
+//        MapDTO aDTO = Optional.ofNullable(memoService.getLatLng(mapDTO)).orElseGet(MapDTO::new);
 
 
         /*  객체 바인딩  */
         modelMap.addAttribute("rDTO", rDTO);
-        modelMap.addAttribute("aDTO", aDTO);
+//        modelMap.addAttribute("aDTO", aDTO);
 
-        log.info("rDTO : " + rDTO.getNum());
-        log.info("rDTO : " + rDTO.getNick());
-        log.info("rDTO : " + rDTO.getTitle());
-        log.info("rDTO : " + rDTO.getDt());
-        log.info("rDTO : " + rDTO.getContents());
-        log.info("rDTO : " + rDTO.getId());
+        log.info("num : " + rDTO.getNum());
+        log.info("id : " + rDTO.getId());
+        log.info("title : " + rDTO.getTitle());
+        log.info("mloc : " + rDTO.getMloc());
+        log.info("nick : " + rDTO.getNick());
+        log.info("dt : " + rDTO.getDt());
+        log.info("contents : " + rDTO.getContents());
+        log.info("lat : " + rDTO.getLat());
+        log.info("lng : " + rDTO.getLng());
+        log.info("level : " + rDTO.getLevel());
 
-        log.info("aDTO : " + aDTO.getNum());
-        log.info("aDTO : " + aDTO.getLat());
-        log.info("aDTO : " + aDTO.getLng());
-        log.info("aDTO : " + aDTO.getLevel());
-        log.info("aDTO : " + aDTO.getMloc());
 
 
         log.info(this.getClass().getName() + ".controller 메모 상세보기 종료");
@@ -285,12 +294,12 @@ public class MemoController {
         /*  데이터 저장  */
         MemoDTO pDTO = new MemoDTO();
         pDTO.setNum(num);
-        MapDTO mapDTO = new MapDTO();
-        mapDTO.setNum(num);
+//        MapDTO mapDTO = new MapDTO();
+//        mapDTO.setNum(num);
 
         /*  상세정보 가져오기  */
         MemoDTO rDTO = memoService.getMemoInfo(pDTO);
-        MapDTO aDTO = memoService.getLatLng(mapDTO);
+//        MapDTO aDTO = memoService.getLatLng(mapDTO);
 
         if (rDTO == null) {
             rDTO = new MemoDTO();
@@ -298,7 +307,7 @@ public class MemoController {
 
         /*  조회된 리스트 결과값 넣어주기(확인 필요)  */
         modelMap.addAttribute("rDTO", rDTO);
-        modelMap.addAttribute("aDTO", aDTO);
+//        modelMap.addAttribute("aDTO", aDTO);
 
         log.info(this.getClass().getName() + ".controller 메모 수정페이지 접근 종료");
 

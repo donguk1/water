@@ -1,7 +1,6 @@
 package kopo.poly.persistance.mapper;
 
 
-import kopo.poly.dto.MapDTO;
 import kopo.poly.dto.MemoDTO;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -28,5 +27,5 @@ public interface IMemoMapper {
     // 메모 삭제
     void deleteMemoInfo(MemoDTO pDTO) throws Exception;
 
-    MapDTO getLatLng(MapDTO mapDTO) throws Exception;
+//    MapDTO getLatLng(MapDTO mapDTO) throws Exception;
 }

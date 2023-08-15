@@ -123,6 +123,33 @@
                     <!-- 지도를 표시할 div 입니다 -->
                     <div class="map_wrap">
                         <div id="map" style="width:65%; height:790px; border: 3px solid grey; float: left"></div>
+                        <!-- 카테고리 -->
+                        <ul id="category">
+                            <li id="PK6" data-order="0">
+                                <span class="category_bg bank"></span>
+                                은행
+                            </li>
+                            <li id="MT1" data-order="1">
+                                <span class="category_bg mart"></span>
+                                마트
+                            </li>
+                            <li id="PM9" data-order="2">
+                                <span class="category_bg pharmacy"></span>
+                                약국
+                            </li>
+                            <li id="OL7" data-order="3">
+                                <span class="category_bg oil"></span>
+                                주유소
+                            </li>
+                            <li id="CE7" data-order="4">
+                                <span class="category_bg cafe"></span>
+                                카페
+                            </li>
+                            <li id="CS2" data-order="5">
+                                <span class="category_bg store"></span>
+                                편의점
+                            </li>
+                        </ul>
 <!--                        &lt;!&ndash; 지도 좌상단 주소 &ndash;&gt;-->
 <!--                        <div class="hAddr">-->
 <!--                            <span class="title">지도중심기준 행정동 주소정보</span>-->
@@ -164,6 +191,30 @@
 
                         // 지도를 표시할 div와  지도 옵션으로  지도를 생성합니다
                         var map = new kakao.maps.Map(mapContainer, mapOption);
+
+                        var placeOverlay = new kakao.maps.CustomOverlay({zIndex:1}),
+                            contentNode = document.createElement('div'), // 커스텀 오버레이의 컨텐츠 엘리먼트 입니다
+                            markers = [], // 마커를 담을 배열입니다
+                            currCategory = ''; // 현재 선택된 카테고리를 가지고 있을 변수입니다
+
+                        // 지도에 idle 이벤트를 등록합니다
+                        kakao.maps.event.addListener(map, 'idle', searchCategory);
+
+                        // 커스텀 오버레이의 컨텐츠 노드에 css class를 추가합니다
+                        contentNode.className = 'placeinfo_wrap';
+
+                        // 커스텀 오버레이의 컨텐츠 노드에 mousedown, touchstart 이벤트가 발생했을때
+                        // 지도 객체에 이벤트가 전달되지 않도록 이벤트 핸들러로 kakao.maps.event.preventMap 메소드를 등록합니다
+                        addEventHandle(contentNode, 'mousedown', kakao.maps.event.preventMap);
+                        addEventHandle(contentNode, 'touchstart', kakao.maps.event.preventMap);
+
+                        // 커스텀 오버레이 컨텐츠를 설정합니다
+                        placeOverlay.setContent(contentNode);
+
+                        // 각 카테고리에 클릭 이벤트를 등록합니다
+                        addCategoryClickEvent();
+
+
 
                         // 일반 지도와 스카이뷰로 지도 타입을 전환할 수 있는 지도타입 컨트롤을 생성합니다
                         var mapTypeControl = new kakao.maps.MapTypeControl();
