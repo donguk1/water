@@ -53,7 +53,10 @@
          MLOC,
          NICK,
          CONTENTS,
-         DT
+         DT,
+         LAT,
+         LNG,
+         LEVEL
         )
         VALUES
         (
@@ -62,29 +65,30 @@
          #{mloc},
          #{nick},
          #{contents},
-         SYSDATE()
+         SYSDATE(),
+         #{lat},
+         #{lng},
+         #{level}
         )
     </insert>
 
     <!--  메모 상세보기  -->
-    <select id="getMemoInfo" resultMap="MemoResultMap">
+    <select id="getMemoInfo" resultType="MemoDTO">
         SELECT
-            M.NUM,
-            M.ID,
-            M.TITLE,
-            M.MLOC,
-            M.NICK,
-            M.CONTENTS,
-            TO_CHAR(M.DT, 'YYYY-MM-DD') AS DT,
-            MA.LAT,
-            MA.LNG,
-            MA.LEVEL
+            NUM,
+            ID,
+            TITLE,
+            MLOC,
+            NICK,
+            CONTENTS,
+            TO_CHAR(DT, 'YYYY-MM-DD') AS DT,
+            LAT,
+            LNG,
+            LEVEL
         FROM
-            MEMO M
-                JOIN
-            MAP MA ON M.NUM = MA.NUM
+            MEMO
         WHERE
-            M.NUM = #{num};
+            NUM = #{num}
     </select>
 
     <select id="getLatLng" resultType="MapDTO">
