@@ -130,11 +130,11 @@
     <div class="card mb-3 mx-auto" style="padding: 12px 20px; width: 95%; font-family: 'Noto Sans KR', sans-serif;">
         <div class="card-body">
             <div class="list-group list-group-flushs mx-auto" style="width: 98%">
-                <div class="list-group-item" style="height: 800px">
+                <div class="list-group-item" style="height: 98%">
                     <!-- 지도를 표시할 div 입니다 -->
 <!--                    <div class="map_wrap">-->
-                    <div class="map" style="width:65%; height:790px; float: left">
-                        <div id="map" style="width:100%; height:100%; border: 3px solid grey; float: left">
+                    <div class="map mx-auto" style="width:98%; height:790px; float: top">
+                        <div id="map" style="width:100%; height:100%; border: 3px solid grey;">
                             <!-- 카테고리 -->
                             <ul id="category" style="padding: 0">
                                 <li id="PK6" data-order="0">
@@ -168,32 +168,33 @@
 <!--                            <span class="title">지도중심기준 행정동 주소정보</span>-->
 <!--                            <span id="centerAddr"></span>-->
 <!--                        </div>-->
-                        <!-- 장소 검색 -->
-                        <div class="map_wrap">
-                            <div id="menu_wrap" class="bg_white" style="top: 75px; height: 510px;">
-                                <div class="option">
-                                    <div>
-                                        <form onsubmit="searchPlaces(); return false;">
-                                            키워드 : <input type="text" value="해수욕장" id="keyword" size="15">
-                                            <button type="submit">검색하기</button>
-                                        </form>
-                                    </div>
-                                </div>
-                                <hr>
-                                <ul id="placesList"></ul>
-                                <div id="pagination"></div>
-                            </div>
-                        </div>
+                        <!-- 장소 검색 기능 보류-->
+<!--                        <div class="map_wrap">-->
+<!--                            <div id="menu_wrap" class="bg_white" style="top: 75px; height: 510px;">-->
+<!--                                <div class="option">-->
+<!--                                    <div>-->
+<!--                                        <form onsubmit="searchPlaces(); return false;">-->
+<!--                                            키워드 : <input type="text" value="해수욕장" id="keyword" size="15">-->
+<!--                                            <button type="submit">검색하기</button>-->
+<!--                                        </form>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                                <hr>-->
+<!--                                <ul id="placesList"></ul>-->
+<!--                                <div id="pagination"></div>-->
+<!--                            </div>-->
+<!--                        </div>-->
                     </div>
+                    <div style="float: bottom">
                     <p id="markerAddr"></p>
                     <br>
                     <p>다른 정보</p>
                     <br>
                     <p>다른 정보</p>
-                    <div th:if="${session.SS_ID != null}"> <!-- 로그인 정보가 없을시 로그인 버튼만 활성화 -->
-                        <button type="button" class="btn btn-outline-dark" id="btnSaveAndWrite">글작성</button>
                     </div>
-                    <!-- 메모 작성하는 페이지로 넘어가게 해놨으니 데이터 끌고서 넘어갈 수 있도록 손봐주세요 -->
+<!--                    <div th:if="${session.SS_ID != null}">-->
+<!--                        <button type="button" class="btn btn-outline-dark" id="btnSaveAndWrite">글작성</button>-->
+<!--                    </div>--> <!-- 버튼 활용 다시 고민 -->
 
                     <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=9f7b1b926be42fe85ba854921b7d037e&libraries=services"></script>
                     <script type="text/javascript" src="/js/map.js"></script>
