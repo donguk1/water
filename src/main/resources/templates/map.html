@@ -133,7 +133,7 @@
                 <div class="list-group-item" style="height: 98%">
                     <!-- 지도를 표시할 div 입니다 -->
 <!--                    <div class="map_wrap">-->
-                    <div class="map mx-auto" style="width:98%; height:790px; float: top">
+                    <div class="map mx-auto" style="width:98%; height:790px">
                         <div id="map" style="width:100%; height:100%; border: 3px solid grey;">
                             <!-- 카테고리 -->
                             <ul id="category" style="padding: 0">
@@ -169,21 +169,21 @@
 <!--                            <span id="centerAddr"></span>-->
 <!--                        </div>-->
                         <!-- 장소 검색 기능 보류-->
-<!--                        <div class="map_wrap">-->
-<!--                            <div id="menu_wrap" class="bg_white" style="top: 75px; height: 510px;">-->
-<!--                                <div class="option">-->
-<!--                                    <div>-->
-<!--                                        <form onsubmit="searchPlaces(); return false;">-->
-<!--                                            키워드 : <input type="text" value="해수욕장" id="keyword" size="15">-->
-<!--                                            <button type="submit">검색하기</button>-->
-<!--                                        </form>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                                <hr>-->
-<!--                                <ul id="placesList"></ul>-->
-<!--                                <div id="pagination"></div>-->
-<!--                            </div>-->
-<!--                        </div>-->
+                        <div class="map_wrap" style="top: -90%">
+                            <div id="menu_wrap" class="bg_white">
+                                <div class="option">
+                                    <div>
+                                        <form onsubmit="searchPlaces(); return false;">
+                                            키워드 : <input type="text" value="해수욕장" id="keyword" size="15">
+                                            <button type="submit">검색하기</button>
+                                        </form>
+                                    </div>
+                                </div>
+                                <hr>
+                                <ul id="placesList"></ul>
+                                <div id="pagination"></div>
+                            </div>
+                        </div>
                     </div>
                     <div style="float: bottom">
                     <p id="markerAddr"></p>
