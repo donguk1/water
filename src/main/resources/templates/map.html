@@ -48,20 +48,6 @@
     <script type="text/javascript" src="/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/js/bootstrap.bundle.js"></script>
     <script th:inline="javascript">
-        // HTML로딩이 완료되고, 실행됨
-        $(document).ready(function () {
-
-            // 버튼 클릭했을때, 발생되는 이벤트 생성함(onclick 이벤트와 동일함)
-            $("#btnReg").on("click", function () {
-                if (![[${session.SS_ID}]]) {
-                    alert("로그인이 필요한 서비스입니다.");
-                    return location.href = "/user/login";
-                }
-                location.href = "/memo/new"; // 글 작성하는 창으로 이동
-            })
-
-        })
-
         /* back to top 클릭시 주소창에 #top 추가 안되게 함*/
         document.addEventListener("DOMContentLoaded", function () {
             var topLink = document.querySelector('a[href="#top"]');
@@ -73,20 +59,6 @@
                 });
             });
         });
-
-        // $(document).ready(function () {
-        //
-        //     $("#btnSaveAndWrite").on("click", function () {
-        //         saveMapData();
-        //     })
-        // })
-
-
-        // 버튼 클릭 이벤트 핸들러 등록
-        // var btnSaveAndWrite = document.getElementById('btnSaveAndWrite');
-        // btnSaveAndWrite.addEventListener('click', saveMapData);
-
-
     </script>
 </head>
 <body>
@@ -131,258 +103,181 @@
         <div class="card-body">
             <div class="list-group list-group-flushs mx-auto" style="width: 98%">
                 <div class="list-group-item" style="height: 98%">
-                    <!-- 지도를 표시할 div 입니다 -->
-<!--                    <div class="map_wrap">-->
+                    <!-- 지도를 표시할 div -->
                     <div class="map mx-auto" style="width:98%; height:790px">
                         <div id="map" style="width:100%; height:100%; border: 3px solid grey;">
                             <!-- 카테고리 -->
                             <ul id="category" style="padding: 0">
-                                <li id="PK6" data-order="0">
-                                    <span class="category_bg bank"></span>
-                                    은행
+                                <li id="바다" data-order="0">
+                                    <span><img src="/img/beachIcon.png" width="30px"></span>
+                                    바다
                                 </li>
-                                <li id="MT1" data-order="1">
-                                    <span class="category_bg mart"></span>
-                                    마트
+                                <li id="계곡" data-order="1">
+                                    <span><img src="/img/valleyIcon.png" width="30px"></span>
+                                    계곡
                                 </li>
-                                <li id="PM9" data-order="2">
-                                    <span class="category_bg pharmacy"></span>
-                                    약국
+                                <li id="강" data-order="2">
+                                    <span><img src="/img/riverIcon.png" width="30px"></span>
+                                    강
                                 </li>
-                                <li id="OL7" data-order="3">
-                                    <span class="category_bg oil"></span>
-                                    주유소
+                                <li id="저수지" data-order="3">
+                                    <span><img src="/img/reservoirIcon.png" width="35px"></span>
+                                    저수지
                                 </li>
-                                <li id="CE7" data-order="4">
-                                    <span class="category_bg cafe"></span>
-                                    카페
+                                <li id="호수" data-order="4">
+                                    <span><img src="/img/lakeIcon.png" width="35px"></span>
+                                    호수
                                 </li>
-                                <li id="CS2" data-order="5">
-                                    <span class="category_bg store"></span>
-                                    편의점
+                                <li id="폭포" data-order="5">
+                                    <span><img src="/img/waterfallIcon.png" width="35px"></span>
+                                    폭포
                                 </li>
                             </ul>
                         </div>
-<!--                        &lt;!&ndash; 지도 좌상단 주소 &ndash;&gt;-->
-<!--                        <div class="hAddr">-->
-<!--                            <span class="title">지도중심기준 행정동 주소정보</span>-->
-<!--                            <span id="centerAddr"></span>-->
-<!--                        </div>-->
-                        <!-- 장소 검색 기능 보류-->
-                        <div class="map_wrap" style="top: -90%">
-                            <div id="menu_wrap" class="bg_white">
-                                <div class="option">
-                                    <div>
-                                        <form onsubmit="searchPlaces(); return false;">
-                                            키워드 : <input type="text" value="해수욕장" id="keyword" size="15">
-                                            <button type="submit">검색하기</button>
-                                        </form>
-                                    </div>
-                                </div>
-                                <hr>
-                                <ul id="placesList"></ul>
-                                <div id="pagination"></div>
-                            </div>
-                        </div>
                     </div>
-                    <div style="float: bottom">
-                    <p id="markerAddr"></p>
                     <br>
-                    <p>다른 정보</p>
-                    <br>
-                    <p>다른 정보</p>
+                    <div class="info mx-auto" style="width: 98%; float: bottom">
+                        <p id="markerAddr"></p>
+                        <br>
+                        <p>다른 정보</p>
+                        <br>
+                        <p>다른 정보</p>
                     </div>
-<!--                    <div th:if="${session.SS_ID != null}">-->
-<!--                        <button type="button" class="btn btn-outline-dark" id="btnSaveAndWrite">글작성</button>-->
-<!--                    </div>--> <!-- 버튼 활용 다시 고민 -->
 
+                    <!-- 카카오맵 API 스크립트 -->
                     <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=9f7b1b926be42fe85ba854921b7d037e&libraries=services"></script>
                     <script type="text/javascript" src="/js/map.js"></script>
                     <script>
-                        var mapContainer = document.getElementById('map'), // 지도를 표시할 div
-                            mapOption = {
-                                center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
-                                level: 3 // 지도의 확대 레벨
-                            };
+                        // 인포윈도우 초기화
+                        var infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
 
-                        // 지도를 표시할 div와  지도 옵션으로  지도를 생성합니다
+                        // 지도 초기화
+                        var mapContainer = document.getElementById('map'),
+                            mapOption = {
+                                center: new kakao.maps.LatLng(37.566826, 126.9786567),
+                                level: 12
+                            };
                         var map = new kakao.maps.Map(mapContainer, mapOption);
 
-                        // 마커를 클릭했을 때 해당 장소의 상세정보를 보여줄 커스텀오버레이입니다
-                        var placeOverlay = new kakao.maps.CustomOverlay({zIndex:1}),
-                            contentNode = document.createElement('div'), // 커스텀 오버레이의 컨텐츠 엘리먼트 입니다
-                            markers = [], // 마커를 담을 배열입니다
-                            currCategory = ''; // 현재 선택된 카테고리를 가지고 있을 변수입니다
-
-                        // 지도에 idle 이벤트를 등록합니다
-                        kakao.maps.event.addListener(map, 'idle', searchPlacesCategory);
-
-                        // 커스텀 오버레이의 컨텐츠 노드에 css class를 추가합니다
-                        contentNode.className = 'placeinfo_wrap';
-
-                        // 커스텀 오버레이의 컨텐츠 노드에 mousedown, touchstart 이벤트가 발생했을때
-                        // 지도 객체에 이벤트가 전달되지 않도록 이벤트 핸들러로 kakao.maps.event.preventMap 메소드를 등록합니다
-                        addEventHandle(contentNode, 'mousedown', kakao.maps.event.preventMap);
-                        addEventHandle(contentNode, 'touchstart', kakao.maps.event.preventMap);
-
-                        // 커스텀 오버레이 컨텐츠를 설정합니다
-                        placeOverlay.setContent(contentNode);
-
-                        // 각 카테고리에 클릭 이벤트를 등록합니다
-                        addCategoryClickEvent();
-
-                        // 키워드로 장소를 검색합니다
-                        searchPlaces();
-
-                        // 일반 지도와 스카이뷰로 지도 타입을 전환할 수 있는 지도타입 컨트롤을 생성합니다
+                        // 일반 지도와 스카이뷰로 지도 타입을 전환할 수 있는 지도타입 컨트롤을 생성
                         var mapTypeControl = new kakao.maps.MapTypeControl();
 
-                        // 지도에 컨트롤을 추가해야 지도위에 표시됩니다
-                        // kakao.maps.ControlPosition은 컨트롤이 표시될 위치를 정의하는데 TOPRIGHT는 오른쪽 위를 의미합니다
+                        // 지도에 컨트롤을 추가해 지도위에 표시
+                        // kakao.maps.ControlPosition은 컨트롤이 표시될 위치를 정의하는데 TOPRIGHT는 오른쪽 위를 의미
                         map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
 
-                        // 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성합니다
+                        // 지도 확대 축소를 제어할 수 있는 줌 컨트롤을 생성
                         var zoomControl = new kakao.maps.ZoomControl();
                         map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
 
-                        // // 현재 위치
-                        // // HTML5의 geolocation으로 사용할 수 있는지 확인합니다
-                        // if (navigator.geolocation) {
-                        //
-                        //     // GeoLocation을 이용해서 접속 위치를 얻어옵니다
-                        //     navigator.geolocation.getCurrentPosition(function (position) {
-                        //
-                        //         var lat = position.coords.latitude, // 위도
-                        //             lon = position.coords.longitude; // 경도
-                        //
-                        //         var locPosition = new kakao.maps.LatLng(lat, lon), // 마커가 표시될 위치를 geolocation으로 얻어온 좌표로 생성합니다
-                        //             message = '<div style="padding:5px;">현재 위치</div>'; // 인포윈도우에 표시될 내용입니다
-                        //
-                        //         // 마커와 인포윈도우를 표시합니다
-                        //         geolocationMarker(locPosition, message);
-                        //
-                        //     });
-                        // } else { // HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정합니다
-                        //
-                        //     var locPosition = new kakao.maps.LatLng(33.450701, 126.570667),
-                        //         message = '현재 위치를 확인할 수 없습니다.'
-                        //
-                        //     geolocationMarker(locPosition, message);
-                        // }
+                        // 장소 검색 서비스 초기화
+                        var ps = new kakao.maps.services.Places();
 
-                        // 지도를 클릭한 위치에 표출할 마커입니다
-                        var marker = new kakao.maps.Marker({
-                            // 지도 중심좌표에 마커를 생성합니다
-                            position: map.getCenter()
-                        }) ;
+                        // 카테고리 및 키워드 정의
+                        var categories = [
+                            { category: '바다', keyword: '해수욕장' },
+                            { category: '계곡', keyword: '계곡' },
+                            { category: '강', keyword: '강' },
+                            { category: '저수지', keyword: '저수지' },
+                            { category: '호수', keyword: '호수' },
+                            { category: '폭포', keyword: '폭포' }
+                        ];
 
-                        // 인포인도우 생성
-                        var markerInfowindow = new kakao.maps.InfoWindow({
-                            zindex:1,
-                            content: '<input type="text" class="info-title"></input>',
-                            position: map.getCenter()
-                        }); // 클릭한 위치에 대한 주소를 표시할 인포윈도우입니다;
+                        var currentMarkers = []; // 현재 표시된 마커들을 저장할 배열
+                        var currentInfowindow = null; // 현재 열려있는 인포윈도우 객체를 저장하는 변수
 
-                        // 마커를 담을 배열입니다
-                        var markers = [];
+                        // 카테고리 목록 요소들을 가져옴
+                        var categoryList = document.querySelectorAll('#category li');
 
-                        // 검색 결과 목록이나 마커를 클릭했을 때 장소명을 표출할 인포윈도우를 생성합니다
-                        var infowindow = new kakao.maps.InfoWindow({zIndex:1});
+                        // 각 카테고리 버튼에 클릭 이벤트 리스너 추가
+                        for (var i = 0; i < categoryList.length; i++) {
+                            categoryList[i].addEventListener('click', handleCategoryClick);
+                        }
 
-                        var mlng;
-                        var mlat;
-                        var mloc;
+                        // 카테고리 버튼 클릭 이벤트 핸들러
+                        function handleCategoryClick(event) {
+                            // 이전에 열려있던 인포윈도우 닫기
+                            if (currentInfowindow) {
+                                currentInfowindow.close();
+                            }
 
-                        // 키워드로 장소를 검색합니다
-                        searchPlaces();
+                            // 클릭된 카테고리 가져오기
+                            var clickedCategory = event.currentTarget.id;
 
-                        // 현재 지도 중심좌표로 주소를 검색해서 지도 좌측 상단에 표시합니다
-                        searchAddrFromCoords(map.getCenter(), displayCenterInfo);
-
-                        // 지도에 클릭 이벤트를 등록합니다
-                        // 지도를 클릭하면 마지막 파라미터로 넘어온 함수를 호출합니다
-                        kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
-
-                            // 클릭한 위도, 경도 정보를 가져옵니다
-                            var latlng = mouseEvent.latLng;
-                            mlat = latlng.getLat();
-                            mlng = latlng.getLng();
-
-                            searchDetailAddrFromCoords(mouseEvent.latLng, function(result, status) {
-                                var detailAddr = !!result[0].road_address ? '<div>도로명주소 : ' + result[0].road_address.address_name + '</div>' : '';
-                                detailAddr += '<div>지번 주소 : ' + result[0].address.address_name + '</div>';
-
-                                // 마커 위치를 클릭한 위치로 옮깁니다
-                                marker.setPosition(latlng);
-
-                                var message = '클릭한 위치의 법정동 주소정보 입니다.  \n' + detailAddr;
-
-                                var resultDiv = document.getElementById('markerAddr');
-                                resultDiv.innerHTML = message;
-
-                                mlat = latlng.getLat();
-                                mlng = latlng.getLng();
-                                mloc = result[0].address.address_name.substring(0, 2);  //  ex) 서울, 제주 등으로 표기, 맨앞 두글자만
-
-                                // 지도에 마커를 표시합니다
-                                marker.setMap(map);
-
-                                // 마커 위에 인포윈도우를 표시합니다. 두번째 파라미터인 marker를 넣어주지 않으면 지도 위에 표시됩니다
-                                markerInfowindow.open(map, marker);
-
-                                // 마커밑에 생기는 글쓰기 창
-                                var infoTitle = document.querySelectorAll('.info-title');
-                                infoTitle.forEach(function(e) {
-                                    var w = e.offsetWidth + 10;
-                                    var ml = w/2;
-                                    e.parentElement.style.top = "82px";
-                                    e.parentElement.style.left = "50%";
-                                    e.parentElement.style.marginLeft = -ml+"px";
-                                    e.parentElement.style.width = w+"px";
-                                    e.parentElement.previousSibling.style.display = "none";
-                                    e.parentElement.parentElement.style.border = "0px";
-                                    e.parentElement.parentElement.style.background = "unset";
-                                });
+                            // 해당 카테고리에 대응하는 키워드를 찾아서 선택
+                            var selectedCategory = categories.find(function (item) {
+                                return item.category === clickedCategory;
                             });
-                        });
 
-                        // 중심 좌표나 확대 수준이 변경됐을 때 지도 중심 좌표에 대한 주소 정보를 표시하도록 이벤트를 등록합니다
-                        kakao.maps.event.addListener(map, 'idle', function() {
+                            // 이전에 표시된 마커들을 지도에서 제거
+                            for (var j = 0; j < currentMarkers.length; j++) {
+                                currentMarkers[j].setMap(null);
+                            }
+                            currentMarkers = []; // 배열 비우기
 
-                            searchAddrFromCoords(map.getCenter(), displayCenterInfo);
-                        });
+                            if (selectedCategory) {
+                                // 키워드로 장소 검색 및 결과 출력
+                                ps.keywordSearch(selectedCategory.keyword, placesSearchCB(selectedCategory.category));
+                            }
+                        }
 
-                        $(document).ready(function () {
-                            $("#btnSaveAndWrite").on("click", function () {
-                                var mapDTO = {
-                                    lat: mlat,
-                                    lng: mlng,
-                                    level: mapOption.level,
-                                    mloc: mloc
-                                };
+                        // 장소 검색 완료 시 호출되는 콜백함수
+                        function placesSearchCB(category) {
+                            return function (data, status, pagination) {
+                                if (status === kakao.maps.services.Status.OK) {
+                                    // 검색된 장소 위치를 기준으로 지도 범위 재설정
+                                    var bounds = new kakao.maps.LatLngBounds();
 
-                                $.ajax({
-                                    type: "POST",
-                                    url: "/map/save",
-                                    data: JSON.stringify(mapDTO),
-                                    contentType: "application/json",
-                                    success: function(response) {
-                                        console.log("Server response:", response);
-                                        // 성공적으로 응답 받았을 때 실행할 코드
-                                        location.href="map/send"
-                                        console.log(this.data);
-                                        console.log(mapDTO.lat);
-                                        console.log(mapDTO.lng);
-                                        console.log(mapDTO.level);
-                                        console.log(mapDTO.mloc);
-                                    },
-                                    error: function(error) {
-                                        console.error("Error:", error);
-                                        // 요청이 실패했을 때 실행할 코드
+                                    for (var i = 0; i < data.length; i++) {
+                                        // 마커표시
+                                        displayMarker(data[i], category);
+                                        bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
+                                    }
+
+                                    map.setBounds(bounds);
+                                }
+                            };
+                        }
+
+                        // 마커 표시 함수
+                        function displayMarker(place, category) {
+                            var marker = new kakao.maps.Marker({
+                                map: map,
+                                position: new kakao.maps.LatLng(place.y, place.x)
+                            });
+
+                            var infowindowContent = '<div style="padding:5px;font-size:12px;">' + place.place_name + '</div>';
+
+                            kakao.maps.event.addListener(marker, 'click', function () {
+                                // 현재 열려있는 인포윈도우 닫기
+                                if (currentInfowindow) {
+                                    currentInfowindow.close();
+                                }
+
+                                // 클릭한 위도, 경도 정보를 가져옵니다
+                                var latlng = marker.getPosition();
+
+                                searchDetailAddrFromCoords(latlng, function(result, status) {
+                                    if (status === kakao.maps.services.Status.OK) {
+                                        var detailAddr = !!result[0].road_address ? '<div>도로명주소 : ' + result[0].road_address.address_name + '</div>' : '';
+                                        detailAddr += '<div>지번 주소 : ' + result[0].address.address_name + '</div>';
+
+                                        var message = '클릭한 위치의 법정동 주소정보 입니다.  \n' + detailAddr;
+
+                                        var resultDiv = document.getElementById('markerAddr');
+                                        resultDiv.innerHTML = message;
                                     }
                                 });
-                            })
-                        })
+
+                                // 새로운 인포윈도우 열기
+                                infowindow.setContent(infowindowContent);
+                                infowindow.open(map, marker);
+
+                                currentInfowindow = infowindow;
+                            });
+
+                            currentMarkers.push(marker); // 현재 마커 배열에 추가
+                        }
                     </script>
                 </div>
             </div>
