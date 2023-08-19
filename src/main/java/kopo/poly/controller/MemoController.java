@@ -96,8 +96,13 @@ public class MemoController {
         int itemsPerPage = 10;
 
         // 메모 리스트  검색 조회
-        List<MemoDTO> rList = memoService.searchMemoList(pDTO);
+        List<MemoDTO> rList;
 
+        if (type != "") {
+            rList = memoService.searchMemoList(pDTO);
+        } else {
+            rList = memoService.allSearchMemoList(pDTO);
+        }
         // 페이지네이션을 위해 전체 아이템 개수 구하기
         int totalItems = rList.size();
 
@@ -173,7 +178,6 @@ public class MemoController {
             Double lat = savedMapData.getLat();     // 위도
             Double lng = savedMapData.getLng();     // 경도
             int level = savedMapData.getLevel();    // 스케일
-
 
             if (id == "") {
                 log.info("로그인 정보 없음");
