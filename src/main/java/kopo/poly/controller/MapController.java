@@ -2,17 +2,17 @@ package kopo.poly.controller;
 
 
 import kopo.poly.dto.MapDTO;
+import kopo.poly.dto.RiverCCDTO;
 import kopo.poly.service.IMapService;
+import kopo.poly.service.IRiverCCService;
 import kopo.poly.util.CmmUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
@@ -22,9 +22,10 @@ import javax.servlet.http.HttpSession;
 @CrossOrigin(origins="*")
 public class MapController {
     private final IMapService mapService;
+    private final IRiverCCService riverCCService;
 
-    @PostMapping(value="/map/save")
-    public String saveMapData   (@RequestBody MapDTO mapDTO, HttpSession session) {
+    @PostMapping(value = "/map/save")
+    public String saveMapData(@RequestBody MapDTO mapDTO, HttpSession session) {
         try {
             log.info("MapController save Start!");
 
@@ -40,10 +41,10 @@ public class MapController {
         return "redirect:/map/send";
     }
 
-    @GetMapping(value="/map/send")
+    @GetMapping(value = "/map/send")
     public String sendMapData(Model model, HttpSession session, ModelMap modelMap) throws Exception {
 
-                /*  id = P.K  */
+        /*  id = P.K  */
         String id = CmmUtil.nvl((String) session.getAttribute("SS_ID"));
 
         if (id == "") {
@@ -85,6 +86,17 @@ public class MapController {
         }
 
         return "/memo/new";
+    }
+
+    @GetMapping("/map/riverCCData")
+    @ResponseBody
+    public ResponseEntity<RiverCCDTO> getCCData(@RequestParam("num") String num) {
+        try {
+            RiverCCDTO rDTO = riverCCService.getCCData(num);
+            return ResponseEntity.ok(rDTO);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 }
 
