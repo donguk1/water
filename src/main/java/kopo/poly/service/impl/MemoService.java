@@ -36,10 +36,17 @@ public class MemoService implements IMemoService {
 
         log.info(this.getClass().getName() + ".Memo 검색 목록");
 
-        // selectMemoList = 검색 목록
         return memoMapper.searchMemoList(pDTO);
     }
 
+    /*  메모 전체 검색 목록(반환 타입 List)  */
+    @Override
+    public List<MemoDTO> allSearchMemoList(MemoDTO pDTO) throws Exception {
+
+        log.info(this.getClass().getName() + ".Memo 전체 검색 목록");
+
+        return memoMapper.allSearchMemoList(pDTO);
+    }
 
     /*  메모 등록  */
     @Transactional
