@@ -113,138 +113,55 @@
                     <h3 class="card-header" style="font-family: 'Do Hyeon', sans-serif;"><input class="form-control me-sm-2" type="text" placeholder="제목을 입력하세요." name="title"></h3>
                     <!-- 지도 데이터 영역 -->
                     <br>
-                        <div class="map_wrap mx-auto" style="width: 98%; height: 600px; border: 3px solid grey;">
-                            <div id="map" style="width: 100%; height: 100%;"></div>
-                            <div class="hAddr">
-                                <span class="title">마커기준 행정동 주소정보</span>
-                                <span id="centerAddr"></span>
-                            </div>
+                    <div class="map_wrap mx-auto" style="width: 98%; height: 600px; border: 3px solid grey;">
+                        <div id="staticMap" style="width: 100%; height: 100%;"></div>
+                        <div class="hAddr">
+                            <span class="title">마커기준 행정동 주소정보</span>
+                            <span id="centerAddr"></span>
                         </div>
-                        <div class="map_wrap">
-                            <div id="menu_wrap" class="bg_white" style="top: 75px; height: 510px;">
-                                <div class="option">
-                                    <div>
-                                        <form onsubmit="searchPlaces(); return false;">
-                                            키워드 : <input type="text" value="해수욕장" id="keyword" size="15">
-                                            <button type="submit">검색하기</button>
-                                        </form>
-                                    </div>
-                                </div>
-                                <hr>
-                                <ul id="placesList"></ul>
-                                <div id="pagination"></div>
-                            </div>
-                        </div>
-                        <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=9f7b1b926be42fe85ba854921b7d037e&libraries=services"></script>
-                        <script type="text/javascript" src="/js/map.js"></script>
-                        <script>
-                            var mapContainer = document.getElementById('map'), // 지도를 표시할 div
-                                mapOption = {
-                                    center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
-                                    level: 3 // 지도의 확대 레벨
+                    </div>
+                    <script type="text/javascript" src="/js/map.js"></script>
+                    <script>
+
+                        var lat;
+                        var lng;
+                        var level;
+                        // 함수 호출로 데이터 요청 보내기
+                        fetchMapData();
+
+                        $(document).ready(function() {
+                            lat = [[${lat}]];
+                            lng = [[${lng}]];
+                            level = [[${level}]];
+
+                            // 이미지 지도에서 마커가 표시될 위치입니다
+                            var markerPosition  = new kakao.maps.LatLng(lat, lng);
+
+                            // 이미지 지도에 표시할 마커입니다
+                            // 이미지 지도에 표시할 마커는 Object 형태입니다
+                            var marker = {
+                                position: markerPosition
+                            };
+
+                            var staticMapContainer  = document.getElementById('staticMap'), // 이미지 지도를 표시할 div
+                                staticMapOption = {
+                                    center: new kakao.maps.LatLng(lat, lng), // 이미지 지도의 중심좌표
+                                    level: level, // 이미지 지도의 확대 레벨
+                                    marker: marker // 이미지 지도에 표시할 마커
                                 };
 
-                            // 지도를 표시할 div와  지도 옵션으로  지도를 생성합니다
-                            var map = new kakao.maps.Map(mapContainer, mapOption);
+                            // 이미지 지도를 생성합니다
+                            var staticMap = new kakao.maps.StaticMap(staticMapContainer, staticMapOption);
 
-                            // 키워드로 장소를 검색합니다
-                            searchPlaces();
-
-                            // // 키워드로 장소를 검색합니다
-                            // ps.keywordSearch('맛집', placesSearchCB);
-
-                            // 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성합니다
-                            var zoomControl = new kakao.maps.ZoomControl();
-                            map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
-
-                            // 지도를 클릭한 위치에 표출할 마커입니다
-                            var marker = new kakao.maps.Marker({
-                                // 지도 중심좌표에 마커를 생성합니다
-                                position: map.getCenter()
-                            }) ;
-
-                            // 검색 결과 목록이나 마커를 클릭했을 때 장소명을 표출할 인포윈도우를 생성합니다
-                            var infowindow = new kakao.maps.InfoWindow({zIndex:1});
-
-                            var mlng;
-                            var mlat;
-                            var mloc;
+                            console.log("lat"+lat);
+                            console.log("lng"+lng);
+                            console.log("level"+level);
 
                             // 현재 지도 중심좌표로 주소를 검색해서 지도 좌측 상단에 표시합니다
-                            searchAddrFromCoords(map.getCenter(), displayCenterInfo);
+                            searchAddrFromCoords(staticMap.getCenter(), displayCenterInfo);
+                        });
 
-                            // 지도에 클릭 이벤트를 등록합니다
-                            // 지도를 클릭하면 마지막 파라미터로 넘어온 함수를 호출합니다
-                            kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
-
-                                // 클릭한 위도, 경도 정보를 가져옵니다
-                                var latlng = mouseEvent.latLng;
-                                mlat = latlng.getLat();
-                                mlng = latlng.getLng();
-
-                                searchDetailAddrFromCoords(mouseEvent.latLng, function(result, status) {
-                                    var detailAddr = !!result[0].road_address ? '<div>도로명주소 : ' + result[0].road_address.address_name + '</div>' : '';
-                                    detailAddr += '<div>지번 주소 : ' + result[0].address.address_name + '</div>';
-
-                                    // 마커 위치를 클릭한 위치로 옮깁니다
-                                    marker.setPosition(latlng);
-
-                                    var message = '클릭한 위치의 법정동 주소정보 입니다.  \n' + detailAddr;
-
-                                    var resultDiv = document.getElementById('centerAddr');
-                                    resultDiv.innerHTML = message;
-
-                                    mlat = latlng.getLat();
-                                    mlng = latlng.getLng();
-                                    mloc = result[0].address.address_name.substring(0, 2);  //  ex) 서울, 제주 등으로 표기, 맨앞 두글자만
-
-                                    // 지도에 마커를 표시합니다
-                                    marker.setMap(map);
-
-                                    // 마커 위에 인포윈도우를 표시합니다. 두번째 파라미터인 marker를 넣어주지 않으면 지도 위에 표시됩니다
-                                    markerInfowindow.open(map, marker);
-
-                                });
-                            });
-
-                            // 중심 좌표나 확대 수준이 변경됐을 때 지도 중심 좌표에 대한 주소 정보를 표시하도록 이벤트를 등록합니다
-                            kakao.maps.event.addListener(map, 'idle', function() {
-
-                                searchAddrFromCoords(map.getCenter(), displayCenterInfo);
-                            });
-
-                            $(document).ready(function () {
-                                $("#btnSaveAndWrite").on("click", function () {
-                                    var mapDTO = {
-                                        lat: mlat,
-                                        lng: mlng,
-                                        level: mapOption.level,
-                                        mloc: mloc
-                                    };
-
-                                    $.ajax({
-                                        type: "POST",
-                                        url: "/map/save",
-                                        data: JSON.stringify(mapDTO),
-                                        contentType: "application/json",
-                                        success: function(response) {
-                                            console.log("Server response:", response);
-                                            // 성공적으로 응답 받았을 때 실행할 코드
-                                            location.href="map/send"
-                                            console.log(this.data);
-                                            console.log(mapDTO.lat);
-                                            console.log(mapDTO.lng);
-                                            console.log(mapDTO.level);
-                                            console.log(mapDTO.mloc);
-                                        },
-                                        error: function(error) {
-                                            console.error("Error:", error);
-                                            // 요청이 실패했을 때 실행할 코드
-                                        }
-                                    });
-                                })
-                            })
-                        </script>
+                    </script>
                     <br>
                     <!-- 내용 입력 영역 -->
                     <div class="form-group">
