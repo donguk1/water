@@ -142,6 +142,9 @@
                         <p>다른 정보</p>
                         <br>
                         <p>다른 정보</p>
+                        <div th:if="${session.SS_ID != null}">
+                            <button type="button" class="btn btn-outline-dark" id="btnSaveAndWrite">글작성</button>
+                        </div>
                     </div>
 
                     <!-- 카카오맵 API 스크립트 -->
@@ -157,6 +160,8 @@
                                 center: new kakao.maps.LatLng(37.566826, 126.9786567),
                                 level: 12
                             };
+
+                        // 지도 생성
                         var map = new kakao.maps.Map(mapContainer, mapOption);
 
                         // 일반 지도와 스카이뷰로 지도 타입을 전환할 수 있는 지도타입 컨트롤을 생성
@@ -186,6 +191,10 @@
                         var currentMarkers = []; // 현재 표시된 마커들을 저장할 배열
                         var currentInfowindow = null; // 현재 열려있는 인포윈도우 객체를 저장하는 변수
 
+                        var mlng;
+                        var mlat;
+                        var mloc;
+
                         // 카테고리 목록 요소들을 가져옴
                         var categoryList = document.querySelectorAll('#category li');
 
@@ -193,6 +202,8 @@
                         for (var i = 0; i < categoryList.length; i++) {
                             categoryList[i].addEventListener('click', handleCategoryClick);
                         }
+
+                        var selectedCategory = null; // 선택된 카테고리 정보를 저장할 변수
 
                         // 카테고리 버튼 클릭 이벤트 핸들러
                         function handleCategoryClick(event) {
@@ -204,26 +215,35 @@
                             // 클릭된 카테고리 가져오기
                             var clickedCategory = event.currentTarget.id;
 
-                            // 해당 카테고리에 대응하는 키워드를 찾아서 선택
-                            var selectedCategory = categories.find(function (item) {
-                                return item.category === clickedCategory;
-                            });
+                            if (selectedCategory === clickedCategory) {
+                                // 이미 선택된 카테고리를 누른 경우, 해당 카테고리 정보와 마커들을 초기화
+                                selectedCategory = null;
+                                for (var j = 0; j < currentMarkers.length; j++) {
+                                    currentMarkers[j].setMap(null);
+                                }
+                                currentMarkers = []; // 배열 비우기
+                            } else {
+                                // 새로운 카테고리를 선택한 경우, 기존 마커들을 삭제하고 새로운 마커들을 표시
+                                selectedCategory = clickedCategory;
+                                var categoryInfo = categories.find(function (item) {
+                                    return item.category === clickedCategory;
+                                });
+                                if (categoryInfo) {
+                                    // 이전에 표시된 마커들을 지도에서 제거
+                                    for (var j = 0; j < currentMarkers.length; j++) {
+                                        currentMarkers[j].setMap(null);
+                                    }
+                                    currentMarkers = []; // 배열 비우기
 
-                            // 이전에 표시된 마커들을 지도에서 제거
-                            for (var j = 0; j < currentMarkers.length; j++) {
-                                currentMarkers[j].setMap(null);
-                            }
-                            currentMarkers = []; // 배열 비우기
-
-                            if (selectedCategory) {
-                                // 키워드로 장소 검색 및 결과 출력
-                                ps.keywordSearch(selectedCategory.keyword, placesSearchCB(selectedCategory.category));
+                                    // 키워드로 장소 검색 및 결과 출력
+                                    ps.keywordSearch(categoryInfo.keyword, placesSearchCB(categoryInfo.category));
+                                }
                             }
                         }
 
                         // 장소 검색 완료 시 호출되는 콜백함수
                         function placesSearchCB(category) {
-                            return function (data, status, pagination) {
+                            return function (data, status) {
                                 if (status === kakao.maps.services.Status.OK) {
                                     // 검색된 장소 위치를 기준으로 지도 범위 재설정
                                     var bounds = new kakao.maps.LatLngBounds();
@@ -239,8 +259,10 @@
                             };
                         }
 
-                        // 마커 표시 함수
-                        function displayMarker(place, category) {
+                        var previousMarker = null; // 이전에 생성된 마커를 저장할 변수
+
+                        // 카테고리 마커 표시 함수
+                        function displayMarker(place) {
                             var marker = new kakao.maps.Marker({
                                 map: map,
                                 position: new kakao.maps.LatLng(place.y, place.x)
@@ -254,18 +276,32 @@
                                     currentInfowindow.close();
                                 }
 
-                                // 클릭한 위도, 경도 정보를 가져옵니다
+                                // 이전에 생성된 마커가 있다면 지도에서 제거
+                                if (previousMarker) {
+                                    previousMarker.setMap(null);
+                                }
+
+                                // 클릭한 위도, 경도 정보를 가져오기
                                 var latlng = marker.getPosition();
+                                console.log(latlng.toString());
 
                                 searchDetailAddrFromCoords(latlng, function(result, status) {
+                                    console.log("Result:", result);
+                                    console.log("Status:", status);
                                     if (status === kakao.maps.services.Status.OK) {
                                         var detailAddr = !!result[0].road_address ? '<div>도로명주소 : ' + result[0].road_address.address_name + '</div>' : '';
                                         detailAddr += '<div>지번 주소 : ' + result[0].address.address_name + '</div>';
+                                        detailAddr += '<div><button type="button" class="btn btn-link" id="btnInfo">' + place.place_name + '</button></div>'; // 버튼 추가
 
-                                        var message = '클릭한 위치의 법정동 주소정보 입니다.  \n' + detailAddr;
+                                        var message = '클릭한 장소의 정보 입니다.  \n' + detailAddr;
 
                                         var resultDiv = document.getElementById('markerAddr');
                                         resultDiv.innerHTML = message;
+
+                                        // 버튼 클릭 이벤트 생성
+                                        $("#btnInfo").on("click", function () {
+                                            location.href = "https://map.kakao.com/?q=" + place.place_name;
+                                        });
                                     }
                                 });
 
@@ -273,11 +309,78 @@
                                 infowindow.setContent(infowindowContent);
                                 infowindow.open(map, marker);
 
+                                // 열린 인포윈도우를 저장
                                 currentInfowindow = infowindow;
                             });
 
                             currentMarkers.push(marker); // 현재 마커 배열에 추가
                         }
+
+                        // 직접 지정한 마커 추가 함수
+                        kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+                            searchDetailAddrFromCoords(mouseEvent.latLng, function(result, status) {
+                                if (status === kakao.maps.services.Status.OK) {
+                                    var detailAddr = !!result[0].road_address ? '<div>도로명주소 : ' + result[0].road_address.address_name + '</div>' : '';
+                                    detailAddr += '<div>지번 주소 : ' + result[0].address.address_name + '</div>';
+
+                                    var message = '클릭한 장소의 정보 입니다.  \n' + detailAddr;
+
+                                    var resultDiv = document.getElementById('markerAddr');
+                                    resultDiv.innerHTML = message;
+
+                                    // 이전에 생성된 마커가 있다면 지도에서 제거
+                                    if (previousMarker) {
+                                        previousMarker.setMap(null);
+                                    }
+
+                                    // 새 마커 생성 및 표시
+                                    var marker = new kakao.maps.Marker();
+                                    marker.setPosition(mouseEvent.latLng);
+                                    marker.setMap(map);
+
+                                    // 이전 마커를 현재 마커로 업데이트
+                                    previousMarker = marker;
+                                }
+                            });
+                        });
+
+                        // 중심 좌표나 확대 수준이 변경됐을 때 지도 중심 좌표에 대한 주소 정보를 표시하도록 이벤트를 등록
+                        kakao.maps.event.addListener(map, 'idle', function() {
+                            searchAddrFromCoords(map.getCenter(), displayCenterInfo);
+                        });
+
+                        // 글작성 버튼 함수
+                        $(document).ready(function () {
+                            $("#btnSaveAndWrite").on("click", function () {
+                                var mapDTO = {
+                                    lat: mlat,
+                                    lng: mlng,
+                                    level: mapOption.level,
+                                    mloc: mloc
+                                };
+
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/map/save",
+                                    data: JSON.stringify(mapDTO),
+                                    contentType: "application/json",
+                                    success: function(response) {
+                                        console.log("Server response:", response);
+                                        // 성공적으로 응답 받았을 때 실행할 코드
+                                        location.href="map/send"
+                                        console.log(this.data);
+                                        console.log(mapDTO.lat);
+                                        console.log(mapDTO.lng);
+                                        console.log(mapDTO.level);
+                                        console.log(mapDTO.mloc);
+                                    },
+                                    error: function(error) {
+                                        console.error("Error:", error);
+                                        // 요청이 실패했을 때 실행할 코드
+                                    }
+                                });
+                            })
+                        })
                     </script>
                 </div>
             </div>
@@ -298,7 +401,7 @@
                 <!-- 깃허브 연결 영역 -->
                 <p><a href="https://github.com/donguk1/water"><img src="/img/githubIcon.png" width="30px"><br>project GitHub</a></p>
                 <!-- 아이콘에 대한 출처를 표시 -->
-                <p>Icons <a href="https://www.flaticon.com/kr/free-icons/" title="icons">Freepik(map), Pixel perfect(memo), Digby Garrett(user)</a> from Flaticon</p>
+                <p>Icons <a href="https://www.flaticon.com/kr/icons" title="icons">Freepik(map), Pixel perfect(memo), Digby Garrett(user)</a> from Flaticon</p>
             </figcaption>
         </figure>
     </footer>
