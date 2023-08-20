@@ -8,7 +8,9 @@
             RIVER_NAME AS riverName,
             ADDRESS,
             FACILITY,
-            CC_NAME AS ccName
+            CC_NAME AS ccName,
+            LAT,
+            LNG
         FROM RIVERCC
         WHERE NUM = #{num}
     </select>
