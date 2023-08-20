@@ -456,6 +456,10 @@
                                 console.log(rDTO.lat)
                                 console.log(rDTO.lng)
 
+                                mlat = rDTO.lat;
+                                mlng = rDTO.lng;
+                                mloc = rDTO.address.substring(0, 2);
+
                                 // 이전에 열려있던 인포윈도우 닫기
                                 if (currentInfowindow) {
                                     currentInfowindow.close();
