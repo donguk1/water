@@ -115,10 +115,20 @@ public class MemoController {
         rList = rList.subList(fromIndex, toIndex);
 
 
-//        // 메모 리스트가 없을시 실행
-//        if (rList == null) {
+
+        // 메모 리스트가 없을시 실행
+        if (rList.size() == 0) {
 //            rList = new ArrayList<>();
-//        }
+
+            String msg = "검색 결과가 없습니다.";
+            String url = "/memo/list";
+
+            modelMap.addAttribute("msg", msg);
+            modelMap.addAttribute("url", url);
+
+            return "/redirect";
+        }
+
 
         // 객체 바인딩
         modelMap.addAttribute("rList", rList);
