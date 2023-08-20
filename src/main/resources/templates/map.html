@@ -164,38 +164,6 @@
                                 </select>
                             </div>
                         </div>
-                        <script type="text/javascript">
-                            document.getElementById("riverCCselect").addEventListener("click", async ()=> {
-                                try {
-                                    const selectElement = document.getElementById("riverCCselect");
-                                    const selectedNum = selectElement.value.split('.')[0]; // 선택한 옵션의 num 추출\
-
-                                    if (selectedNum === '지역선택') {
-                                        // 선택이 "지역선택"인 경우 아무 정보도 표시하지 않음
-                                        const dataContainer = document.getElementById("riverccData");
-                                        dataContainer.innerHTML = '';
-                                    } else {
-                                        const response = await fetch('/map/riverCCData?num=' + selectedNum);
-                                        const rDTO = await response.json();
-
-                                        const infoHTML =
-                                            '<p>강문화관 정보</p>' +
-                                            '<br>' +
-                                            '<p>강 이름 : ' + rDTO.riverName + '</p>' +
-                                            '<br>' +
-                                            '<p>문화관 이름 : ' + rDTO.ccName + '</p>' +
-                                            '<br>' +
-                                            '<p>주소 : ' + rDTO.address + '</p>' +
-                                            '<br>' +
-                                            '<p>시설 : ' + rDTO.facility + '</p>';
-
-                                        document.getElementById("riverccData").innerHTML = infoHTML;
-                                    }
-                                } catch (error) {
-                                    console.error("에러 : ", error);
-                                }
-                            });
-                        </script>
                         <div id="riverccData"></div>
                     </div>
                 </div>
@@ -380,8 +348,15 @@
                     // 직접 지정한 마커 추가 함수
                     kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
 
+                        // 현재 열려있는 인포윈도우 닫기
+                        if (currentInfowindow) {
+                            currentInfowindow.close();
+                        }
+
                         // 클릭한 위도, 경도 정보를 가져옵니다
                         var latlng = mouseEvent.latLng;
+
+                        console.log(mouseEvent.latLng);
 
                         searchDetailAddrFromCoords(mouseEvent.latLng, function(result, status) {
                             if (status === kakao.maps.services.Status.OK) {
@@ -451,6 +426,88 @@
                             });
                         })
                     })
+
+                    document.getElementById("riverCCselect").addEventListener("click", async ()=> {
+                        try {
+                            const selectElement = document.getElementById("riverCCselect");
+                            const selectedNum = selectElement.value.split('.')[0]; // 선택한 옵션의 num 추출\
+
+                            if (selectedNum === '지역선택') {
+                                // 선택이 "지역선택"인 경우 아무 정보도 표시하지 않음
+                                const dataContainer = document.getElementById("riverccData");
+                                dataContainer.innerHTML = '';
+                            } else {
+                                const response = await fetch('/map/riverCCData?num=' + selectedNum);
+                                const rDTO = await response.json();
+
+                                const infoHTML =
+                                    '<p>강문화관 정보</p>' +
+                                    '<br>' +
+                                    '<p>강 이름 : ' + rDTO.riverName + '</p>' +
+                                    '<br>' +
+                                    '<p>문화관 이름 : ' + rDTO.ccName + '</p>' +
+                                    '<br>' +
+                                    '<p>주소 : ' + rDTO.address + '</p>' +
+                                    '<br>' +
+                                    '<p>시설 : ' + rDTO.facility + '</p>';
+
+                                document.getElementById("riverccData").innerHTML = infoHTML;
+
+                                console.log(rDTO.lat)
+                                console.log(rDTO.lng)
+
+                                // 이전에 열려있던 인포윈도우 닫기
+                                if (currentInfowindow) {
+                                    currentInfowindow.close();
+                                }
+
+                                // 이전에 표시된 마커들을 지도에서 제거
+                                for (var j = 0; j < currentMarkers.length; j++) {
+                                    currentMarkers[j].setMap(null);
+                                }
+                                currentMarkers = []; // 배열 비우기
+
+                                // 이전에 생성된 마커가 있다면 지도에서 제거
+                                if (previousMarker) {
+                                    previousMarker.setMap(null);
+                                }
+
+                                var riverLatLng = new kakao.maps.LatLng(rDTO.lat, rDTO.lng)
+
+                                // 새 마커 생성 및 표시
+                                var marker = new kakao.maps.Marker({
+                                    map: map,
+                                    position: riverLatLng
+                                });
+                                // marker.setPosition(rDTO.lat, rDTO.lng);
+                                marker.setMap(map);
+
+                                // 이전 마커를 현재 마커로 업데이트
+                                previousMarker = marker;
+
+                                // 새로운 인포윈도우 열기
+                                infowindow.setContent(rDTO.ccName);
+                                infowindow.open(map, marker);
+
+                                // 열린 인포윈도우를 저장
+                                currentInfowindow = infowindow;
+
+                                currentMarkers.push(marker); // 현재 마커 배열에 추가
+
+                                console.log(riverLatLng)
+
+                                // 검색된 장소 위치를 기준으로 지도 범위 재설정
+                                var bounds = new kakao.maps.LatLngBounds();
+
+                                bounds.extend(riverLatLng)
+
+                                // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+                                map.setBounds(bounds);
+                            }
+                        } catch (error) {
+                            console.error("에러 : ", error);
+                        }
+                    });
                 </script>
             </div>
         </div>
