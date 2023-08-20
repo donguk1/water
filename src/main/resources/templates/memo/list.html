@@ -41,6 +41,24 @@
             location.href = "/memo/info?num=" + num;
         }
 
+
+        // HTML로딩이 완료되고, 실행됨
+        $(document).ready(function () {
+
+            $("#btnSend").on("click", function () {
+
+                let f = document.getElementById("f");
+
+                if (f.keyword.value === "") {
+                    alert("검색어를 입력하세요");
+                    f.keyword.focus();
+                    return;
+                }
+
+
+            })
+        })
+
         /* back to top 클릭시 주소창에 #top 추가 안되게 함*/
         document.addEventListener("DOMContentLoaded", function () {
             var topLink = document.querySelector('a[href="#top"]');
@@ -52,6 +70,7 @@
                 });
             });
         });
+
     </script>
 </head>
 <body>
@@ -139,7 +158,7 @@
         </div>
 
         <!-- 검색 버튼 영역 -->
-        <form class="form-inline my-2 my-lg-0 mx-auto" action="/memo/search">
+        <form class="form-inline my-2 my-lg-0 mx-auto" action="/memo/search" onsubmit="doSubmit(this)" id="f">
             <div class="input-group mb-3">
                 <select name="type" id="type">
                     <option selected value="">검색 내용 선택</option>
