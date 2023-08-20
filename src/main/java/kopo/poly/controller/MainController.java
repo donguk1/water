@@ -27,7 +27,4 @@ public class MainController {
 
         return "/map";
     }
-
-    /*  로그인 전용 메인 화면 이동용 = "/watem"  */  // 삭제
-
 }

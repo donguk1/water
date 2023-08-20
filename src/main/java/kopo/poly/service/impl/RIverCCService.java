@@ -15,8 +15,11 @@ public class RIverCCService implements IRiverCCService {
 
     @Override
     public RiverCCDTO getCCData(String num) throws Exception {
+
         log.info(this.getClass().getName() + ".문화관정보 가져오기 시작");
+
         RiverCCDTO rDTO = riverCCMapper.getCCData(num);
+
         return rDTO;
     }
 }

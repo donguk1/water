@@ -32,15 +32,13 @@ public class NaverController {
 
     private final IUserService userService;
 
+    /*  객체 바인딩  */
     @Value("${cos.key}")
     private String cosKey;
-
     @Value("${naver.client_id}")
     private String naverClientId;
-
     @Value("${naver.client_secret}")
     private String naverClientSecret;
-
     @Value("${naver.redirect_uri}")
     private String naverRedirectUri;
 
@@ -92,12 +90,15 @@ public class NaverController {
 
         try {
             tokenDTO = objectMapper.readValue(response.getBody(), TokenDTO.class);
+
+            /*  실패 사유 확인용 로그  */
         } catch (JsonMappingException e) {
             log.info(e.toString());
-            e.printStackTrace();
+            e.printStackTrace();    // Exception 발생 이유와 위치는 어디에서 발생했는지 전체적인 단계 출력
+
         } catch (JsonProcessingException e) {
             log.info(e.toString());
-            e.printStackTrace();
+            e.printStackTrace();    // Exception 발생 이유와 위치는 어디에서 발생했는지 전체적인 단계 출력
         }
 
         log.info("네이버 엑세스 토큰 : " + tokenDTO.getAccess_token());
@@ -125,12 +126,16 @@ public class NaverController {
         NaverDTO naverDTO = null;
         try {
             naverDTO = objectMapper2.readValue(response2.getBody(), NaverDTO.class);
+
+            /*  실패 사유 확인용 로그  */
         } catch (JsonMappingException e) {
             log.info(e.toString());
-            e.printStackTrace();
+            e.printStackTrace();    // Exception 발생 이유와 위치는 어디에서 발생했는지 전체적인 단계 출력
+
         } catch (JsonProcessingException e) {
             log.info(e.toString());
-            e.printStackTrace();
+            e.printStackTrace();    // Exception 발생 이유와 위치는 어디에서 발생했는지 전체적인 단계 출력
+
         }
 
         log.info(".네이버 닉네임 : " + naverDTO.getResponse().getNickname());
@@ -139,7 +144,6 @@ public class NaverController {
         log.info(".네이버 이메일 : " + naverDTO.getResponse().getEmail());
         log.info(".네이버 폰번호 : " + naverDTO.getResponse().getMobile());
         log.info(".네이버 성별 : " + naverDTO.getResponse().getGender());
-
         log.info(".서버 아이디 : " + "naver_" + naverDTO.getResponse().getId());
         log.info(".서버 패스워드 : " + cosKey);
 
@@ -149,10 +153,13 @@ public class NaverController {
         UserDTO userDTO = userService.getUserById(serverId);
         
         String gender = naverDTO.getResponse().getGender();
+
         if (Objects.equals(gender, "F")) {
             gender = "female";
+
         } else if (Objects.equals(gender, "M")) {
             gender = "male";
+
         }
 
         if (userDTO == null) {
@@ -171,20 +178,20 @@ public class NaverController {
             // 새로운 사용자를 DB에 저장합니다
             res = userService.insertUser(newUserDTO);
 
-            if (res == 1) {
-                // 회원가입 성공
+            if (res == 1) {  // 회원가입 성공
                 log.info("회원가입 성공");
                 session.setAttribute("SS_ID", serverId);
                 session.setAttribute("SS_NICK", naverDTO.getResponse().getNickname());
 
                 msg = "회원가입에 성공했습니다. \n로그인이 성공했습니다. \n" + naverDTO.getResponse().getNickname() + "님 환영합니다.";
                 url = "/main";
-            } else {
-                // 회원가입 실패
+
+            } else {    // 회원가입 실패
                 log.info("회원가입 실패");
+
             }
-        } else {
-            // 서버 아이디가 DB에 이미 존재하므로 로그인 처리를 수행합니다
+
+        } else {    // 서버 아이디가 DB에 이미 존재하므로 로그인 처리를 수행합니다
             log.info("계정 보유로 로그인 실행");
 
             session.setAttribute("SS_ID", serverId);
@@ -192,6 +199,7 @@ public class NaverController {
 
             msg = "로그인이 성공했습니다. \n" + userDTO.getNick() + "님 환영합니다.";
             url = "/main";
+
         }
 
         modelMap.addAttribute("msg", msg);

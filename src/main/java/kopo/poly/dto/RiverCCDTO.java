@@ -6,11 +6,11 @@ import lombok.Setter;
 @Getter
 @Setter
 public class RiverCCDTO {
-    private String riverName;
-    private int Num;
-    private String address;
-    private String facility;
-    private String ccName;
-    private Double lat;
-    private Double lng;
+    private int Num;            // 순서
+    private String riverName;   // 강 이름
+    private String address;     // 주소
+    private String facility;    // 시설
+    private String ccName;      // 문화관 이름
+    private Double lat;         // 위도
+    private Double lng;         // 경도
 }
