@@ -342,6 +342,9 @@ public class UserController {
             msg = "수정되었습니다.";
             url = "/user/mypage";
 
+            session.setAttribute("SS_ID", id);
+            session.setAttribute("SS_NICK",nick);
+
         } catch (Exception e) {
 
             msg = "수정 실패하였습니다.";
