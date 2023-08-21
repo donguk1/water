@@ -70,12 +70,18 @@
         <form action="/user/loginProc" method="post" onsubmit="checkInputData()" id="f" class="mx-auto" style="width:80%;">
             <!-- 아이디 입력 영역 -->
             <div class="form-group">
-                <input type="text" class="form-control" name="id" placeholder="아이디">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" name="id" id="id" placeholder="아이디">
+                    <label for="id">아이디</label>
+                </div>
             </div>
             <br>
             <!-- 비밀번호 입력 영역 -->
             <div class="form-group">
-                <input type="password" class="form-control" name="pw" placeholder="비밀번호">
+                <div class="form-floating mb-3">
+                    <input type="password" class="form-control" name="pw" id="pw" placeholder="비밀번호">
+                    <label for="pw">비밀번호</label>
+                </div>
             </div>
             <br>
             <br><br>
