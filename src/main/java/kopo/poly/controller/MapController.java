@@ -21,9 +21,11 @@ import javax.servlet.http.HttpSession;
 @RequiredArgsConstructor
 @CrossOrigin(origins="*")
 public class MapController {
+
     private final IMapService mapService;
     private final IRiverCCService riverCCService;
 
+    /*  map 데이터(마커 위경도, 레벨, 지역) 저장  */
     @PostMapping(value = "/map/save")
     public String saveMapData(@RequestBody MapDTO mapDTO, HttpSession session) {
         try {
@@ -41,10 +43,11 @@ public class MapController {
         return "redirect:/map/send";
     }
 
+
     @GetMapping(value = "/map/send")
     public String sendMapData(Model model, HttpSession session, ModelMap modelMap) throws Exception {
 
-        /*  id = P.K  */
+        /*  로그인 유무 확인  */
         String id = CmmUtil.nvl((String) session.getAttribute("SS_ID"));
 
         if (id == "") {
@@ -73,7 +76,6 @@ public class MapController {
             log.info("lng : {}", savedMapData.getLng());
             log.info("level : {}", savedMapData.getLevel());
             log.info("mloc : {}", savedMapData.getMloc());
-
             log.info("model lat : " + model.getAttribute("lat"));
             log.info("model lng : " + model.getAttribute("lng"));
             log.info("model level : " + model.getAttribute("level"));
@@ -94,8 +96,10 @@ public class MapController {
         try {
             RiverCCDTO rDTO = riverCCService.getCCData(num);
             return ResponseEntity.ok(rDTO);
+
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
+
         }
     }
 }

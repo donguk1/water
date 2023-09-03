@@ -63,8 +63,6 @@ public class MemoController {
 
         // 조회된 리스트 결과값 넣어주기
         modelMap.addAttribute("rList", rList);
-
-        // 현재 페이지 정보를 넣어주기
         modelMap.addAttribute("currentPage", page);
         modelMap.addAttribute("totalPages", totalPages);
 
@@ -98,7 +96,7 @@ public class MemoController {
         // 메모 리스트  검색 조회
         List<MemoDTO> rList;
 
-        if (type != "") {
+        if (type != "") {  // 타입(title, nick, mloc) 있는 경우 true
             rList = memoService.searchMemoList(pDTO);
         } else {
             rList = memoService.allSearchMemoList(pDTO);
@@ -114,13 +112,21 @@ public class MemoController {
         int toIndex = Math.min(fromIndex + itemsPerPage, totalItems);
         rList = rList.subList(fromIndex, toIndex);
 
-
-//        // 메모 리스트가 없을시 실행
-//        if (rList == null) {
+        // 메모 리스트(검색 결과)가 없을시 실행
+        if (rList.size() == 0) {
 //            rList = new ArrayList<>();
-//        }
 
-        // 객체 바인딩
+            String msg = "검색 결과가 없습니다.";
+            String url = "/memo/list";
+
+            // 조회된 리스트 결과값 넣어주기
+            modelMap.addAttribute("msg", msg);
+            modelMap.addAttribute("url", url);
+
+            return "/redirect";
+        }
+
+        // 조회된 리스트 결과값 넣어주기
         modelMap.addAttribute("rList", rList);
         modelMap.addAttribute("currentPage", page);
         modelMap.addAttribute("totalPages", totalPages);
@@ -136,10 +142,10 @@ public class MemoController {
     @GetMapping(value = "/memo/new")
     public String MemoInsert(HttpSession session, ModelMap modelMap) {
 
-        /*  id = P.K  */
+        /*  로그인 유무 확인  */
         String id = CmmUtil.nvl((String) session.getAttribute("SS_ID"));
 
-        if (id == "") {
+        if (id == "") {  // 로그인 정보 없을시 실행
             log.info("로그인 정보 없음");
 
             String msg = "로그인 정보가 없습니다.";
@@ -150,7 +156,6 @@ public class MemoController {
 
             return "/redirect";
         }
-
 
         log.info(this.getClass().getName() + ".controller 메모 작성 실행");
 
@@ -163,6 +168,7 @@ public class MemoController {
 
         log.info(this.getClass().getName() + ".controller 메모 등록 실행");
 
+        /* map 페이지에서 글작성시  map table 가져오기용  */
         MapDTO savedMapData = (MapDTO) session.getAttribute("savedMapData");
 
         String msg = "";            // 메시지(알림용)
@@ -174,6 +180,7 @@ public class MemoController {
             String nick = CmmUtil.nvl((String) session.getAttribute("SS_NICK")); // 로그인된 NICK 가져오기
             String title = CmmUtil.nvl(request.getParameter("title"));           // 제목
             String contents = CmmUtil.nvl(request.getParameter("contents"));     // 글 내용
+            // map table에서 가져오는 값들
             String mloc = savedMapData.getMloc();   // 지역
             Double lat = savedMapData.getLat();     // 위도
             Double lng = savedMapData.getLng();     // 경도
@@ -230,7 +237,7 @@ public class MemoController {
 
         } finally {
 
-            // 객체 바인딩
+            // 조회된 리스트 결과값 넣어주기
             modelMap.addAttribute("msg", msg);
             modelMap.addAttribute("url", url);
 
@@ -263,7 +270,7 @@ public class MemoController {
 //        MapDTO aDTO = Optional.ofNullable(memoService.getLatLng(mapDTO)).orElseGet(MapDTO::new);
 
 
-        /*  객체 바인딩  */
+        /*  조회된 리스트 결과값 넣어주기  */
         modelMap.addAttribute("rDTO", rDTO);
 //        modelMap.addAttribute("aDTO", aDTO);
 
@@ -309,7 +316,7 @@ public class MemoController {
             rDTO = new MemoDTO();
         }
 
-        /*  조회된 리스트 결과값 넣어주기(확인 필요)  */
+        /*  조회된 리스트 결과값 넣어주기  */
         modelMap.addAttribute("rDTO", rDTO);
 //        modelMap.addAttribute("aDTO", aDTO);
 
@@ -372,7 +379,7 @@ public class MemoController {
 
         } finally {
 
-            // 객체 바인딩
+            // 조회된 리스트 결과값 넣어주기
             modelMap.addAttribute("msg", msg);
             modelMap.addAttribute("url", url);
 

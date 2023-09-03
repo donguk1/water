@@ -31,12 +31,11 @@ public class KakaoController {
 
     private final IUserService userService;
 
+    /*  객체 바인딩  */
     @Value("${cos.key}")
     private String cosKey;
-
     @Value("${kakao.client_id}")
     private String kakaoClientId;
-
     @Value("${kakao.redirect_uri}")
     private String kakaoRedirectUri;
 
@@ -121,11 +120,15 @@ public class KakaoController {
         try {
             kakaoDTO = objectMapper2.readValue(response2.getBody(), KakaoDTO.class);
         } catch (JsonMappingException e) {
+            /*  실패 사유 확인용 로그  */
             log.info(e.toString());
-            e.printStackTrace();
+            e.printStackTrace();    // Exception 발생 이유와 위치는 어디에서 발생했는지 전체적인 단계 출력
+
         } catch (JsonProcessingException e) {
+            /*  실패 사유 확인용 로그  */
             log.info(e.toString());
-            e.printStackTrace();
+            e.printStackTrace();    // Exception 발생 이유와 위치는 어디에서 발생했는지 전체적인 단계 출력
+
         }
 
         log.info(".카카오 아이디(번호) : " + kakaoDTO.getId());
@@ -133,10 +136,8 @@ public class KakaoController {
         log.info(".카카오 생일 : " + kakaoDTO.getKakao_account().getBirthday());
         log.info(".카카오 성별 : " + kakaoDTO.getKakao_account().getGender());
         log.info(".카카오 닉네임 : " + kakaoDTO.getProperties().getNickname());
-
         log.info(".서버 아이디 : " + "kakao_" + kakaoDTO.getId());
         log.info(".서버 패스워드 : " + cosKey);
-
         // 서버 아이디가 DB에 있는지 확인합니다
         log.info("회원가입 전 계정 중복 확인");
         String serverId = "kakao_" + kakaoDTO.getId();
@@ -159,22 +160,25 @@ public class KakaoController {
             // 새로운 사용자를 DB에 저장합니다
             res = userService.insertUser(newUserDTO);
 
-            if (res == 1) {
-                // 회원가입 성공
+            if (res == 1) {   // 회원가입 성공
                 log.info("회원가입 성공");
+                // 세션에 id, nick 올리기
                 session.setAttribute("SS_ID", serverId);
                 session.setAttribute("SS_NICK", kakaoDTO.getProperties().getNickname());
 
                 msg = "회원가입에 성공했습니다. \n로그인이 성공했습니다. \n" + kakaoDTO.getProperties().getNickname() + "님 환영합니다.";
                 url = "/main";
-            } else {
-                // 회원가입 실패
+
+            } else {    // 회원가입 실패
+
                 log.info("회원가입 실패");
             }
-        } else {
-            // 서버 아이디가 DB에 이미 존재하므로 로그인 처리를 수행합니다
+
+        } else {    // 서버 아이디가 DB에 이미 존재하므로 로그인 처리를 수행합니다
+
             log.info("계정 보유로 로그인 실행");
 
+            // 세션에 id, nick 올리기
             session.setAttribute("SS_ID", serverId);
             session.setAttribute("SS_NICK", userDTO.getNick());
 
@@ -182,6 +186,7 @@ public class KakaoController {
             url = "/main";
         }
 
+        // 조회된 리스트 결과값 넣어주기
         modelMap.addAttribute("msg", msg);
         modelMap.addAttribute("url", url);
 

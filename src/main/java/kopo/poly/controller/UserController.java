@@ -22,13 +22,6 @@ import java.util.Optional;
 @Controller
 public class UserController {
 
-    /**
-     * login
-     * myPage
-     * signup
-     */
-
-    // 서비스를 안에서 사용할 수 있게 하는 선언문
     private final IUserService userService;
 
 
@@ -55,7 +48,8 @@ public class UserController {
         /*  회원가입 데이터 저장  */
         UserDTO pDTO = null;
 
-        try {/*
+        try {
+            /*
              웹(회원정보 입력화면)에서 받는 정보를 String 변수에 저장 시작!
              무조건 웹으로 받은 정보는 DTO 에 저장하기 위해 임시로 String 변수에 저장.
 
@@ -93,9 +87,8 @@ public class UserController {
             pDTO.setNick(nick);
             // pw는 절대로 복호화되지 않도록 해시 알고리즘으로 암호화
             pDTO.setPw(EncryptUtil.encHashSHA256(pw));
-            // 개인 정보인 email, pn AES128-CBC 로 암호화
             pDTO.setEmail(email);
-            pDTO.setPn(pn);        // 07/27 email, pn 해시코드 풀고 db에 저장으로 수정
+            pDTO.setPn(pn);
             pDTO.setUloc(uloc);
             pDTO.setBirth(birth);
             pDTO.setGender(gender);
@@ -335,7 +328,6 @@ public class UserController {
             log.info("pn : " + pn);
             log.info("uloc : " + uloc);
 
-
             /*  데이터 저장  */
             UserDTO pDTO = new UserDTO();
             pDTO.setId(id);
@@ -349,6 +341,9 @@ public class UserController {
 
             msg = "수정되었습니다.";
             url = "/user/mypage";
+
+            session.setAttribute("SS_ID", id);
+            session.setAttribute("SS_NICK",nick);
 
         } catch (Exception e) {
 
@@ -436,16 +431,6 @@ public class UserController {
     @PostMapping(value = "/user/tmpPwEmail")
     public UserDTO tmpPwEmail(HttpServletRequest request) throws Exception {
 
-        /**
-         * 1. 데이터 가져와 저장 O
-         * 2. 이메일 존재 여부 확인(존재시 Y, 없을시 N) O
-         * 3. 임시 비번 만들어 메일로 보내기 O
-         *  3-1 임시 비번 설정 O
-         *  3-2 메일 발송
-         * 4. 임시 비번 가져와 저장(메모리에 올리기)
-         * 5. 비번 변경
-         */
-
         log.info(this.getClass().getName() + ".controller 임시 비번 설정 및 메일 보내기 실행");
 
         // 데이터 입력
@@ -483,7 +468,6 @@ public class UserController {
 
         // 변경된 임시 비번으로 변경
         userService.updatePw(pDTO);
-
 
         return rDTO;
     }
@@ -542,7 +526,6 @@ public class UserController {
             pDTO.setId(id);
             pDTO.setPw(EncryptUtil.encHashSHA256(pw));
             pDTO.setNewPw(EncryptUtil.encHashSHA256(newPw));
-
 
             // 정보 수정
             userService.loginNewPw(pDTO);

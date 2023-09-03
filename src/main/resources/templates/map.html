@@ -4,10 +4,12 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>WATEM : 지도</title>
     <link rel="stylesheet" type="text/css" href="/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="/css/map.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Hahmlet:wght@400;500&family=Nanum+Gothic+Coding&family=Noto+Sans+KR:wght@100;300;400&display=swap" rel="stylesheet">
     <style th:inline="css">
+        /* 드롭다운 관련 CSS */
         .dropdown-menu {
             right: 0;
             top: 60px;
@@ -29,31 +31,12 @@
             right: 0;
             z-index: 1000;
         }
-        .map_wrap {position:relative;width:100%;height:350px;}
-        .title {font-weight:bold;display:block;}
-        .hAddr {position:absolute;left:10px;top:10px;border-radius: 2px;background:#fff;background:rgba(255,255,255,0.8);z-index:1;padding:5px;}
-        #centerAddr {display:block;margin-top:2px;font-weight: normal;}
-        .bAddr {padding:5px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;}
     </style>
 
     <script type="text/javascript" src="/js/jquery-3.6.0.min.js"></script>
     <script type="text/javascript" src="/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/js/bootstrap.bundle.js"></script>
     <script th:inline="javascript">
-        // HTML로딩이 완료되고, 실행됨
-        $(document).ready(function () {
-
-            // 버튼 클릭했을때, 발생되는 이벤트 생성함(onclick 이벤트와 동일함)
-            $("#btnReg").on("click", function () {
-                if (![[${session.SS_ID}]]) {
-                    alert("로그인이 필요한 서비스입니다.");
-                    return location.href = "/user/login";
-                }
-                location.href = "/memo/new"; // 글 작성하는 창으로 이동
-            })
-
-        })
-
         /* back to top 클릭시 주소창에 #top 추가 안되게 함*/
         document.addEventListener("DOMContentLoaded", function () {
             var topLink = document.querySelector('a[href="#top"]');
@@ -66,19 +49,63 @@
             });
         });
 
-        // $(document).ready(function () {
-        //
-        //     $("#btnSaveAndWrite").on("click", function () {
-        //         saveMapData();
-        //     })
-        // })
+        /* 강 문화관 버튼 작동 */
+        document.addEventListener("DOMContentLoaded", function () {
+            let infotabVisible = false; // 초기에는 infotab이 숨겨져 있음을 나타내는 변수
 
+            document.getElementById("riverCC").addEventListener("click", () => {
+                const infotab = document.getElementById("infotab");
 
-        // 버튼 클릭 이벤트 핸들러 등록
-        // var btnSaveAndWrite = document.getElementById('btnSaveAndWrite');
-        // btnSaveAndWrite.addEventListener('click', saveMapData);
+                if (infotabVisible) {
+                    infotab.classList.remove("show"); // "show" 클래스 제거로 div를 숨김
+                } else {
+                    infotab.classList.add("show"); // "show" 클래스 추가로 div를 보이게 설정
+                }
 
+                infotabVisible = !infotabVisible; // 변수 업데이트
+            });
+        });
 
+        /* 문화관 선택시 이미지 띄워주는 함수 */
+        function showImage() {
+            var selectElement = document.getElementById("riverCCselect");
+            var selectedValue = selectElement.value;
+
+            var imageContainer = document.getElementById("imageContainer");
+            imageContainer.innerHTML = ""; // 이미지 컨테이너 초기화
+
+            if (selectedValue === "1") {
+                var img = document.createElement("img");
+                img.src = "/img/금강문화관.png";
+                img.width = "350";
+                img.height = "350";
+                imageContainer.appendChild(img);
+            } else if (selectedValue === "2") {
+                var img = document.createElement("img");
+                img.src = "/img/디아크문화관.png";
+                img.width = "350";
+                img.height = "350";
+                imageContainer.appendChild(img);
+            } else if (selectedValue === "3") {
+                var img = document.createElement("img");
+                img.src = "/img/낙동강문화관.png";
+                img.width = "350";
+                img.height = "350";
+                imageContainer.appendChild(img);
+            } else if (selectedValue === "4") {
+                var img = document.createElement("img");
+                img.src = "/img/영산강문화관.png";
+                img.width = "350";
+                img.height = "350";
+                imageContainer.appendChild(img);
+            } else if (selectedValue === "5") {
+                var img = document.createElement("img");
+                img.src = "/img/한강문화관.png";
+                img.width = "350";
+                img.height = "350";
+                imageContainer.appendChild(img);
+            }
+        }
     </script>
 </head>
 <body>
@@ -115,177 +142,436 @@
             </ul>
         </div>
     </nav>
-    
+
     <br><br>
-    
+
     <!-- 내용 부분 -->
     <div class="card mb-3 mx-auto" style="padding: 12px 20px; width: 95%; font-family: 'Noto Sans KR', sans-serif;">
-        <div class="card-body">
-            <div class="list-group list-group-flushs mx-auto" style="width: 98%">
-                <div class="list-group-item" style="height: 800px">
-                    <!-- 지도를 표시할 div 입니다 -->
-                    <div class="map_wrap">
-                        <div id="map" style="width:65%; height:790px; border: 3px solid grey; float: left"></div>
-                        <div class="hAddr">
-                            <span class="title">지도중심기준 행정동 주소정보</span>
-                            <span id="centerAddr"></span>
-                        </div>
-                    </div>
-                    <p id="result"></p>
-                    <br>
-                    <p>다른 정보</p>
-                    <br>
-                    <p>다른 정보</p>
-                    <div th:if="${session.SS_ID != null}"> <!-- 로그인 정보가 없을시 로그인 버튼만 활성화 -->
-                        <button type="button" class="btn btn-outline-dark" id="btnSaveAndWrite">글작성</button>
-                    </div>
-                    <!-- 메모 작성하는 페이지로 넘어가게 해놨으니 데이터 끌고서 넘어갈 수 있도록 손봐주세요 -->
-
-                    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=9f7b1b926be42fe85ba854921b7d037e&libraries=services"></script>
-                    <script>
-                    var mapContainer = document.getElementById('map'), // 지도를 표시할 div
-                    mapOption = {
-                    center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
-                    level: 3 // 지도의 확대 레벨
-                    };
-
-                    // 지도를 표시할 div와  지도 옵션으로  지도를 생성합니다
-                    var map = new kakao.maps.Map(mapContainer, mapOption);
-
-                    // 일반 지도와 스카이뷰로 지도 타입을 전환할 수 있는 지도타입 컨트롤을 생성합니다
-                    var mapTypeControl = new kakao.maps.MapTypeControl();
-
-                    // 지도에 컨트롤을 추가해야 지도위에 표시됩니다
-                    // kakao.maps.ControlPosition은 컨트롤이 표시될 위치를 정의하는데 TOPRIGHT는 오른쪽 위를 의미합니다
-                    map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
-
-                    // 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성합니다
-                    var zoomControl = new kakao.maps.ZoomControl();
-                    map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
-
-                    // 주소-좌표 변환 객체를 생성합니다
-                    var geocoder = new kakao.maps.services.Geocoder();
-
-                    // 지도를 클릭한 위치에 표출할 마커입니다
-                    var marker = new kakao.maps.Marker({
-                        // 지도 중심좌표에 마커를 생성합니다
-                        position: map.getCenter()
-                    }), infowindow = new kakao.maps.InfoWindow({zindex:1}); // 클릭한 위치에 대한 주소를 표시할 인포윈도우입니다;
-                    // 지도에 마커를 표시합니다
-                    marker.setMap(map);
-
-                    var mlng;
-                    var mlat;
-                    var mloc;
-
-                    // 현재 지도 중심좌표로 주소를 검색해서 지도 좌측 상단에 표시합니다
-                    searchAddrFromCoords(map.getCenter(), displayCenterInfo);
-
-                    // 지도 좌측상단에 지도 중심좌표에 대한 주소정보를 표출하는 함수입니다
-                    function displayCenterInfo(result, status) {
-                        if (status === kakao.maps.services.Status.OK) {
-                            var infoDiv = document.getElementById('centerAddr');
-
-                            for(var i = 0; i < result.length; i++) {
-                                // 행정동의 region_type 값은 'H' 이므로
-                                if (result[i].region_type === 'H') {
-                                    infoDiv.innerHTML = result[i].address_name;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
-                    // 지도에 클릭 이벤트를 등록합니다
-                    // 지도를 클릭하면 마지막 파라미터로 넘어온 함수를 호출합니다
-                    kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
-
-                        // 클릭한 위도, 경도 정보를 가져옵니다
-                        var latlng = mouseEvent.latLng;
-                        mlat = latlng.getLat();
-                        mlng = latlng.getLng();
-
-                        searchDetailAddrFromCoords(mouseEvent.latLng, function(result, status) {
-                            // if (status === kakao.maps.services.Status.OK) {
-                                var detailAddr = !!result[0].road_address ? '<div>도로명주소 : ' + result[0].road_address.address_name + '</div>' : '';
-                                detailAddr += '<div>지번 주소 : ' + result[0].address.address_name + '</div>';
-
-                                var content = '<div class="bAddr">' +
-                                    '<span class="title">법정동 주소정보</span>' +
-                                    detailAddr +
-                                    '</div>';
-
-                                // 마커 위치를 클릭한 위치로 옮깁니다
-                                marker.setPosition(latlng);
-
-
-                                // 인포윈도우에 클릭한 위치에 대한 법정동 상세 주소정보를 표시합니다
-                                infowindow.setContent(content);
-                                infowindow.open(map, marker);
-
-                                var message = '클릭한 위치의 위도는 ' + latlng.getLat() + ' 이고, ';
-                                message += '경도는 ' + latlng.getLng() + ' 입니다';
-
-                                var resultDiv = document.getElementById('result');
-                                resultDiv.innerHTML = message;
-
-                                mlat = latlng.getLat();
-                                mlng = latlng.getLng();
-                                mloc = result[0].address.address_name.substring(0, 2);  //  ex) 서울, 제주 등으로 표기, 맨앞 두글자만
-
-                        });
-                    });
-
-                    // 중심 좌표나 확대 수준이 변경됐을 때 지도 중심 좌표에 대한 주소 정보를 표시하도록 이벤트를 등록합니다
-                    kakao.maps.event.addListener(map, 'idle', function() {
-
-                        searchAddrFromCoords(map.getCenter(), displayCenterInfo);
-                    });
-
-                    function searchAddrFromCoords(coords, callback) {
-                        // 좌표로 행정동 주소 정보를 요청합니다
-                        geocoder.coord2RegionCode(coords.getLng(), coords.getLat(), callback);
-                    }
-
-                    function searchDetailAddrFromCoords(coords, callback) {
-                        // 좌표로 법정동 상세 주소 정보를 요청합니다
-                        geocoder.coord2Address(coords.getLng(), coords.getLat(), callback);
-                    }
-
-                    $(document).ready(function () {
-                        $("#btnSaveAndWrite").on("click", function () {
-                            var mapDTO = {
-                                lat: mlat,
-                                lng: mlng,
-                                level: mapOption.level,
-                                mloc: mloc
-                            };
-
-                            $.ajax({
-                                type: "POST",
-                                url: "/map/save",
-                                data: JSON.stringify(mapDTO),
-                                contentType: "application/json",
-                                success: function(response) {
-                                    console.log("Server response:", response);
-                                    // 성공적으로 응답 받았을 때 실행할 코드
-                                    location.href="map/send"
-                                    console.log(this.data);
-                                    console.log(mapDTO.lat);
-                                    console.log(mapDTO.lng);
-                                    console.log(mapDTO.level);
-                                    console.log(mapDTO.mloc);
-                                },
-                                error: function(error) {
-                                    console.error("Error:", error);
-                                    // 요청이 실패했을 때 실행할 코드
-                                }
-                            });
-                        })
-                    })
-                    </script>
+        <div class="list-group-item" style="height: auto">
+            <!-- 지도를 표시할 div -->
+            <div class="map mx-auto" style="width:98%; height:790px">
+                <div id="map" style="width:100%; height:100%; border: 3px solid grey;">
+                    <!-- 카테고리 -->
+                    <ul id="category" style="padding: 0">
+                        <li id="바다" data-order="0">
+                            <span><img src="/img/beachIcon.png" width="30px"></span>
+                            바다
+                        </li>
+                        <li id="계곡" data-order="1">
+                            <span><img src="/img/valleyIcon.png" width="30px"></span>
+                            계곡
+                        </li>
+                        <li id="강" data-order="2">
+                            <span><img src="/img/riverIcon.png" width="30px"></span>
+                            강
+                        </li>
+                        <li id="저수지" data-order="3">
+                            <span><img src="/img/reservoirIcon.png" width="35px"></span>
+                            저수지
+                        </li>
+                        <li id="호수" data-order="4">
+                            <span><img src="/img/lakeIcon.png" width="35px"></span>
+                            호수
+                        </li>
+                        <li id="폭포" data-order="5">
+                            <span><img src="/img/waterfallIcon.png" width="35px"></span>
+                            폭포
+                        </li>
+                    </ul>
                 </div>
             </div>
+            <br>
+
+            <!-- 버튼과 정보창 영역 -->
+            <div class="info mx-auto" style="width: 98%; float: bottom">
+<!--                <p id="markerAddr"></p>-->
+                <!-- 버튼 위치 오른쪽 지정 -->
+                <div style="display: flex; justify-content: flex-end;">
+                    <div>
+                        <button type="button" class="btn btn-outline-dark" id="riverCC">강 문화관</button>
+                    </div>
+                    <div>
+                        <div th:if="${session.SS_ID != null}">
+                            <button type="button" class="btn btn-outline-dark" id="btnSaveAndWrite" style="margin: 0 7px;">글작성</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- 강문화관 정보 div (버튼 클릭 전까진 안 보이게 설정) -->
+                <div class="tab-pane fade" id="infotab" role="tabpanel">
+                    <div class="form-group">
+                        <br>
+<!--                        <label for="riverCCselect" class="form-label mt-4">문화관</label>-->
+                        <div class="input-group mb-3">
+                            <select class="form-select" id="riverCCselect" style="font-family: 'Noto Sans KR', sans-serif;" name="riverCCselect" onchange="showImage()">
+                                <option value="지역선택">문화관선택</option>
+                                <option value="1">금강문화관</option>
+                                <option value="2">The ARC</option>
+                                <option value="3">낙동강문화관</option>
+                                <option value="4">영산강 문화관</option>
+                                <option value="5">한강 문화관</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <div id="imageContainer" style="float: left; margin-right: 15px"></div>
+                        <div id="riverccData"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 카카오맵 API 스크립트 -->
+            <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=9f7b1b926be42fe85ba854921b7d037e&libraries=services"></script>
+            <script type="text/javascript" src="/js/map.js"></script>
+            <script>
+                // 인포윈도우 초기화
+                var infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
+
+                // 지도 초기화
+                var mapContainer = document.getElementById('map'),
+                    mapOption = {
+                        center: new kakao.maps.LatLng(36.3969285, 127.426829),
+                        level: 3
+                    };
+
+                // 지도 생성
+                var map = new kakao.maps.Map(mapContainer, mapOption);
+
+                // 일반 지도와 스카이뷰로 지도 타입을 전환할 수 있는 지도타입 컨트롤을 생성
+                var mapTypeControl = new kakao.maps.MapTypeControl();
+
+                // 지도에 컨트롤을 추가해 지도위에 표시
+                // kakao.maps.ControlPosition은 컨트롤이 표시될 위치를 정의하는데 TOPRIGHT는 오른쪽 위를 의미
+                map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
+
+                // 지도 확대 축소를 제어할 수 있는 줌 컨트롤을 생성
+                var zoomControl = new kakao.maps.ZoomControl();
+                map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
+
+                // 장소 검색 서비스 초기화
+                var ps = new kakao.maps.services.Places();
+
+                // 카테고리 및 키워드 정의
+                var categories = [
+                    { category: '바다', keyword: '해수욕장' },
+                    { category: '계곡', keyword: '계곡' },
+                    { category: '강', keyword: '강' },
+                    { category: '저수지', keyword: '저수지' },
+                    { category: '호수', keyword: '호수' },
+                    { category: '폭포', keyword: '폭포' }
+                ];
+
+                var currentMarkers = []; // 현재 표시된 마커들을 저장할 배열
+                var currentInfowindow = null; // 현재 열려있는 인포윈도우 객체를 저장하는 변수
+
+                var mlng;
+                var mlat;
+                var mloc;
+
+                // 카테고리 목록 요소들을 가져옴
+                var categoryList = document.querySelectorAll('#category li');
+
+                // 각 카테고리 버튼에 클릭 이벤트 리스너 추가
+                for (var i = 0; i < categoryList.length; i++) {
+                    categoryList[i].addEventListener('click', handleCategoryClick);
+                }
+
+                var selectedCategory = null; // 선택된 카테고리 정보를 저장할 변수
+
+                // 카테고리 버튼 클릭 이벤트 핸들러
+                function handleCategoryClick(event) {
+                    // 이전에 열려있던 인포윈도우 닫기
+                    if (currentInfowindow) {
+                        currentInfowindow.close();
+                    }
+
+                    // 클릭된 카테고리 가져오기
+                    var clickedCategory = event.currentTarget.id;
+
+                    if (selectedCategory === clickedCategory) {
+                        // 이미 선택된 카테고리를 누른 경우, 해당 카테고리 정보와 마커들을 초기화
+                        selectedCategory = null;
+                        for (var j = 0; j < currentMarkers.length; j++) {
+                            currentMarkers[j].setMap(null);
+                        }
+                        currentMarkers = []; // 배열 비우기
+                    } else {
+                        // 새로운 카테고리를 선택한 경우, 기존 마커들을 삭제하고 새로운 마커들을 표시
+                        selectedCategory = clickedCategory;
+                        var categoryInfo = categories.find(function (item) {
+                            return item.category === clickedCategory;
+                        });
+                        if (categoryInfo) {
+                            // 이전에 표시된 마커들을 지도에서 제거
+                            for (var j = 0; j < currentMarkers.length; j++) {
+                                currentMarkers[j].setMap(null);
+                            }
+                            currentMarkers = []; // 배열 비우기
+
+                            // 키워드로 장소 검색 및 결과 출력
+                            ps.keywordSearch(categoryInfo.keyword, placesSearchCB(categoryInfo.category));
+                        }
+                    }
+                }
+
+                // 장소 검색 완료 시 호출되는 콜백함수
+                function placesSearchCB(category) {
+                    return function (data, status) {
+                        if (status === kakao.maps.services.Status.OK) {
+                            // 검색된 장소 위치를 기준으로 지도 범위 재설정
+                            var bounds = new kakao.maps.LatLngBounds();
+
+                            for (var i = 0; i < data.length; i++) {
+                                // 마커표시
+                                displayMarker(data[i], category);
+                                bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
+                            }
+
+                            map.setBounds(bounds);
+                        }
+                    };
+                }
+
+                var previousMarker = null; // 이전에 생성된 마커를 저장할 변수
+
+                // 카테고리 마커 표시 함수
+                function displayMarker(place) {
+                    var marker = new kakao.maps.Marker({
+                        map: map,
+                        position: new kakao.maps.LatLng(place.y, place.x)
+                    });
+
+                    var infowindowContent = '<div style="padding:5px;font-size:12px;">' + place.place_name + '</div>';
+
+                    kakao.maps.event.addListener(marker, 'click', function () {
+                        // 현재 열려있는 인포윈도우 닫기
+                        if (currentInfowindow) {
+                            currentInfowindow.close();
+                        }
+
+                        // 이전에 생성된 마커가 있다면 지도에서 제거
+                        if (previousMarker) {
+                            previousMarker.setMap(null);
+                        }
+
+                        // 클릭한 위도, 경도 정보를 가져오기
+                        var latlng = marker.getPosition();
+                        mlat = place.y;
+                        mlng = place.x;
+
+                        searchDetailAddrFromCoords(latlng, function(result, status) {
+                            console.log("Result:", result);
+                            console.log("Status:", status);
+                            if (status === kakao.maps.services.Status.OK) {
+                                var detailAddr = !!result[0].road_address ? '<div>도로명주소 : ' + result[0].road_address.address_name + '</div>' : '';
+                                detailAddr += '<div>지번 주소 : ' + result[0].address.address_name + '</div>';
+                                // detailAddr += '<div><button type="button" class="btn btn-link" id="btnInfo">' + place.place_name + '</button></div>'; // 버튼 추가
+
+                                // var message = '클릭한 장소의 정보 입니다.  \n' + detailAddr;
+                                //
+                                // var resultDiv = document.getElementById('markerAddr');
+                                // resultDiv.innerHTML = message;
+
+                                mlat = place.y;
+                                mlng = place.x;
+                                mloc = result[0].address.address_name.substring(0, 2);  //  ex) 서울, 제주 등으로 표기, 맨앞 두글자만
+
+                                // // 버튼 클릭 이벤트 생성
+                                // $("#btnInfo").on("click", function () {
+                                //     location.href = "https://map.kakao.com/?q=" + place.place_name;
+                                // });
+                            }
+                        });
+
+                        // 새로운 인포윈도우 열기
+                        infowindow.setContent(infowindowContent);
+                        infowindow.open(map, marker);
+
+                        // 열린 인포윈도우를 저장
+                        currentInfowindow = infowindow;
+                    });
+
+                    currentMarkers.push(marker); // 현재 마커 배열에 추가
+                }
+
+                // 직접 지정한 마커 추가 함수
+                kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+
+                    // 현재 열려있는 인포윈도우 닫기
+                    if (currentInfowindow) {
+                        currentInfowindow.close();
+                    }
+
+                    // 클릭한 위도, 경도 정보를 가져옵니다
+                    var latlng = mouseEvent.latLng;
+
+                    console.log(mouseEvent.latLng);
+
+                    searchDetailAddrFromCoords(mouseEvent.latLng, function(result, status) {
+                        if (status === kakao.maps.services.Status.OK) {
+                            var detailAddr = !!result[0].road_address ? '<div>도로명주소 : ' + result[0].road_address.address_name + '</div>' : '';
+                            detailAddr += '<div>지번 주소 : ' + result[0].address.address_name + '</div>';
+
+                            // var message = '클릭한 장소의 정보 입니다.  \n' + detailAddr;
+                            //
+                            // var resultDiv = document.getElementById('markerAddr');
+                            // resultDiv.innerHTML = message;
+
+                            // 이전에 생성된 마커가 있다면 지도에서 제거
+                            if (previousMarker) {
+                                previousMarker.setMap(null);
+                            }
+
+                            // 새 마커 생성 및 표시
+                            var marker = new kakao.maps.Marker();
+                            marker.setPosition(mouseEvent.latLng);
+                            marker.setMap(map);
+
+                            // 이전 마커를 현재 마커로 업데이트
+                            previousMarker = marker;
+
+                            mlat = latlng.getLat();
+                            mlng = latlng.getLng();
+                            mloc = result[0].address.address_name.substring(0, 2);  //  ex) 서울, 제주 등으로 표기, 맨앞 두글자만
+
+                        }
+                    });
+                });
+
+                // 중심 좌표나 확대 수준이 변경됐을 때 지도 중심 좌표에 대한 주소 정보를 표시하도록 이벤트를 등록
+                kakao.maps.event.addListener(map, 'idle', function() {
+                    searchAddrFromCoords(map.getCenter(), displayCenterInfo);
+                });
+
+                // 글작성 버튼 함수
+                $(document).ready(function () {
+                    $("#btnSaveAndWrite").on("click", function () {
+                        var mapDTO = {
+                            lat: mlat,
+                            lng: mlng,
+                            level: mapOption.level,
+                            mloc: mloc
+                        };
+
+                        $.ajax({
+                            type: "POST",
+                            url: "/map/save",
+                            data: JSON.stringify(mapDTO),
+                            contentType: "application/json",
+                            success: function(response) {
+                                console.log("Server response:", response);
+                                // 성공적으로 응답 받았을 때 실행할 코드
+                                location.href="map/send"
+                                console.log(this.data);
+                                console.log(mapDTO.lat);
+                                console.log(mapDTO.lng);
+                                console.log(mapDTO.level);
+                                console.log(mapDTO.mloc);
+                            },
+                            error: function(error) {
+                                console.error("Error:", error);
+                                // 요청이 실패했을 때 실행할 코드
+                            }
+                        });
+                    })
+                })
+
+                // 강 문화관 데이터 관련 스크립트
+                document.getElementById("riverCCselect").addEventListener("click", async ()=> {
+                    try {
+                        const selectElement = document.getElementById("riverCCselect");
+                        const selectedNum = selectElement.value.split('.')[0]; // 선택한 옵션의 num 추출
+
+                        if (selectedNum === '지역선택') {
+                            // 선택이 "지역선택"인 경우 아무 정보도 표시하지 않음
+                            const dataContainer = document.getElementById("riverccData");
+                            dataContainer.innerHTML = '';
+                        } else {
+                            const response = await fetch('/map/riverCCData?num=' + selectedNum);
+                            const rDTO = await response.json();
+
+                            const infoHTML =
+                                // '<p>강문화관 정보</p>' +
+                                // '<br>' +
+                                '<h1 style="font-family: \'Do Hyeon\', sans-serif;">' + rDTO.ccName + '</h1>' +
+                                // '<br>' +
+                                '<table class="table table-hover">' +
+                                '<tr>' +
+                                '<th style="font-size: 20px; width: 88px; padding-right: 0">강 이름 :</th>' +
+                                '<td style="font-size: 20px; padding-left: 10px;">' + rDTO.riverName + '</td>' +
+                                '</tr>' +
+                                '<tr>' +
+                                '<th style="font-size: 20px; width: 88px; padding-right: 0">주 &nbsp;&nbsp;&nbsp;소 :</th>' +
+                                '<td style="font-size: 20px; padding-left: 10px;">' + rDTO.address + '</td>' +
+                                '</tr>' +
+                                '<tr>' +
+                                '<th style="font-size: 20px; width: 88px; padding-right: 0">시 &nbsp;&nbsp;&nbsp;설 :</th>' +
+                                '<td style="font-size: 20px; padding-left: 10px;">' + rDTO.facility + '</td>' +
+                                '</tr>' +
+                                '</table>'
+
+                            document.getElementById("riverccData").innerHTML = infoHTML;
+
+                            console.log(rDTO.lat)
+                            console.log(rDTO.lng)
+
+                            mlat = rDTO.lat;
+                            mlng = rDTO.lng;
+                            mloc = rDTO.address.substring(0, 2);
+
+                            // 이전에 열려있던 인포윈도우 닫기
+                            if (currentInfowindow) {
+                                currentInfowindow.close();
+                            }
+
+                            // 이전에 표시된 마커들을 지도에서 제거
+                            for (var j = 0; j < currentMarkers.length; j++) {
+                                currentMarkers[j].setMap(null);
+                            }
+                            currentMarkers = []; // 배열 비우기
+
+                            // 이전에 생성된 마커가 있다면 지도에서 제거
+                            if (previousMarker) {
+                                previousMarker.setMap(null);
+                            }
+
+                            var riverLatLng = new kakao.maps.LatLng(rDTO.lat, rDTO.lng)
+
+                            // 새 마커 생성 및 표시
+                            var marker = new kakao.maps.Marker({
+                                map: map,
+                                position: riverLatLng
+                            });
+                            // marker.setPosition(rDTO.lat, rDTO.lng);
+                            marker.setMap(map);
+
+                            // 이전 마커를 현재 마커로 업데이트
+                            previousMarker = marker;
+
+                            // 새로운 인포윈도우 열기
+
+                            infowindow.setContent('<div style="padding:5px;font-size:12px;">' + rDTO.ccName + '</div>');
+                            infowindow.open(map, marker);
+
+                            // 열린 인포윈도우를 저장
+                            currentInfowindow = infowindow;
+
+                            currentMarkers.push(marker); // 현재 마커 배열에 추가
+
+                            console.log(riverLatLng)
+
+                            // 검색된 장소 위치를 기준으로 지도 범위 재설정
+                            var bounds = new kakao.maps.LatLngBounds();
+
+                            bounds.extend(riverLatLng)
+
+                            // 검색된 장소 위치를 기준으로 지도 범위를 재설정
+                            map.setBounds(bounds);
+                        }
+                    } catch (error) {
+                        console.error("에러 : ", error);
+                    }
+                });
+            </script>
         </div>
     </div>
 

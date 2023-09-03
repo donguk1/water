@@ -36,24 +36,28 @@
     <script type="text/javascript" src="/js/bootstrap.bundle.js"></script>
     <script th:inline="javascript">
 
-        // HTML로딩이 완료되고, 실행됨
-        $(document).ready(function () {
-
-            // 버튼 클릭했을때, 발생되는 이벤트 생성함(onclick 이벤트와 동일함)
-            $("#btnReg").on("click", function () {
-                if (![[${session.SS_ID}]]) {
-                    alert("로그인이 필요한 서비스입니다.");
-                    return location.href = "/user/login";
-                }
-                location.href = "/memo/new"; // 글 작성하는 창으로 이동
-            })
-
-        })
-
         //상세보기 이동
         function doDetail(num) {
             location.href = "/memo/info?num=" + num;
         }
+
+
+        // HTML로딩이 완료되고, 실행됨
+        $(document).ready(function () {
+
+            $("#btnSend").on("click", function () {
+
+                let f = document.getElementById("f");
+
+                if (f.keyword.value === "") {
+                    alert("검색어를 입력하세요");
+                    f.keyword.focus();
+                    return;
+                }
+
+
+            })
+        })
 
         /* back to top 클릭시 주소창에 #top 추가 안되게 함*/
         document.addEventListener("DOMContentLoaded", function () {
@@ -66,6 +70,7 @@
                 });
             });
         });
+
     </script>
 </head>
 <body>
@@ -128,11 +133,6 @@
             </table>
         </div>
 
-        <!-- 작성 버튼 영역 -->
-        <div class="ms-auto" style="padding: 0 20px;">
-            <button type="button" class="btn btn-outline-dark" id="btnReg">글작성</button>
-        </div>
-
         <!-- 페이지네이션 영역-->
         <div class="mx-auto">
             <ul class="pagination" id="pagination">
@@ -158,7 +158,7 @@
         </div>
 
         <!-- 검색 버튼 영역 -->
-        <form class="form-inline my-2 my-lg-0 mx-auto" action="/memo/search">
+        <form class="form-inline my-2 my-lg-0 mx-auto" action="/memo/search" onsubmit="doSubmit(this)" id="f">
             <div class="input-group mb-3">
                 <select name="type" id="type">
                     <option selected value="">검색 내용 선택</option>
