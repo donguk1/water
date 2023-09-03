@@ -4,6 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>WATEM : 메모</title>
     <link rel="stylesheet" type="text/css" href="/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="/css/map.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Hahmlet:wght@400;500&family=Nanum+Gothic+Coding&family=Noto+Sans+KR:wght@100;300;400&display=swap" rel="stylesheet">
@@ -149,37 +150,43 @@
                 <h3 class="card-header" style="font-family: 'Do Hyeon', sans-serif;">[[${rDTO.title}]]</h3>
                 <div class="card-body">
                     <!-- 지도 데이터상 지역 출력 -->
-                    <h5 class="card-title" style="font-family: 'Do Hyeon', sans-serif; text-align: right">지역 : [[${aDTO.mloc}]]</h5>
+                    <h5 class="card-title" style="font-family: 'Do Hyeon', sans-serif; text-align: right">지역 : [[${rDTO.mloc}]]</h5>
                     <!-- 닉네임 출력 -->
                     <h6 class="card-subtitle text-muted" style="font-family: 'Do Hyeon', sans-serif; text-align: right">작성자 : [[${rDTO.nick}]]</h6>
                 </div>
                 <!-- 지도 데이터 출력 -->
-<!--                <svg xmlns="http://www.w3.org/2000/svg" class="d-block user-select-none" width="100%" height="600" aria-label="Placeholder: Image cap" focusable="false" role="img" preserveAspectRatio="xMidYMid slice" viewBox="0 0 318 180" style="font-size:1.125rem;text-anchor:middle">-->
-<!--&lt;!&ndash;                    <rect width="100%" height="100%" fill="#868e96"></rect>&ndash;&gt;-->
-<!--                    <text x="50%" y="50%" fill="#dee2e6" dy=".3em">[[${rDTO.map}]]</text>-->
-                    <div id="staticMap" style="width: 100%; height: 600px;">
-                        <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=9f7b1b926be42fe85ba854921b7d037e"></script>
-                        <script>
-                            var markerPosition  = new kakao.maps.LatLng([[${aDTO.lat}]], [[${aDTO.lng}]]);
-
-                            // 이미지 지도에 표시할 마커입니다
-                            // 이미지 지도에 표시할 마커는 Object 형태입니다
-                            var marker = {
-                                position: markerPosition
-                            };
-
-                            var staticMapContainer  = document.getElementById('staticMap'), // 이미지 지도를 표시할 div
-                                staticMapOption = {
-                                    center: new kakao.maps.LatLng([[${aDTO.lat}]], [[${aDTO.lng}]]), // 이미지 지도의 중심좌표
-                                    level: [[${aDTO.level}]], // 이미지 지도의 확대 레벨
-                                    marker: marker // 이미지 지도에 표시할 마커
-                                };
-
-                            // 이미지 지도를 생성합니다
-                            var staticMap = new kakao.maps.StaticMap(staticMapContainer, staticMapOption);
-                        </script>
+                <div class="map_wrap mx-auto" style="width: 98%; height: 600px; border: 3px solid grey;">
+                    <div id="staticMap" style="width: 100%; height: 100%;"></div>
+                    <div class="hAddr">
+                        <span class="title">마커기준 행정동 주소정보</span>
+                        <span id="centerAddr"></span>
                     </div>
-<!--                </svg>-->
+                </div>
+                <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=9f7b1b926be42fe85ba854921b7d037e&libraries=services"></script>
+                <script type="text/javascript" src="/js/map.js"></script>
+                <script>
+                    var markerPosition  = new kakao.maps.LatLng([[${rDTO.lat}]], [[${rDTO.lng}]]);
+
+                    // 이미지 지도에 표시할 마커입니다
+                    // 이미지 지도에 표시할 마커는 Object 형태입니다
+                    var marker = {
+                        position: markerPosition
+                    };
+
+                    var staticMapContainer  = document.getElementById('staticMap'), // 이미지 지도를 표시할 div
+                        staticMapOption = {
+                            center: new kakao.maps.LatLng([[${rDTO.lat}]], [[${rDTO.lng}]]), // 이미지 지도의 중심좌표
+                            level: [[${rDTO.level}]], // 이미지 지도의 확대 레벨
+                            marker: marker // 이미지 지도에 표시할 마커
+                        };
+
+                    // 이미지 지도를 생성합니다
+                    var staticMap = new kakao.maps.StaticMap(staticMapContainer, staticMapOption);
+
+                    // 현재 지도 중심좌표로 주소를 검색해서 지도 좌측 상단에 표시합니다
+                    searchAddrFromCoords(staticMap.getCenter(), displayCenterInfo);
+                </script>
+
                 <!-- 내용 출력 -->
                 <div class="card-body" style="height: 400px;">
                     [[${rDTO.contents}]]

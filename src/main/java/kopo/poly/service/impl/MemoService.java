@@ -1,6 +1,5 @@
 package kopo.poly.service.impl;
 
-import kopo.poly.dto.MapDTO;
 import kopo.poly.dto.MemoDTO;
 import kopo.poly.persistance.mapper.IMemoMapper;
 import kopo.poly.service.IMemoService;
@@ -37,10 +36,17 @@ public class MemoService implements IMemoService {
 
         log.info(this.getClass().getName() + ".Memo 검색 목록");
 
-        // selectMemoList = 검색 목록
         return memoMapper.searchMemoList(pDTO);
     }
 
+    /*  메모 전체 검색 목록(반환 타입 List)  */
+    @Override
+    public List<MemoDTO> allSearchMemoList(MemoDTO pDTO) throws Exception {
+
+        log.info(this.getClass().getName() + ".Memo 전체 검색 목록");
+
+        return memoMapper.allSearchMemoList(pDTO);
+    }
 
     /*  메모 등록  */
     @Transactional
@@ -85,11 +91,11 @@ public class MemoService implements IMemoService {
         memoMapper.deleteMemoInfo(pDTO);
     }
 
-    @Transactional
-    @Override
-    public MapDTO getLatLng(MapDTO mapDTO) throws Exception {
-        log.info(this.getClass().getName() + ".위경도 가져오기");
-
-        return memoMapper.getLatLng(mapDTO);
-    }
+//    @Transactional
+//    @Override
+//    public MapDTO getLatLng(MapDTO mapDTO) throws Exception {
+//        log.info(this.getClass().getName() + ".위경도 가져오기");
+//
+//        return memoMapper.getLatLng(mapDTO);
+//    }
 }
